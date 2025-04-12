@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F8F8FC">
+    android:background="#000000">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,39 +31,73 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
         android:layout_marginBottom="12dp">
 
-        <Button
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="All"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:background="@drawable/bg_tab_selected"
-            android:paddingHorizontal="16dp"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="8dp">
 
-        <Button
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg_tab_selected"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="All"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:paddingHorizontal="16dp" />
+        </FrameLayout>
+
+        <FrameLayout
             android:layout_width="100dp"
             android:layout_height="40dp"
-            android:text="In Progress"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            android:background="@drawable/bg_tab_unselected"
-            android:paddingHorizontal="16dp"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="8dp">
 
-        <Button
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg_tab_unselected"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="-63dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="In Progress"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:paddingHorizontal="16dp" />
+        </FrameLayout>
+
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:text="Completed"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            android:background="@drawable/bg_tab_unselected"
-            android:paddingHorizontal="16dp" />
+            android:layout_height="36dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg_tab_unselected"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Completed"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:paddingHorizontal="16dp" />
+        </FrameLayout>
     </LinearLayout>
 
     <ScrollView
@@ -77,131 +111,164 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:background="@drawable/bg_card"
                 android:layout_marginBottom="16dp"
-                android:elevation="2dp"
-                android:backgroundTint="#FFFFFF">
+                android:elevation="2dp">
 
                 <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/react_logo"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card"
+                    android:layout_marginStart="-30dp"
+                    android:layout_marginEnd="-23dp"
+                    android:layout_marginTop="-10dp"
+                    android:layout_marginBottom="-40dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"/>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/react_logo"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="React JS"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="#000000" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="8/10 question"
-                        android:textColor="#8B5CF6"
-                        android:textSize="13sp"
-                        android:layout_marginTop="4dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="React JS"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#000000" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="35min remaining"
-                        android:textColor="#8B5CF6"
-                        android:textSize="13sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="8/10 question"
+                            android:textColor="#8B5CF6"
+                            android:textSize="13sp"
+                            android:layout_marginTop="4dp" />
 
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:text="Continue Test"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp"
-                        android:layout_marginTop="8dp"
-                        android:backgroundTint="#8B5CF6"
-                        android:background="@drawable/bg_purple_button" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="35min remaining"
+                            android:textColor="#8B5CF6"
+                            android:textSize="13sp" />
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="Continue Test"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:layout_marginTop="8dp"
+                            android:backgroundTint="#8B5CF6"
+                            android:background="@drawable/bg_purple_button" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_trash"
+                        android:layout_gravity="top" />
                 </LinearLayout>
+            </FrameLayout>
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_trash"
-                    android:layout_gravity="top" />
-            </LinearLayout>
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:background="@drawable/bg_card"
                 android:layout_marginBottom="16dp"
-                android:backgroundTint="#FFFFFF">
+                android:elevation="2dp">
 
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/react_logo"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="16dp" />
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card"
+                    android:layout_marginStart="-20dp"
+                    android:layout_marginEnd="-63dp"
+                    android:layout_marginTop="-63dp"
+                    android:layout_marginBottom="-84dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"/>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/react_logo"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="React JS"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="#000000" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Score: 8/10"
-                        android:textColor="#8B5CF6"
-                        android:textSize="13sp"
-                        android:layout_marginTop="4dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="React JS"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#000000" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="June 4th, 2023"
-                        android:textColor="#888888"
-                        android:textSize="13sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="8/10 question"
+                            android:textColor="#8B5CF6"
+                            android:textSize="13sp"
+                            android:layout_marginTop="4dp" />
 
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:text="Revisit"
-                        android:textColor="#8B5CF6"
-                        android:textSize="13sp"
-                        android:background="@drawable/bg_purple_outline_button"
-                        android:layout_marginTop="8dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="35min remaining"
+                            android:textColor="#8B5CF6"
+                            android:textSize="13sp" />
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="Continue Test"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:layout_marginTop="8dp"
+                            android:backgroundTint="#8B5CF6"
+                            android:background="@drawable/bg_purple_button" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_trash"
+                        android:layout_gravity="top" />
                 </LinearLayout>
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_trash"
-                    android:layout_gravity="top" />
-            </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
     </ScrollView>
     <include layout="@layout/bottom_nav" />
