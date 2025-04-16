@@ -1,15 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#000000">
+    android:background="#f5f7fb"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:padding="16dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,10 +31,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginBottom="12dp"
         android:gravity="center_vertical"
-        android:paddingHorizontal="16dp"
-        android:layout_marginBottom="12dp">
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp">
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -44,63 +44,72 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:scaleType="centerCrop"
                 android:src="@drawable/bg_tab_selected"
-                android:scaleType="centerCrop" />
+                android:clipChildren="false"
+                android:clipToPadding="false" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
                 android:text="All"
                 android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:paddingHorizontal="16dp" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="8dp">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/bg_tab_unselected"
-                android:scaleType="centerCrop"
-                android:layout_marginStart="-29dp"
-                android:layout_marginEnd="-30dp"
-                android:layout_marginTop="-6dp"
-                android:layout_marginBottom="-67dp"
-                android:adjustViewBounds="true"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="In Progress"
-                android:textColor="#000000"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:paddingHorizontal="16dp" />
+                android:textSize="14sp" />
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="36dp">
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp">
 
             <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-20dp"
+                android:layout_marginTop="-5dp"
+                android:layout_marginEnd="-50dp"
+                android:layout_marginBottom="-105dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_tab_unselected" />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/bg_tab_unselected"
-                android:scaleType="centerCrop" />
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:text="In Progress"
+                android:textColor="#000000"
+                android:textSize="14sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageView android:layout_width="wrap_content"
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-20dp"
+                android:layout_marginTop="-5dp"
+                android:layout_marginEnd="-50dp"
+                android:layout_marginBottom="-105dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_tab_unselected" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
                 android:text="Completed"
                 android:textColor="#000000"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:paddingHorizontal="16dp" />
+                android:textSize="14sp" />
         </FrameLayout>
     </LinearLayout>
 
@@ -124,27 +133,27 @@
                 <View
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_card"
                     android:layout_marginStart="-29dp"
-                    android:layout_marginEnd="-30dp"
                     android:layout_marginTop="-6dp"
+                    android:layout_marginEnd="-30dp"
                     android:layout_marginBottom="-67dp"
                     android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"/>
+                    android:background="@drawable/bg_card"
+                    android:scaleType="centerCrop" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/react_logo"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="16dp" />
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/react_logo" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -156,17 +165,17 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="React JS"
+                            android:textColor="#000000"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="#000000" />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
                             android:text="8/10 question"
                             android:textColor="#8B5CF6"
-                            android:textSize="13sp"
-                            android:layout_marginTop="4dp" />
+                            android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -178,19 +187,19 @@
                         <Button
                             android:layout_width="wrap_content"
                             android:layout_height="36dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_tab_selected"
+                            android:backgroundTint="#8B5CF6"
                             android:text="Continue Test"
                             android:textColor="#FFFFFF"
-                            android:textSize="13sp"
-                            android:layout_marginTop="8dp"
-                            android:backgroundTint="#8B5CF6"
-                            android:background="@drawable/bg_tab_selected" />
+                            android:textSize="13sp" />
                     </LinearLayout>
 
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@drawable/ic_trash"
-                        android:layout_gravity="top" />
+                        android:layout_gravity="top"
+                        android:src="@drawable/ic_trash" />
                 </LinearLayout>
             </FrameLayout>
 
@@ -204,27 +213,27 @@
                 <View
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_card"
                     android:layout_marginStart="-29dp"
-                    android:layout_marginEnd="-30dp"
                     android:layout_marginTop="-6dp"
+                    android:layout_marginEnd="-30dp"
                     android:layout_marginBottom="-67dp"
                     android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"/>
+                    android:background="@drawable/bg_card"
+                    android:scaleType="centerCrop" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/react_logo"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="16dp" />
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/react_logo" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -236,17 +245,17 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="React JS"
+                            android:textColor="#000000"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="#000000" />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
                             android:text="8/10 question"
                             android:textColor="#8B5CF6"
-                            android:textSize="13sp"
-                            android:layout_marginTop="4dp" />
+                            android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -258,22 +267,23 @@
                         <Button
                             android:layout_width="wrap_content"
                             android:layout_height="36dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_tab_selected"
+                            android:backgroundTint="#8B5CF6"
                             android:text="Continue Test"
                             android:textColor="#FFFFFF"
-                            android:textSize="13sp"
-                            android:layout_marginTop="8dp"
-                            android:backgroundTint="#8B5CF6"
-                            android:background="@drawable/bg_tab_selected" />
+                            android:textSize="13sp" />
                     </LinearLayout>
 
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@drawable/ic_trash"
-                        android:layout_gravity="top" />
+                        android:layout_gravity="top"
+                        android:src="@drawable/ic_trash" />
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>
     </ScrollView>
+
     <include layout="@layout/bottom_nav" />
 </LinearLayout>
