@@ -62,126 +62,175 @@
                 android:orientation="horizontal"
                 android:paddingBottom="8dp">
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="170dp"
-                    android:orientation="vertical"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="12dp"
-                    android:elevation="2dp"
-                    android:backgroundTint="#fcfcfc">
+                    android:elevation="2dp">
 
-                    <LinearLayout
+                    <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:background="#ffffff">
-
-                        <ImageView
-                            android:layout_width="140dp"
-                            android:layout_height="90dp"
-                            android:adjustViewBounds="true"
-                            android:maxWidth="140dp"
-                            android:maxHeight="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/java_logo" />
-                    </LinearLayout>
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/frame"
+                        android:layout_marginStart="-30dp"
+                        android:layout_marginEnd="-200dp"
+                        android:layout_marginTop="-55dp"
+                        android:layout_marginBottom="-500dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:gravity="bottom"
-                        android:padding="6dp"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:layout_height="0dp"
+                            android:layout_weight="2"
+                            android:background="#ffffff"
+                            android:gravity="center">
 
-                            <TextView
+                            <ImageView
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:maxLines="1"
-                                android:text="Core Java"
-                                android:textColor="#000000"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:ellipsize="end"
-                                android:maxLines="1"
-                                android:text="1h. 15min"
-                                android:textColor="#888888"
-                                android:textSize="12sp" />
+                                android:layout_height="90dp"
+                                android:adjustViewBounds="true"
+                                android:maxWidth="140dp"
+                                android:maxHeight="80dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/java_logo" />
                         </LinearLayout>
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginTop="4dp"
-                            android:src="@drawable/bookmark" />
-                    </LinearLayout>
-                </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:gravity="bottom"
+                            android:orientation="horizontal"
+                            android:padding="6dp"
+                            android:background="#fcfcfc">
 
-                <LinearLayout
-                    android:layout_width="160dp"
-                    android:layout_height="170dp"
-                    android:orientation="vertical"
-                    android:background="@android:color/white"
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
+                                    android:text="Core Java"
+                                    android:textColor="#000000"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
+                                    android:text="1h. 15min"
+                                    android:textColor="#888888"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginTop="4dp"
+                                android:src="@drawable/bookmark" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="12dp"
                     android:elevation="2dp"
-                    android:padding="12dp"
-                    android:backgroundTint="#FFFFFF">
+                    android:clipChildren="false"
+                    android:clipToPadding="false">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/frame"
+                        android:layout_marginStart="-20dp"
+                        android:layout_marginEnd="-200dp"
+                        android:layout_marginTop="-55dp"
+                        android:layout_marginBottom="-500dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                        <ImageView
-                            android:layout_width="105dp"
-                            android:layout_height="52dp"
-                            android:adjustViewBounds="true"
-                            android:maxWidth="80dp"
-                            android:maxHeight="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/aws_logo" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:background="#ffffff">
+
+                            <ImageView
+                                android:layout_width="105dp"
+                                android:layout_height="52dp"
+                                android:adjustViewBounds="true"
+                                android:maxWidth="105dp"
+                                android:maxHeight="52dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/aws_logo"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:gravity="bottom"
+                            android:orientation="horizontal"
+                            android:padding="6dp"
+                            android:background="#fcfcfc">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="AWS Certification"
+                                    android:textColor="#000000"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="1h. 15min"
+                                    android:textColor="#888888"
+                                    android:textSize="12sp"
+                                    android:layout_marginTop="2dp"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"/>
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginTop="4dp"
+                                android:src="@drawable/bookmark"/>
+                        </LinearLayout>
                     </LinearLayout>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="AWS Certification"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="#000000" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="1h. 15min"
-                        android:textSize="12sp"
-                        android:textColor="#888888"
-                        android:layout_marginTop="2dp"
-                        android:ellipsize="end"
-                        android:maxLines="1" />
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="4dp"
-                        android:src="@drawable/bookmark" />
-                </LinearLayout>
+                </FrameLayout>
             </LinearLayout>
         </HorizontalScrollView>
 
@@ -383,123 +432,175 @@
                 android:orientation="horizontal"
                 android:paddingBottom="8dp">
 
-                <LinearLayout
-                    android:layout_width="170dp"
-                    android:layout_height="170dp"
-                    android:orientation="vertical"
-                    android:background="@android:color/white"
-                    android:elevation="2dp"
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="12dp"
-                    android:padding="12dp"
-                    android:backgroundTint="#FFFFFF">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center">
-
-                        <ImageView
-                            android:layout_width="136dp"
-                            android:layout_height="79dp"
-                            android:adjustViewBounds="true"
-                            android:maxWidth="80dp"
-                            android:maxHeight="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/java_logo" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_gravity="bottom">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Core Java"
-                            android:textStyle="bold"
-                            android:textSize="14sp"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:textColor="#000000" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="1h. 15min"
-                            android:textSize="12sp"
-                            android:textColor="#888888"
-                            android:layout_marginTop="2dp"
-                            android:ellipsize="end"
-                            android:maxLines="1" />
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_gravity="end"
-                            android:layout_marginTop="4dp"
-                            android:src="@drawable/bookmark" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="14dp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="170dp"
-                    android:layout_height="170dp"
-                    android:orientation="vertical"
-                    android:background="@android:color/white"
-                    android:elevation="2dp"
-                    android:padding="12dp"
-                    android:backgroundTint="#FFFFFF">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center">
-
-                        <ImageView
-                            android:layout_width="105dp"
-                            android:layout_height="52dp"
-                            android:adjustViewBounds="true"
-                            android:maxWidth="80dp"
-                            android:maxHeight="80dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/aws_logo" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="AWS Certification"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="#000000" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="1h. 15min"
-                        android:textSize="12sp"
-                        android:textColor="#888888"
-                        android:layout_marginTop="2dp"
-                        android:ellipsize="end"
-                        android:maxLines="1" />
+                    android:elevation="2dp">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="4dp"
-                        android:src="@drawable/bookmark" />
-                </LinearLayout>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/frame"
+                        android:layout_marginStart="-30dp"
+                        android:layout_marginEnd="-200dp"
+                        android:layout_marginTop="-55dp"
+                        android:layout_marginBottom="-500dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="2"
+                            android:background="#ffffff"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="90dp"
+                                android:adjustViewBounds="true"
+                                android:maxWidth="140dp"
+                                android:maxHeight="80dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/java_logo" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:gravity="bottom"
+                            android:orientation="horizontal"
+                            android:padding="6dp"
+                            android:background="#fcfcfc">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
+                                    android:text="Core Java"
+                                    android:textColor="#000000"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
+                                    android:text="1h. 15min"
+                                    android:textColor="#888888"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginTop="4dp"
+                                android:src="@drawable/bookmark" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="12dp"
+                    android:elevation="2dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/frame"
+                        android:layout_marginStart="-20dp"
+                        android:layout_marginEnd="-200dp"
+                        android:layout_marginTop="-55dp"
+                        android:layout_marginBottom="-500dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:background="#ffffff">
+
+                            <ImageView
+                                android:layout_width="105dp"
+                                android:layout_height="52dp"
+                                android:adjustViewBounds="true"
+                                android:maxWidth="105dp"
+                                android:maxHeight="52dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/aws_logo"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:gravity="bottom"
+                            android:orientation="horizontal"
+                            android:padding="6dp"
+                            android:background="#fcfcfc">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="AWS Certification"
+                                    android:textColor="#000000"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="1h. 15min"
+                                    android:textColor="#888888"
+                                    android:textSize="12sp"
+                                    android:layout_marginTop="2dp"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"/>
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginTop="4dp"
+                                android:src="@drawable/bookmark"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </FrameLayout>
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>
