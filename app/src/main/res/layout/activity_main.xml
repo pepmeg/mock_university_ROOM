@@ -15,14 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingHorizontal="30dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:paddingVertical="30dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -53,19 +53,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp">
+            android:paddingStart="-12dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingBottom="8dp">
+                android:paddingBottom="15dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginEnd="17dp"
                     android:elevation="2dp">
 
                     <ImageView
@@ -149,10 +148,8 @@
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="12dp"
-                    android:elevation="2dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false">
+                    android:layout_marginEnd="17dp"
+                    android:elevation="2dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -240,13 +237,13 @@
             android:text="Categories"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            android:paddingStart="-12dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -417,14 +414,13 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="15dp" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp">
+            android:paddingStart="-12dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -435,7 +431,7 @@
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginEnd="17dp"
                     android:elevation="2dp">
 
                     <ImageView
