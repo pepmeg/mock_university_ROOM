@@ -186,11 +186,10 @@
             android:text="d. A given element can’t appear in a set more than once."
             android:background="@drawable/bg_answer_neutral"
             android:padding="12dp"
-            android:textColor="#AAAAAA"
+            android:textColor="#000"
             android:textSize="14sp" />
     </LinearLayout>
 
-    <!-- Кнопки -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -202,14 +201,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center">
 
-        <Button
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:text="Previous"
-            android:textColor="#8B5CF6"
-            android:background="@drawable/bg_button_white"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="8dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-25dp"
+                android:layout_marginTop="-5dp"
+                android:layout_marginEnd="-50dp"
+                android:layout_marginBottom="-110dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_button_previous"
+                android:clipChildren="false"
+                android:clipToPadding="false"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:text="Previous"
+                android:textColor="#797979"
+                android:textSize="14sp" />
+        </FrameLayout>
 
         <Button
             android:layout_width="0dp"
@@ -217,6 +238,6 @@
             android:layout_weight="1"
             android:text="Next"
             android:textColor="#FFFFFF"
-            android:background="@drawable/bg_button_primary" />
+            android:background="@drawable/bg_button" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

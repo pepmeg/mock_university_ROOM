@@ -2,7 +2,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f5f7fb"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,26 +32,33 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="30dp"
-        android:paddingTop="16dp">
+        android:paddingTop="16dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:layout_marginEnd="8dp">
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-28dp"
+                android:layout_marginTop="-5dp"
+                android:layout_marginEnd="-80dp"
+                android:layout_marginBottom="-110dp"
+                android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/bg_tab_selected"
-                android:clipChildren="false"
-                android:clipToPadding="false" />
+                android:clipChildren="false" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -58,24 +67,28 @@
                 android:paddingHorizontal="16dp"
                 android:text="All"
                 android:textColor="#FFFFFF"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="8dp">
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="-20dp"
+                android:layout_marginStart="-25dp"
                 android:layout_marginTop="-5dp"
                 android:layout_marginEnd="-50dp"
-                android:layout_marginBottom="-105dp"
+                android:layout_marginBottom="-110dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bg_tab_unselected" />
+                android:src="@drawable/bg_tab_unselected"
+                android:clipChildren="false"
+                android:clipToPadding="false"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -83,24 +96,28 @@
                 android:gravity="center"
                 android:paddingHorizontal="16dp"
                 android:text="In Progress"
-                android:textColor="#000000"
+                android:textColor="#797979"
                 android:textSize="14sp" />
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="40dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="-20dp"
+                android:layout_marginStart="-25dp"
                 android:layout_marginTop="-5dp"
                 android:layout_marginEnd="-50dp"
-                android:layout_marginBottom="-105dp"
+                android:layout_marginBottom="-110dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bg_tab_unselected" />
+                android:src="@drawable/bg_tab_unselected"
+                android:clipChildren="false"
+                android:clipToPadding="false"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -108,7 +125,7 @@
                 android:gravity="center"
                 android:paddingHorizontal="16dp"
                 android:text="Completed"
-                android:textColor="#000000"
+                android:textColor="#797979"
                 android:textSize="14sp" />
         </FrameLayout>
     </LinearLayout>
@@ -117,91 +134,157 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingHorizontal="30dp">
+        android:paddingHorizontal="30dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="16dp">
+            android:paddingTop="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:elevation="2dp">
+                android:elevation="2dp"
+                android:clipChildren="false">
 
-                <View
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="-29dp"
-                    android:layout_marginTop="-6dp"
-                    android:layout_marginEnd="-30dp"
-                    android:layout_marginBottom="-67dp"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/bg_card"
-                    android:scaleType="centerCrop" />
+                    android:layout_height="match_parent"
+                    android:clipChildren="false">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="200dp"
+                            android:layout_marginStart="-26dp"
+                            android:layout_marginTop="-5dp"
+                            android:layout_marginEnd="-25dp"
+                            android:layout_marginBottom="-207dp"
+                            android:background="@drawable/bg_card"
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop"/>
+                    </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <ImageView
-                        android:layout_width="85dp"
-                        android:layout_height="61dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="16dp"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="25dp"
+                        android:layout_weight="2"
                         android:src="@drawable/react_logo" />
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="3"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="React JS"
-                            android:textColor="#000000"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="React JS"
+                                android:textColor="#000000"
+                                android:textSize="16sp"
+                                android:textStyle="bold"/>
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"
+                                android:src="@drawable/ic_trash"/>
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
                             android:layout_marginTop="4dp"
-                            android:text="8/10 question"
-                            android:textColor="#8B5CF6"
-                            android:textSize="13sp" />
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8/10"
+                                android:textColor="#8B5CF6"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=" question"
+                                android:textColor="#b0b0b2"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="35min remaining"
-                            android:textColor="#8B5CF6"
-                            android:textSize="13sp" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-                        <Button
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="35min"
+                                android:textColor="#8B5CF6"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=" remaining"
+                                android:textColor="#b0b0b2"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+                        <FrameLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:layout_marginTop="8dp"
-                            android:background="@drawable/bg_tab_selected"
-                            android:backgroundTint="#8B5CF6"
-                            android:text="Continue Test"
-                            android:textColor="#FFFFFF"
-                            android:textSize="13sp" />
-                    </LinearLayout>
+                            android:layout_height="45dp"
+                            android:clipChildren="false"
+                            android:layout_gravity="center">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="-10dp"
+                                android:layout_marginTop="-2dp"
+                                android:layout_marginEnd="-100dp"
+                                android:layout_marginBottom="-170dp"
+                                android:adjustViewBounds="true"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/bg_tab_selected_test"
+                                android:clipChildren="false" />
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="top"
-                        android:src="@drawable/ic_trash" />
+                            <TextView
+                                android:layout_width="189dp"
+                                android:layout_height="40dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Continue Test"
+                                android:textColor="#FFFFFF"
+                                android:textSize="13sp" />
+                        </FrameLayout>
+                    </LinearLayout>
                 </LinearLayout>
+                </RelativeLayout>
             </FrameLayout>
 
 
@@ -209,18 +292,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:elevation="2dp">
+                android:elevation="2dp"
+                android:clipChildren="false">
 
-                <View
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:clipChildren="false">
+
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="-29dp"
-                    android:layout_marginTop="-6dp"
-                    android:layout_marginEnd="-30dp"
-                    android:layout_marginBottom="-67dp"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/bg_card"
-                    android:scaleType="centerCrop" />
+                    android:clipChildren="false">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="200dp"
+                        android:layout_marginStart="-26dp"
+                        android:layout_marginTop="-5dp"
+                        android:layout_marginEnd="-25dp"
+                        android:layout_marginBottom="-207dp"
+                        android:background="@drawable/bg_card"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"/>
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -230,10 +325,11 @@
                     android:padding="16dp">
 
                     <ImageView
-                        android:layout_width="85dp"
-                        android:layout_height="61dp"
+                        android:layout_width="100dp"
+                        android:layout_height="80dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="16dp"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginStart="7dp"
                         android:src="@drawable/react_logo" />
 
                     <LinearLayout
@@ -242,46 +338,79 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="React JS"
-                            android:textColor="#000000"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="React JS"
+                                android:textColor="#000000"
+                                android:textSize="16sp"
+                                android:textStyle="bold"/>
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"
+                                android:src="@drawable/ic_trash"/>
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
                             android:layout_marginTop="4dp"
-                            android:text="8/10 question"
-                            android:textColor="#8B5CF6"
-                            android:textSize="13sp" />
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8/10"
+                                android:textColor="#8B5CF6"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=" question"
+                                android:textColor="#b0b0b2"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="35min remaining"
-                            android:textColor="#8B5CF6"
-                            android:textSize="13sp" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="35min"
+                                android:textColor="#8B5CF6"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=" remaining"
+                                android:textColor="#b0b0b2"
+                                android:textSize="13sp" />
+                        </LinearLayout>
 
                         <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
                             android:layout_marginTop="8dp"
-                            android:background="@drawable/bg_tab_selected"
-                            android:backgroundTint="#8B5CF6"
+                            android:background="@drawable/bg_button"
                             android:text="Continue Test"
                             android:textColor="#FFFFFF"
                             android:textSize="13sp" />
                     </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="top"
-                        android:src="@drawable/ic_trash" />
                 </LinearLayout>
+                </RelativeLayout>
             </FrameLayout>
         </LinearLayout>
     </ScrollView>
