@@ -2,9 +2,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f5f7fb"
-    android:orientation="vertical"
     android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,12 +34,12 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="30dp"
-        android:paddingTop="16dp"
-        android:clipChildren="false"
-        android:clipToPadding="false">
+        android:paddingTop="16dp">
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -56,9 +56,9 @@
                 android:layout_marginEnd="-80dp"
                 android:layout_marginBottom="-110dp"
                 android:adjustViewBounds="true"
+                android:clipChildren="false"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bg_tab_selected"
-                android:clipChildren="false" />
+                android:src="@drawable/bg_tab_selected" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                 android:paddingHorizontal="16dp"
                 android:text="All"
                 android:textColor="#FFFFFF"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
         </FrameLayout>
 
         <FrameLayout
@@ -85,10 +85,10 @@
                 android:layout_marginEnd="-50dp"
                 android:layout_marginBottom="-110dp"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/bg_tab_unselected"
                 android:clipChildren="false"
-                android:clipToPadding="false"/>
+                android:clipToPadding="false"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_tab_unselected" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -114,10 +114,10 @@
                 android:layout_marginEnd="-50dp"
                 android:layout_marginBottom="-110dp"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/bg_tab_unselected"
                 android:clipChildren="false"
-                android:clipToPadding="false"/>
+                android:clipToPadding="false"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_tab_unselected" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -134,24 +134,24 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingHorizontal="30dp"
         android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:paddingHorizontal="30dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="16dp"
             android:clipChildren="false"
-            android:clipToPadding="false">
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingTop="16dp">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:elevation="2dp"
-                android:clipChildren="false">
+                android:clipChildren="false"
+                android:elevation="2dp">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -165,251 +165,260 @@
 
                         <ImageView
                             android:layout_width="wrap_content"
-                            android:layout_height="200dp"
+                            android:layout_height="210dp"
                             android:layout_marginStart="-26dp"
                             android:layout_marginTop="-5dp"
                             android:layout_marginEnd="-25dp"
                             android:layout_marginBottom="-207dp"
-                            android:background="@drawable/bg_card"
                             android:adjustViewBounds="true"
-                            android:scaleType="centerCrop"/>
+                            android:background="@drawable/bg_card"
+                            android:scaleType="centerCrop" />
                     </FrameLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="20dp">
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="70dp"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="25dp"
-                        android:layout_weight="2"
-                        android:src="@drawable/react_logo" />
-
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:orientation="vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="20dp">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="React JS"
-                                android:textColor="#000000"
-                                android:textSize="16sp"
-                                android:textStyle="bold"/>
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentEnd="true"
-                                android:src="@drawable/ic_trash"/>
-                        </RelativeLayout>
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="70dp"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="25dp"
+                            android:layout_weight="2"
+                            android:src="@drawable/react_logo" />
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="4dp"
-                            android:orientation="horizontal">
+                            android:layout_weight="3"
+                            android:orientation="vertical">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="8/10"
-                                android:textColor="#8B5CF6"
-                                android:textSize="13sp" />
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=" question"
-                                android:textColor="#b0b0b2"
-                                android:textSize="13sp" />
-                        </LinearLayout>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="React JS"
+                                    android:textColor="#000000"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentEnd="true"
+                                    android:src="@drawable/ic_trash" />
+                            </RelativeLayout>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="35min"
-                                android:textColor="#8B5CF6"
-                                android:textSize="13sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=" remaining"
-                                android:textColor="#b0b0b2"
-                                android:textSize="13sp" />
-                        </LinearLayout>
-                        <FrameLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="45dp"
-                            android:clipChildren="false"
-                            android:layout_gravity="center">
-                            <ImageView
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="-10dp"
-                                android:layout_marginTop="-2dp"
-                                android:layout_marginEnd="-100dp"
-                                android:layout_marginBottom="-170dp"
-                                android:adjustViewBounds="true"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/bg_tab_selected_test"
-                                android:clipChildren="false" />
+                                android:layout_marginTop="4dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="189dp"
-                                android:layout_height="40dp"
-                                android:layout_marginTop="8dp"
-                                android:text="Continue Test"
-                                android:textColor="#FFFFFF"
-                                android:textSize="13sp" />
-                        </FrameLayout>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="8/10"
+                                    android:textColor="#8B5CF6"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=" question"
+                                    android:textColor="#b0b0b2"
+                                    android:textSize="13sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="35min"
+                                    android:textColor="#8B5CF6"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=" remaining"
+                                    android:textColor="#b0b0b2"
+                                    android:textSize="13sp" />
+                            </LinearLayout>
+
+                            <FrameLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp">
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="35dp"
+                                    android:background="@drawable/bg_button"
+                                    android:text="Continue Test"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Continue Test"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="13sp" />
+                            </FrameLayout>
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
                 </RelativeLayout>
             </FrameLayout>
-
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:elevation="2dp"
-                android:clipChildren="false">
+                android:clipChildren="false"
+                android:elevation="2dp">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:clipChildren="false">
 
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clipChildren="false">
-
-                    <ImageView
+                    <FrameLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="200dp"
-                        android:layout_marginStart="-26dp"
-                        android:layout_marginTop="-5dp"
-                        android:layout_marginEnd="-25dp"
-                        android:layout_marginBottom="-207dp"
-                        android:background="@drawable/bg_card"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"/>
-                </FrameLayout>
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="80dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="25dp"
-                        android:layout_marginStart="7dp"
-                        android:src="@drawable/react_logo" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="210dp"
+                            android:layout_marginStart="-26dp"
+                            android:layout_marginTop="-5dp"
+                            android:layout_marginEnd="-25dp"
+                            android:layout_marginBottom="-207dp"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/bg_card"
+                            android:scaleType="centerCrop" />
+                    </FrameLayout>
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="React JS"
-                                android:textColor="#000000"
-                                android:textSize="16sp"
-                                android:textStyle="bold"/>
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentEnd="true"
-                                android:src="@drawable/ic_trash"/>
-                        </RelativeLayout>
+                        <ImageView
+                            android:layout_width="100dp"
+                            android:layout_height="80dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="7dp"
+                            android:layout_marginEnd="25dp"
+                            android:src="@drawable/react_logo" />
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="4dp"
-                            android:orientation="horizontal">
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                            <TextView
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="React JS"
+                                    android:textColor="#000000"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentEnd="true"
+                                    android:src="@drawable/ic_trash" />
+                            </RelativeLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="8/10"
+                                    android:textColor="#8B5CF6"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=" question"
+                                    android:textColor="#b0b0b2"
+                                    android:textSize="13sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="35min"
+                                    android:textColor="#8B5CF6"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=" remaining"
+                                    android:textColor="#b0b0b2"
+                                    android:textSize="13sp" />
+                            </LinearLayout>
+
+                            <FrameLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="8/10"
-                                android:textColor="#8B5CF6"
-                                android:textSize="13sp" />
+                                android:layout_marginTop="8dp">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=" question"
-                                android:textColor="#b0b0b2"
-                                android:textSize="13sp" />
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="35dp"
+                                    android:background="@drawable/bg_button"
+                                    android:text="Continue Test"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Continue Test"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="13sp" />
+                            </FrameLayout>
                         </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="35min"
-                                android:textColor="#8B5CF6"
-                                android:textSize="13sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=" remaining"
-                                android:textColor="#b0b0b2"
-                                android:textSize="13sp" />
-                        </LinearLayout>
-
-                        <Button
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:layout_marginTop="8dp"
-                            android:background="@drawable/bg_button"
-                            android:text="Continue Test"
-                            android:textColor="#FFFFFF"
-                            android:textSize="13sp" />
                     </LinearLayout>
-                </LinearLayout>
                 </RelativeLayout>
             </FrameLayout>
         </LinearLayout>
