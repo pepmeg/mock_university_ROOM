@@ -9,7 +9,9 @@ import androidx.core.view.WindowInsetsCompat
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        val navHandler = BottomNavHandler(this, findViewById(android.R.id.content))
+        navHandler.setupNavigation()
     }
 }
