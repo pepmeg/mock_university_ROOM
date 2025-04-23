@@ -3,45 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA"
-    android:paddingHorizontal="30dp"
-    android:clipChildren="false">
+    android:background="#F5F7FB"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingHorizontal="30dp">
+
     <ImageView
         android:id="@+id/backIcon"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_marginTop="30dp"
         android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="30dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="AWS Certification"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:textColor="#000000"
-        android:gravity="center"
-        app:layout_constraintStart_toEndOf="@id/backIcon"
-        app:layout_constraintEnd_toStartOf="@id/timerContainer"
-        app:layout_constraintTop_toTopOf="@id/backIcon"
-        app:layout_constraintBottom_toBottomOf="@id/backIcon"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:text="AWS Certification"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/backIcon"
+        app:layout_constraintEnd_toStartOf="@id/timerContainer"
+        app:layout_constraintStart_toEndOf="@id/backIcon"
+        app:layout_constraintTop_toTopOf="@id/backIcon" />
 
     <LinearLayout
         android:id="@+id/timerContainer"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
+        android:layout_marginTop="-5dp"
         android:background="@drawable/bg_timer"
-        android:paddingHorizontal="12dp"
         android:gravity="center"
         android:orientation="horizontal"
-        android:layout_marginTop="-5dp"
-        app:layout_constraintTop_toTopOf="@id/backIcon"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:paddingHorizontal="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/backIcon">
 
         <ImageView
             android:layout_width="16dp"
@@ -51,210 +53,152 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:text="1:28"
-            android:textSize="14sp"
             android:textColor="#fff"
-            android:layout_marginStart="6dp"/>
+            android:textSize="14sp" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/questionNumbers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
         android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/backIcon"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/backIcon">
 
         <TextView
+            android:id="@+id/question12"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_circle_selected"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:onClick="onQuestionNumberClicked"
             android:text="12"
-            android:gravity="center"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/bg_circle_selected"
-            android:layout_marginEnd="10dp"/>
+            android:textColor="#FFFFFF" />
 
         <TextView
+            android:id="@+id/question13"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_circle_selected"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:onClick="onQuestionNumberClicked"
             android:text="13"
-            android:gravity="center"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/bg_circle_selected"
-            android:layout_marginEnd="10dp"/>
+            android:textColor="#FFFFFF" />
 
         <TextView
+            android:id="@+id/question14"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_circle_selected"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:onClick="onQuestionNumberClicked"
             android:text="14"
-            android:gravity="center"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/bg_circle_selected"
-            android:layout_marginEnd="10dp"/>
+            android:textColor="#FFFFFF" />
 
         <TextView
+            android:id="@+id/question15"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:text="15"
-            android:gravity="center"
-            android:textColor="#FFFFFF"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/bg_circle_black"
-            android:layout_marginEnd="10dp"/>
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:onClick="onQuestionNumberClicked"
+            android:text="15"
+            android:textColor="#FFFFFF" />
 
         <TextView
+            android:id="@+id/question16"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_circle_unselected"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:onClick="onQuestionNumberClicked"
             android:text="16"
-            android:gravity="center"
-            android:textColor="#AAAAAA"
-            android:background="@drawable/bg_circle_unselected"
-            android:layout_marginEnd="10dp"/>
+            android:textColor="#AAAAAA" />
 
         <TextView
+            android:id="@+id/question17"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bg_circle_unselected"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:onClick="onQuestionNumberClicked"
             android:text="17"
-            android:gravity="center"
-            android:textColor="#AAAAAA"
-            android:background="@drawable/bg_circle_unselected"
-            android:layout_marginEnd="10dp"/>
+            android:textColor="#AAAAAA" />
 
         <TextView
+            android:id="@+id/question18"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:text="18"
+            android:background="@drawable/bg_circle_unselected"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
-            android:textColor="#AAAAAA"
-            android:background="@drawable/bg_circle_unselected" />
+            android:onClick="onQuestionNumberClicked"
+            android:text="18"
+            android:textColor="#AAAAAA" />
     </LinearLayout>
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="#E0E0E0"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+    <include
+        layout="@layout/filling_test"
+        android:id="@+id/questionContent"
         app:layout_constraintTop_toBottomOf="@id/questionNumbers"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:id="@+id/question"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Which of the following are true for objects of Python's set type:"
-        android:textColor="#000000"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <LinearLayout
-        android:id="@+id/answersContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/question"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:layout_marginBottom="12dp" >
-    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_answer_neutral"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="a. Sets are mutable."
-            android:textColor="#000000"
-            android:paddingHorizontal="35dp"
-            android:layout_gravity="center_vertical"
-            android:textSize="14sp" />
-    </FrameLayout>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:layout_marginBottom="12dp" >
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_answer_selected"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="35dp"
-                android:layout_gravity="center_vertical"
-                android:text="b. The order of elements in a set is significant."
-                android:textColor="#841FFD"
-                android:textSize="14sp" />
-        </FrameLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="c. A set may contain elements that are mutable."
-            android:background="@drawable/bg_answer_selected"
-            android:padding="12dp"
-            android:textColor="#841FFD"
-            android:textSize="14sp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="d. A given element can’t appear in a set more than once."
-            android:background="@drawable/bg_answer_neutral"
-            android:padding="12dp"
-            android:textColor="#000"
-            android:textSize="14sp" />
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center"
-        android:clipChildren="false"
-        android:clipToPadding="false">
+        app:layout_constraintStart_toStartOf="parent">
 
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:clipChildren="false">
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="-25dp"
+                android:layout_marginStart="-32dp"
                 android:layout_marginTop="-5dp"
-                android:layout_marginEnd="-50dp"
+                android:layout_marginEnd="-30dp"
                 android:layout_marginBottom="-110dp"
                 android:adjustViewBounds="true"
+                android:clipChildren="false"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bg_button_previous"
-                android:clipChildren="false" />
+                android:src="@drawable/bg_button_previous" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -269,12 +213,19 @@
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:clipChildren="false">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_button"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-15dp"
+                android:layout_marginTop="-3dp"
+                android:layout_marginEnd="-16dp"
+                android:layout_marginBottom="-110dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/bg_button_next" />
 
             <TextView
                 android:layout_width="wrap_content"
