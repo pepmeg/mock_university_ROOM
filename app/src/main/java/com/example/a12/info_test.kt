@@ -2,6 +2,7 @@ package com.example.a12
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -10,6 +11,11 @@ class InfoTestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.info_test)
+
+        val backIcon = findViewById<ImageView>(R.id.backIcon)
+        backIcon.setOnClickListener {
+            finish()
+        }
 
         val instructionText = findViewById<TextView>(R.id.instructionText)
 

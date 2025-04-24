@@ -2,6 +2,7 @@ package com.example.a12
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -12,6 +13,11 @@ class TestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.test)
+
+        val backIcon = findViewById<ImageView>(R.id.backIcon)
+        backIcon.setOnClickListener {
+            finish()
+        }
     }
 
     fun onQuestionNumberClicked(view: View) {

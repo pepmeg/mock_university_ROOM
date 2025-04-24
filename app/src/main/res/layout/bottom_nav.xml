@@ -9,6 +9,7 @@
     android:gravity="center">
 
     <LinearLayout
+        android:id="@+id/homeLayout"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -16,17 +17,19 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/homeIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_home"
-            android:tint="#7A5CFA"/>
+            android:src="@drawable/ic_home" />
 
         <TextView
+            android:id="@+id/homeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Home"
             android:textSize="12sp"
-            android:textColor="#7A5CFA" />
+            android:textColor="#666666"
+            android:layout_marginTop="2dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -46,7 +49,8 @@
             android:layout_height="wrap_content"
             android:text="Search"
             android:textSize="12sp"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:layout_marginTop="2dp"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/examLayout"
@@ -57,16 +61,20 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/examIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_exam" />
+            android:src="@drawable/ic_exam"
+            android:tint="#666666" />
 
         <TextView
+            android:id="@+id/examText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Exams"
             android:textSize="12sp"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:layout_marginTop="2dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -86,7 +94,8 @@
             android:layout_height="wrap_content"
             android:text="Wishlist"
             android:textSize="12sp"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:layout_marginTop="2dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -106,6 +115,7 @@
             android:layout_height="wrap_content"
             android:text="Account"
             android:textSize="12sp"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:layout_marginTop="2dp"/>
     </LinearLayout>
 </LinearLayout>

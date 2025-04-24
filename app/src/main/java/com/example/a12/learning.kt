@@ -10,6 +10,8 @@ class LearningActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.learning)
 
+        BottomNavHandler(this, findViewById(android.R.id.content)).setupNavigation()
+
         val continueTestBtn: FrameLayout = findViewById(R.id.btn_continue_test)
         continueTestBtn.setOnClickListener {
             val intent = Intent(this, TestActivity::class.java)
