@@ -45,6 +45,7 @@
             android:textOff="a. Sets are mutable."
             android:textOn="a. Sets are mutable."
             android:textAllCaps="false"
+            android:gravity="start"
             android:textColor="@xml/selector_answer_text" />
 
         <ToggleButton

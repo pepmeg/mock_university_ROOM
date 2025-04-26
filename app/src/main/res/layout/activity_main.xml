@@ -5,12 +5,17 @@
     android:background="#f5f7fb"
     android:orientation="vertical">
 
-    <ScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:fillViewport="true"
-        clipToPadding="false">
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -802,6 +807,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"/>
+    </FrameLayout>
+
     <include layout="@layout/bottom_nav" />
 
 </LinearLayout>
