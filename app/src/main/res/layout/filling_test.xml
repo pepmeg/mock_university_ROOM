@@ -11,7 +11,7 @@
         android:background="#E0E0E0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/questionNumbers" />
+        app:layout_constraintTop_toBottomOf="@id/scrollQuestionNumbers" />
 
     <TextView
         android:id="@+id/question"
