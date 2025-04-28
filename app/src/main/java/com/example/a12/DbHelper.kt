@@ -1,5 +1,6 @@
 package com.example.a12
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -149,7 +150,35 @@ class DbHelper(private val context: Context) :
                 return cursor.getInt(cursor.getColumnIndexOrThrow("duration_minutes"))
             }
         }
-        // значение по умолчанию, если тест не найден
         return 0
+    }
+    fun getUserAnswer(questionId: Int): Int? {
+        val db = readableDatabase
+        val cursor = db.query(
+            "user_answers",
+            arrayOf("answer_id"),
+            "question_id = ?",
+            arrayOf(questionId.toString()),
+            null, null, null
+        )
+        cursor.use {
+            return if (it.moveToFirst()) it.getInt(0) else null
+        }
+    }
+
+    fun saveUserAnswer(questionId: Int, answerId: Int, resultId: Int = 1) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put("question_id", questionId)
+            put("answer_id", answerId)
+            put("result_id", resultId)
+        }
+        val updated = db.update(
+            "user_answers", values,
+            "question_id = ?", arrayOf(questionId.toString())
+        )
+        if (updated == 0) {
+            db.insert("user_answers", null, values)
+        }
     }
 }
