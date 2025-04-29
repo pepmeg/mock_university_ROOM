@@ -24,6 +24,7 @@
         <activity android:name=".LearningActivity" />
         <activity android:name=".TestActivity" />
         <activity android:name=".InfoTestActivity" />
+        <activity android:name=".CompleteActivity"/>
     </application>
 
 </manifest>
