@@ -20,10 +20,9 @@ class LearningActivity : AppCompatActivity() {
         BottomNavHandler(this, findViewById(android.R.id.content)).setupNavigation()
 
         dbHelper = DbHelper(this)
-        recycler = findViewById(R.id.testsRecyclerView)
+        recycler = findViewById(R.id.testsRecyclerViewLearning)
         recycler.layoutManager = LinearLayoutManager(this)
 
-        // Получаем все тесты из БД
         val tests: List<TestItem> = dbHelper.getAllTestItems()
 
         recycler.adapter = TestsAdapter(tests) { test ->
