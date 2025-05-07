@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.example.a12.model.Question
 import com.example.a12.model.Answer
+import com.example.a12.model.TestItem
 import java.io.File
 import java.io.FileOutputStream
 
@@ -16,24 +17,23 @@ class DbHelper(private val context: Context) :
     companion object {
         private const val DATABASE_NAME = "mock_university.db"
         private const val DATABASE_VERSION = 1
+        private var currentResultId: Long = -1L
     }
 
     init {
         copyDatabaseIfNeeded()
         logTables()
     }
-
+    override fun onOpen(db: SQLiteDatabase) {
+        super.onOpen(db)
+        db.execSQL("PRAGMA foreign_keys=ON;")
+    }
     /**
      * Копирует предзаполненную БД из assets при первом запуске,
      * удаляя при этом старые файлы *.db, *.db-wal и *.db-shm.
      */
     private fun copyDatabaseIfNeeded() {
         val dbFile = context.applicationContext.getDatabasePath(DATABASE_NAME)
-
-        // Удаляем старую БД и WAL/SHM-файлы (для отладки)
-        context.deleteDatabase(DATABASE_NAME)
-        File(dbFile.absolutePath + "-shm").delete()
-        File(dbFile.absolutePath + "-wal").delete()
 
         if (!dbFile.exists()) {
             dbFile.parentFile?.mkdirs()
@@ -180,5 +180,141 @@ class DbHelper(private val context: Context) :
         if (updated == 0) {
             db.insert("user_answers", null, values)
         }
+    }
+    fun getAllTestItems(): List<TestItem> {
+        val db = readableDatabase
+        val sql = """
+        SELECT t.test_id,
+               t.test_name,
+               t.duration_minutes,
+               COUNT(q.question_id) AS cnt
+        FROM tests t
+        LEFT JOIN questions q ON q.test_id = t.test_id
+        GROUP BY t.test_id, t.test_name, t.duration_minutes
+    """.trimIndent()
+        val cursor = db.rawQuery(sql, null)
+        val list = mutableListOf<TestItem>()
+        cursor.use {
+            while (it.moveToNext()) {
+                list += TestItem(
+                    id               = it.getInt(it.getColumnIndexOrThrow("test_id")),
+                    name             = it.getString(it.getColumnIndexOrThrow("test_name")),
+                    durationMinutes  = it.getInt(it.getColumnIndexOrThrow("duration_minutes")),
+                    questionsCount   = it.getInt(it.getColumnIndexOrThrow("cnt"))
+                )
+            }
+        }
+        return list
+    }
+
+    fun startTestSession(testId: Int): Long {
+        val values = ContentValues().apply {
+            put("test_id", testId)
+            put("status", "in_progress")
+            put("current_question_order", 1)
+        }
+        return writableDatabase.insert("test_results", null, values)
+    }
+
+    /** Завершает сессию, ставит статус completed и сохраняет время */
+    fun finishTestSession(resultId: Long) {
+        val values = ContentValues().apply {
+            put("status", "completed")
+            put("finished_at", System.currentTimeMillis())
+        }
+        writableDatabase.update(
+            "test_results", values,
+            "result_id = ?", arrayOf(resultId.toString())
+        )
+    }
+
+    /**
+     * Сохраняет или обновляет ответ пользователя:
+     * если по (resultId, questionId) запись есть — обновляем, иначе — вставляем
+     */
+    fun saveUserAnswer(
+        resultId: Long,
+        questionId: Int,
+        answerId: Int?,
+        freeTextAnswer: String? = null,
+        isCorrect: Int = 0
+    ) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put("result_id", resultId)
+            put("question_id", questionId)
+            put("answer_id", answerId)
+            put("free_text_answer", freeTextAnswer)
+            put("is_correct", isCorrect)
+        }
+        val updated = db.update(
+            "user_answers", values,
+            "result_id = ? AND question_id = ?",
+            arrayOf(resultId.toString(), questionId.toString())
+        )
+        if (updated == 0) {
+            db.insert("user_answers", null, values)
+        }
+    }
+
+    /** Возвращает сохранённый ответ (answer_id) или null */
+    fun getUserAnswer(resultId: Long, questionId: Int): Int? {
+        val cursor = readableDatabase.query(
+            "user_answers",
+            arrayOf("answer_id"),
+            "result_id = ? AND question_id = ?",
+            arrayOf(resultId.toString(), questionId.toString()),
+            null, null, null
+        )
+        return cursor.use {
+            if (it.moveToFirst()) it.getInt(0) else null
+        }
+    }
+
+    fun getCorrectPercentage(resultId: Long): Double {
+        readableDatabase.rawQuery(
+            "SELECT correct_percentage FROM test_results WHERE result_id = ?",
+            arrayOf(resultId.toString())
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                return cursor.getDouble(cursor.getColumnIndexOrThrow("correct_percentage"))
+            }
+        }
+        return 0.0
+    }
+
+    /**
+     * Возвращает пару (число правильных ответов, общее число вопросов) для данной сессии.
+     */
+    fun getCorrectAndTotalCounts(resultId: Long): Pair<Int, Int> {
+        // общий запрос считает и правильно отвеченные, и все ответы
+        val sql = """
+        SELECT 
+          SUM(CASE WHEN ua.is_correct=1 THEN 1 ELSE 0 END) AS correct_cnt,
+          COUNT(*) AS total_cnt
+        FROM user_answers ua
+        WHERE ua.result_id = ?
+    """.trimIndent()
+
+        readableDatabase.rawQuery(sql, arrayOf(resultId.toString())).use { cursor ->
+            if (cursor.moveToFirst()) {
+                val correct = cursor.getInt(cursor.getColumnIndexOrThrow("correct_cnt"))
+                val total   = cursor.getInt(cursor.getColumnIndexOrThrow("total_cnt"))
+                return Pair(correct, total)
+            }
+        }
+        return Pair(0, 0)
+    }
+
+    fun getUserAnswerIsCorrect(resultId: Long, questionId: Int): Boolean {
+        readableDatabase.rawQuery(
+            "SELECT is_correct FROM user_answers WHERE result_id=? AND question_id=?",
+            arrayOf(resultId.toString(), questionId.toString())
+        ).use { c ->
+            if (c.moveToFirst()) {
+                return c.getInt(c.getColumnIndexOrThrow("is_correct")) == 1
+            }
+        }
+        return false
     }
 }

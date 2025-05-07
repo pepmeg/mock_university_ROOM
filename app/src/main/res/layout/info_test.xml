@@ -38,7 +38,6 @@
             android:gravity="center"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:text="AWS Certification"
             android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -144,9 +143,10 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/questionsCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="10 Questions"
+                            android:text="0 Questions"
                             android:textSize="16sp"
                             android:textColor="#000" />
 
@@ -177,9 +177,10 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/testDuration"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1h 15m"
+                            android:text="0h 0min"
                             android:textSize="16sp"
                             android:textColor="#000" />
 
@@ -255,6 +256,7 @@
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="70dp"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
