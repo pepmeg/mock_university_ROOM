@@ -3,6 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="text_selected">#FFFFFF</color>
+    <color name="correct_answer">#1D6656</color>
+    <color name="wrong_answer">#E04852</color>
+    <color name="purple_200">#BB86FC</color>
     <color name="text_unselected">#000000</color>
 </resources>
 

@@ -6,6 +6,7 @@ import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.example.a12.DbHelper
 import com.example.a12.R
 import com.example.a12.model.Question
 
@@ -40,20 +41,45 @@ fun updateDotsUI(
     container: LinearLayout,
     currentIndex: Int,
     answeredSet: Set<Int>,
-    context: Context
+    context: Context,
+    dbHelper: DbHelper,
+    questions: List<Question>,
+    resultId: Long,
+    reviewMode: Boolean
 ) {
     for (i in 0 until container.childCount) {
         val dot = container.getChildAt(i) as TextView
-        when {
-            i == currentIndex -> {
-                dot.background = ContextCompat.getDrawable(context, R.drawable.bg_circle_black)
-                dot.setTextColor(Color.WHITE)
-            }
-            answeredSet.contains(i) -> {
-                dot.background = ContextCompat.getDrawable(context, R.drawable.bg_circle_selected)
-                dot.setTextColor(Color.WHITE)
-            }
-            else -> {
+
+        if (i == currentIndex) {
+            // Текущий вопрос
+            dot.background = ContextCompat.getDrawable(context, R.drawable.bg_circle_black)
+            dot.setTextColor(Color.WHITE)
+        } else {
+            val question = questions[i]
+            val userAnswerId = dbHelper.getUserAnswer(resultId, question.id)
+            val answers = dbHelper.getAnswers(question.id)
+
+            if (userAnswerId != null) {
+                val selectedAnswer = answers.find { it.id == userAnswerId }
+                val isCorrect = selectedAnswer?.isCorrect == true
+
+                val bgRes = when {
+                    reviewMode && isCorrect -> R.drawable.bg_green_circle
+                    reviewMode && !isCorrect -> R.drawable.bg_red_circle
+                    else -> R.drawable.bg_circle_selected
+                }
+
+                dot.background = ContextCompat.getDrawable(context, bgRes)
+
+                val textColor = when {
+                    reviewMode && isCorrect -> Color.parseColor("#1D6656") // Зелёный для правильных ответов
+                    reviewMode && !isCorrect -> Color.parseColor("#E04852") // Красный для неправильных ответов
+                    else -> Color.WHITE
+                }
+
+                dot.setTextColor(textColor)
+            } else {
+                // Неотвеченный вопрос
                 dot.background = ContextCompat.getDrawable(context, R.drawable.bg_circle_unselected)
                 dot.setTextColor(ContextCompat.getColor(context, R.color.text_unselected))
             }

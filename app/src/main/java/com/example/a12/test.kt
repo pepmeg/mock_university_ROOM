@@ -107,7 +107,16 @@ class TestActivity : AppCompatActivity() {
         currentIndex = index
 
         // Обновляем кружки навигации
-        updateDotsUI(dotsContainer, currentIndex, answered, this)
+        updateDotsUI(
+            container = dotsContainer,
+            currentIndex = currentIndex,
+            answeredSet = answered,
+            context = this,
+            dbHelper = dbHelper,
+            questions = questions,
+            resultId = resultId,
+            reviewMode = reviewMode
+        )
         scrollToCurrentDot(dotsContainer, scrollQuestions, currentIndex)
 
         // Настраиваем текст вопроса и варианты
@@ -138,7 +147,16 @@ class TestActivity : AppCompatActivity() {
                     isCorrect      = isCorr
                 )
                 answered.add(currentIndex)
-                updateDotsUI(dotsContainer, currentIndex, answered, this)
+                updateDotsUI(
+                    container = dotsContainer,
+                    currentIndex = currentIndex,
+                    answeredSet = answered,
+                    context = this,
+                    dbHelper = dbHelper,
+                    questions = questions,
+                    resultId = resultId,
+                    reviewMode = reviewMode
+                )
             }
         }
 

@@ -55,16 +55,16 @@ fun renderAnswers(
     }
 }
 
-private fun updateRadioButtonsBackgrounds(group: RadioGroup, checkedId: Int, context: Context) {
+fun updateRadioButtonsBackgrounds(group: RadioGroup, selectedId: Int, context: Context) {
     for (i in 0 until group.childCount) {
         val rb = group.getChildAt(i) as RadioButton
         val isLong = rb.text.length > 50
-        val res = if (rb.id == checkedId) {
+        val bgRes = if (rb.id == selectedId) {
             if (isLong) R.drawable.bg_answer_selected_long else R.drawable.bg_answer_selected_short
         } else {
             if (isLong) R.drawable.bg_answer_neutral_long else R.drawable.bg_answer_neutral_short
         }
-        rb.background = ContextCompat.getDrawable(context, res)
+        rb.background = ContextCompat.getDrawable(context, bgRes)
     }
 }
 
