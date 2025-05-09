@@ -8,8 +8,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.util.Locale
 
-// CompleteActivity.kt
-
 class CompleteActivity : AppCompatActivity() {
 
     private var resultId: Long = -1L
@@ -19,7 +17,6 @@ class CompleteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.complete)
 
-        // Из Intent
         resultId = intent.getLongExtra("RESULT_ID", -1L)
         testId   = intent.getIntExtra("TEST_ID", -1)
         val testName = intent.getStringExtra("TEST_NAME").orEmpty()
@@ -35,10 +32,11 @@ class CompleteActivity : AppCompatActivity() {
             text = String.format(Locale.getDefault(), "%.0f%%", percent)
         }
 
-        // 3) Количество правильных / всего
-        val (correct, total) = db.getCorrectAndTotalCounts(resultId)
+        // 3) Количество правильных / всего вопросов
+        val correct = db.getCorrectAndTotalCounts(resultId).first
+        val totalQuestions = db.getTotalQuestionCount(testId)
         findViewById<TextView>(R.id.correctCountText).apply {
-            text = "$correct/$total "
+            text = "$correct/$totalQuestions"
         }
 
         // 4) Кнопка «назад»

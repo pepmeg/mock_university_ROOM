@@ -17,13 +17,12 @@ class DbHelper(private val context: Context) :
     companion object {
         private const val DATABASE_NAME = "mock_university.db"
         private const val DATABASE_VERSION = 1
-        private var currentResultId: Long = -1L
     }
 
     init {
-        copyDatabaseIfNeeded()
         logTables()
     }
+
     override fun onOpen(db: SQLiteDatabase) {
         super.onOpen(db)
         db.execSQL("PRAGMA foreign_keys=ON;")
@@ -32,21 +31,6 @@ class DbHelper(private val context: Context) :
      * Копирует предзаполненную БД из assets при первом запуске,
      * удаляя при этом старые файлы *.db, *.db-wal и *.db-shm.
      */
-    private fun copyDatabaseIfNeeded() {
-        val dbFile = context.applicationContext.getDatabasePath(DATABASE_NAME)
-
-        if (!dbFile.exists()) {
-            dbFile.parentFile?.mkdirs()
-            context.assets.open(DATABASE_NAME).use { input ->
-                FileOutputStream(dbFile).use { output ->
-                    input.copyTo(output)
-                }
-            }
-            Log.d("DbHelper", "Database copied from assets")
-        } else {
-            Log.d("DbHelper", "Database already exists, skipping copy")
-        }
-    }
 
     override fun onCreate(db: SQLiteDatabase) {
         // No-op: схема создаётся в mock_university.db
@@ -181,17 +165,35 @@ class DbHelper(private val context: Context) :
             db.insert("user_answers", null, values)
         }
     }
+
     fun getAllTestItems(): List<TestItem> {
         val db = readableDatabase
         val sql = """
-        SELECT t.test_id,
-               t.test_name,
-               t.duration_minutes,
-               COUNT(q.question_id) AS cnt
+        WITH latest_results AS (
+            SELECT test_id, MAX(result_id) AS result_id
+            FROM test_results
+            GROUP BY test_id
+        )
+        SELECT
+          t.test_id,
+          t.test_name,
+          t.duration_minutes,
+          COUNT(q.question_id) AS total_cnt,
+          COALESCE(ua.answered_cnt, 0) AS answered_cnt
         FROM tests t
+        -- посчитаем общее число вопросов
         LEFT JOIN questions q ON q.test_id = t.test_id
-        GROUP BY t.test_id, t.test_name, t.duration_minutes
+        -- найдем последнюю сессию, если была
+        LEFT JOIN latest_results lr ON lr.test_id = t.test_id
+        -- посчитаем уникальные ответы в этой сессии
+        LEFT JOIN (
+            SELECT result_id, COUNT(DISTINCT question_id) AS answered_cnt
+            FROM user_answers
+            GROUP BY result_id
+        ) ua ON ua.result_id = lr.result_id
+        GROUP BY t.test_id, t.test_name, t.duration_minutes, ua.answered_cnt
     """.trimIndent()
+
         val cursor = db.rawQuery(sql, null)
         val list = mutableListOf<TestItem>()
         cursor.use {
@@ -200,11 +202,22 @@ class DbHelper(private val context: Context) :
                     id               = it.getInt(it.getColumnIndexOrThrow("test_id")),
                     name             = it.getString(it.getColumnIndexOrThrow("test_name")),
                     durationMinutes  = it.getInt(it.getColumnIndexOrThrow("duration_minutes")),
-                    questionsCount   = it.getInt(it.getColumnIndexOrThrow("cnt"))
+                    questionsCount   = it.getInt(it.getColumnIndexOrThrow("total_cnt")),
+                    answeredCount    = it.getInt(it.getColumnIndexOrThrow("answered_cnt"))
                 )
             }
         }
+
         return list
+    }
+
+    fun finishTestSession(resultId: Long, remainingSeconds: Int?) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put("end_time", System.currentTimeMillis())
+            put("remaining_seconds", remainingSeconds)
+        }
+        db.update("test_results", values, "result_id = ?", arrayOf(resultId.toString()))
     }
 
     fun startTestSession(testId: Int): Long {
@@ -317,4 +330,17 @@ class DbHelper(private val context: Context) :
         }
         return false
     }
+
+    fun getTotalQuestionCount(testId: Int): Int {
+        readableDatabase.rawQuery(
+            "SELECT COUNT(*) FROM questions WHERE test_id = ?",
+            arrayOf(testId.toString())
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0)
+            }
+        }
+        return 0
+    }
+
 }

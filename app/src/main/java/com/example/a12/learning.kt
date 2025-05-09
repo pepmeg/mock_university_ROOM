@@ -25,14 +25,16 @@ class LearningActivity : AppCompatActivity() {
 
         val tests: List<TestItem> = dbHelper.getAllTestItems()
 
-        recycler.adapter = TestsAdapter(tests) { test ->
-            val intent = Intent(this, InfoTestActivity::class.java).apply {
-                putExtra("TEST_ID",          test.id)
-                putExtra("TEST_NAME",        test.name)
-                putExtra("TEST_DURATION",    test.durationMinutes)
-                putExtra("TEST_Q_COUNT",     test.questionsCount)
-            }
-            startActivity(intent)
+        recycler.adapter = TestsAdapter(
+            items       = tests,
+            layoutResId = R.layout.item_test
+        ) { test ->
+            startActivity(Intent(this, InfoTestActivity::class.java).apply {
+                putExtra("TEST_ID",       test.id)
+                putExtra("TEST_NAME",     test.name)
+                putExtra("TEST_DURATION", test.durationMinutes)
+                putExtra("TEST_Q_COUNT",  test.questionsCount)
+            })
         }
     }
 }

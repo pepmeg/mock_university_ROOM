@@ -63,8 +63,12 @@ class TestActivity : AppCompatActivity() {
                 timerText = timerText,
                 context   = this
             ) {
-                // Время вышло — завершаем сессию и закрываем
                 dbHelper.finishTestSession(resultId)
+                Intent(this@TestActivity, CompleteActivity::class.java).apply {
+                    putExtra("TEST_ID",   testId)
+                    putExtra("TEST_NAME", titleView.text.toString())
+                    putExtra("RESULT_ID", resultId)
+                }.also { startActivity(it) }
                 finish()
             }
         }

@@ -4,5 +4,6 @@ data class TestItem(
     val id: Int,
     val name: String,
     val durationMinutes: Int,
-    val questionsCount: Int
+    val questionsCount: Int,
+    val answeredCount: Int
 )
