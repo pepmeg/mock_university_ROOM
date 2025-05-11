@@ -167,66 +167,92 @@ class DbHelper(private val context: Context) :
     }
 
     fun getAllTestItems(): List<TestItem> {
-        val db = readableDatabase
         val sql = """
-        WITH latest_results AS (
-            SELECT test_id, MAX(result_id) AS result_id
-            FROM test_results
-            GROUP BY test_id
+        WITH latest AS (
+          SELECT test_id, MAX(result_id) AS result_id
+          FROM test_results
+          GROUP BY test_id
+        ), ua AS (
+          SELECT result_id, COUNT(DISTINCT question_id) AS answered_cnt
+          FROM user_answers GROUP BY result_id
         )
         SELECT
           t.test_id,
-          t.test_name,
-          t.duration_minutes,
-          COUNT(q.question_id) AS total_cnt,
-          COALESCE(ua.answered_cnt, 0) AS answered_cnt
+          COALESCE(t.test_name, '')               AS test_name,
+          COALESCE(t.duration_minutes, 0)         AS duration_minutes,
+          COUNT(q.question_id)                    AS total_cnt,
+          COALESCE(ua.answered_cnt, 0)            AS answered_cnt,
+          COALESCE(tr.status, 'in_progress')      AS status,
+          COALESCE(tr.remaining_seconds, t.duration_minutes * 60) 
+                                                  AS remaining_sec
         FROM tests t
-        -- посчитаем общее число вопросов
-        LEFT JOIN questions q ON q.test_id = t.test_id
-        -- найдем последнюю сессию, если была
-        LEFT JOIN latest_results lr ON lr.test_id = t.test_id
-        -- посчитаем уникальные ответы в этой сессии
-        LEFT JOIN (
-            SELECT result_id, COUNT(DISTINCT question_id) AS answered_cnt
-            FROM user_answers
-            GROUP BY result_id
-        ) ua ON ua.result_id = lr.result_id
-        GROUP BY t.test_id, t.test_name, t.duration_minutes, ua.answered_cnt
+          LEFT JOIN questions q     ON q.test_id = t.test_id
+          LEFT JOIN latest l        ON l.test_id = t.test_id
+          LEFT JOIN test_results tr ON tr.result_id = l.result_id
+          LEFT JOIN ua              ON ua.result_id = l.result_id
+        GROUP BY
+          t.test_id, t.test_name, t.duration_minutes,
+          ua.answered_cnt, tr.status, tr.remaining_seconds
     """.trimIndent()
 
-        val cursor = db.rawQuery(sql, null)
-        val list = mutableListOf<TestItem>()
-        cursor.use {
-            while (it.moveToNext()) {
-                list += TestItem(
-                    id               = it.getInt(it.getColumnIndexOrThrow("test_id")),
-                    name             = it.getString(it.getColumnIndexOrThrow("test_name")),
-                    durationMinutes  = it.getInt(it.getColumnIndexOrThrow("duration_minutes")),
-                    questionsCount   = it.getInt(it.getColumnIndexOrThrow("total_cnt")),
-                    answeredCount    = it.getInt(it.getColumnIndexOrThrow("answered_cnt"))
+        val out = mutableListOf<TestItem>()
+        readableDatabase.rawQuery(sql, null).use { c ->
+            while (c.moveToNext()) {
+                // безопасно читаем
+                val id     = c.getInt(c.getColumnIndexOrThrow("test_id"))
+                val name   = c.getString(c.getColumnIndexOrThrow("test_name"))
+                val durMin = c.getInt(c.getColumnIndexOrThrow("duration_minutes"))
+                val total  = c.getInt(c.getColumnIndexOrThrow("total_cnt"))
+                val answered = c.getInt(c.getColumnIndexOrThrow("answered_cnt"))
+                val status  = c.getString(c.getColumnIndexOrThrow("status"))
+                val remSec  = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
+
+                // определяем иконку по имени
+                val icon = when {
+                    name.contains("Java",  ignoreCase = true) -> "java_logo"
+                    name.contains("C++",   ignoreCase = true) -> "c_logo"
+                    name.contains("React", ignoreCase = true) -> "react_logo"
+                    else                                     -> "default_logo"
+                }
+
+                out += TestItem(
+                    id               = id,
+                    name             = name,
+                    durationMinutes  = durMin,
+                    questionsCount   = total,
+                    answeredCount    = answered,
+                    remainingSeconds = remSec,
+                    status           = status,
+                    iconResName      = icon
                 )
             }
         }
-
-        return list
+        return out
     }
 
+    /** Завершает сессию, ставит статус completed и сохраняет время */
     fun finishTestSession(resultId: Long, remainingSeconds: Int?) {
-        val db = writableDatabase
         val values = ContentValues().apply {
-            put("end_time", System.currentTimeMillis())
-            put("remaining_seconds", remainingSeconds)
+            put("status", "completed")
+            put("finished_at", System.currentTimeMillis())
+            if (remainingSeconds != null) {
+                put("remaining_seconds", remainingSeconds)
+            }
         }
-        db.update("test_results", values, "result_id = ?", arrayOf(resultId.toString()))
+        writableDatabase.update(
+            "test_results", values,
+            "result_id = ?", arrayOf(resultId.toString())
+        )
     }
 
     fun startTestSession(testId: Int): Long {
-        val values = ContentValues().apply {
+        val v = ContentValues().apply {
             put("test_id", testId)
             put("status", "in_progress")
             put("current_question_order", 1)
+            putNull("remaining_seconds")
         }
-        return writableDatabase.insert("test_results", null, values)
+        return writableDatabase.insert("test_results", null, v)
     }
 
     /** Завершает сессию, ставит статус completed и сохраняет время */
@@ -341,6 +367,70 @@ class DbHelper(private val context: Context) :
             }
         }
         return 0
+    }
+
+    fun getInProgressTestItems(): List<TestItem> {
+        val sql = """
+      WITH latest AS (
+        SELECT test_id, MAX(result_id) AS result_id
+        FROM test_results
+        GROUP BY test_id
+      ), answered AS (
+        SELECT result_id, COUNT(DISTINCT question_id) AS answered_cnt
+        FROM user_answers
+        GROUP BY result_id
+      )
+      SELECT
+        t.test_id,
+        COALESCE(t.test_name, '')           AS test_name,
+        COALESCE(t.duration_minutes,   0)   AS duration_minutes,
+        COUNT(q.question_id)                AS total_cnt,
+        COALESCE(a.answered_cnt, 0)         AS answered_cnt,
+        COALESCE(tr.remaining_seconds, t.duration_minutes*60) AS remaining_sec,
+        tr.status                           AS status
+      FROM tests t
+        LEFT JOIN questions q     ON q.test_id     = t.test_id
+        LEFT JOIN latest l        ON l.test_id     = t.test_id
+        LEFT JOIN test_results tr ON tr.result_id  = l.result_id
+        LEFT JOIN answered a      ON a.result_id   = l.result_id
+      WHERE tr.status = 'in_progress'
+      GROUP BY
+        t.test_id, t.test_name, t.duration_minutes,
+        a.answered_cnt, tr.remaining_seconds, tr.status
+    """.trimIndent()
+
+        val out = mutableListOf<TestItem>()
+        readableDatabase.rawQuery(sql, null).use { c ->
+            while (c.moveToNext()) {
+                val id      = c.getInt(c.getColumnIndexOrThrow("test_id"))
+                val name    = c.getString(c.getColumnIndexOrThrow("test_name"))
+                val durMin  = c.getInt(c.getColumnIndexOrThrow("duration_minutes"))
+                val total   = c.getInt(c.getColumnIndexOrThrow("total_cnt"))
+                val answered= c.getInt(c.getColumnIndexOrThrow("answered_cnt"))
+                val remSec  = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
+                val status  = c.getString(c.getColumnIndexOrThrow("status"))
+
+                // Определяем иконку по названию теста
+                val iconRes = when {
+                    name.contains("Java",  ignoreCase = true) -> "java_logo"
+                    name.contains("C++",   ignoreCase = true) -> "c_logo"
+                    name.contains("React", ignoreCase = true) -> "react_logo"
+                    else                                     -> "default_logo"
+                }
+
+                out += TestItem(
+                    id               = id,
+                    name             = name,
+                    durationMinutes  = durMin,
+                    questionsCount   = total,
+                    answeredCount    = answered,
+                    remainingSeconds = remSec,
+                    status           = status,
+                    iconResName      = iconRes
+                )
+            }
+        }
+        return out
     }
 
 }

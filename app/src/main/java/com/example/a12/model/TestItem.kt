@@ -5,5 +5,8 @@ data class TestItem(
     val name: String,
     val durationMinutes: Int,
     val questionsCount: Int,
-    val answeredCount: Int
+    val answeredCount: Int,
+    val remainingSeconds: Long,
+    val status: String,
+    val iconResName: String
 )

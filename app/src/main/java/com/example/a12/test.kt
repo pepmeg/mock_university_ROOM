@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.example.a12.model.Question
 import com.example.a12.utils.countdown.startCountdown
 import com.example.a12.utils.dots.setupQuestionNumberDots
@@ -20,6 +21,7 @@ class TestActivity : AppCompatActivity() {
     private var currentIndex = 0
     private val answered = mutableSetOf<Int>()
     private var countDownTimer: CountDownTimer? = null
+    private var millisUntilFinished: Long = 0L
 
     // View-ссылки
     private lateinit var titleView: TextView
@@ -30,6 +32,7 @@ class TestActivity : AppCompatActivity() {
     private lateinit var timerText: TextView
     private lateinit var backIcon: ImageView
     private lateinit var nextButtonTextView: TextView
+    private lateinit var timerContainer: LinearLayout
 
     // Сессия
     private lateinit var dbHelper: DbHelper
@@ -41,17 +44,15 @@ class TestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.test)
 
-        // Смотрим, пришли ли мы в режиме ревью
+        // Инициализируем
         reviewMode = intent.getBooleanExtra("REVIEW_MODE", false)
         testId     = intent.getIntExtra("TEST_ID", 1)
         dbHelper   = DbHelper(this)
 
-        if (reviewMode) {
-            // В режиме ревью используем переданный resultId и не запускаем таймер
-            resultId = intent.getLongExtra("RESULT_ID", -1L)
+        resultId = if (reviewMode) {
+            intent.getLongExtra("RESULT_ID", -1L)
         } else {
-            // Обычный режим: заводим новую запись и таймер
-            resultId = dbHelper.startTestSession(testId)
+            dbHelper.startTestSession(testId)
         }
 
         initViews()
@@ -59,20 +60,16 @@ class TestActivity : AppCompatActivity() {
 
         if (!reviewMode) {
             countDownTimer = startCountdown(
-                minutes   = getTestDuration(),
-                timerText = timerText,
-                context   = this
-            ) {
-                dbHelper.finishTestSession(resultId)
-                Intent(this@TestActivity, CompleteActivity::class.java).apply {
-                    putExtra("TEST_ID",   testId)
-                    putExtra("TEST_NAME", titleView.text.toString())
-                    putExtra("RESULT_ID", resultId)
-                }.also { startActivity(it) }
-                finish()
-            }
+                minutes         = getTestDuration(),
+                timerText       = timerText,
+                context         = this,
+                onTickCallback  = { millis -> millisUntilFinished = millis },
+                onFinish        = {
+                    dbHelper.finishTestSession(resultId)
+                    navigateToComplete()
+                }
+            )
         }
-
         setupQuestionNumberDots(questions, dotsContainer, this) { displayQuestion(it) }
         displayQuestion(0)
     }
@@ -90,13 +87,18 @@ class TestActivity : AppCompatActivity() {
         dotsContainer      = findViewById(R.id.questionNumbersContainer)
         timerText          = findViewById(R.id.timerText)
         backIcon           = findViewById(R.id.backIcon)
+        timerContainer = findViewById(R.id.timerContainer)
         nextButtonTextView = findViewById(R.id.nextButtonText)
 
         backIcon.setOnClickListener { finish() }
+
+        if (reviewMode) {
+            timerContainer.visibility = View.GONE
+        }
     }
 
     private fun loadTestData() {
-        questions    = dbHelper.getQuestions(testId)
+        questions     = dbHelper.getQuestions(testId)
         titleView.text = dbHelper.getTestName(testId)
     }
 
@@ -104,34 +106,29 @@ class TestActivity : AppCompatActivity() {
         dbHelper.getTestDurationMinutes(testId)
 
     private fun displayQuestion(index: Int) {
-        // Сохраняем факт ответа предыдущего вопроса (в answered) для UI
+        // Сохраняем факт ответа предыдущего вопроса
         if (!reviewMode && index != currentIndex && checkAnswered(currentIndex)) {
             answered.add(currentIndex)
         }
         currentIndex = index
 
-        // Обновляем кружки навигации
         updateDotsUI(
-            container = dotsContainer,
-            currentIndex = currentIndex,
-            answeredSet = answered,
-            context = this,
-            dbHelper = dbHelper,
-            questions = questions,
-            resultId = resultId,
-            reviewMode = reviewMode
+            container     = dotsContainer,
+            currentIndex  = currentIndex,
+            answeredSet   = answered,
+            context       = this,
+            dbHelper      = dbHelper,
+            questions     = questions,
+            resultId      = resultId,
+            reviewMode    = reviewMode
         )
         scrollToCurrentDot(dotsContainer, scrollQuestions, currentIndex)
 
-        // Настраиваем текст вопроса и варианты
         val q = questions[index]
         questionTv.text = q.text
 
         val answers       = dbHelper.getAnswers(q.id)
-        val savedAnswerId = if (reviewMode)
-            dbHelper.getUserAnswer(resultId, q.id)
-        else
-            dbHelper.getUserAnswer(resultId, q.id) // в обычном режиме тоже восстанавливаем, если возвращаемся назад
+        val savedAnswerId = dbHelper.getUserAnswer(resultId, q.id)
 
         renderAnswers(
             context          = this,
@@ -140,7 +137,6 @@ class TestActivity : AppCompatActivity() {
             questionId       = q.id,
             selectedAnswerId = savedAnswerId
         ) { questionId, answerId ->
-            // При выборе в обычном режиме сохраняем
             if (!reviewMode) {
                 val isCorr = if (answers.first { it.id == answerId }.isCorrect) 1 else 0
                 dbHelper.saveUserAnswer(
@@ -152,47 +148,36 @@ class TestActivity : AppCompatActivity() {
                 )
                 answered.add(currentIndex)
                 updateDotsUI(
-                    container = dotsContainer,
+                    container    = dotsContainer,
                     currentIndex = currentIndex,
-                    answeredSet = answered,
-                    context = this,
-                    dbHelper = dbHelper,
-                    questions = questions,
-                    resultId = resultId,
-                    reviewMode = reviewMode
+                    answeredSet  = answered,
+                    context      = this,
+                    dbHelper     = dbHelper,
+                    questions    = questions,
+                    resultId     = resultId,
+                    reviewMode   = reviewMode
                 )
             }
         }
 
         if (reviewMode) {
-            // Отключаем RadioButton и подсвечиваем фон
+            // Подсветка правильных/неправильных
             for (i in 0 until answersGroup.childCount) {
                 val rb = answersGroup.getChildAt(i) as RadioButton
                 rb.isEnabled = false
-                val aid   = rb.id
+                val aid    = rb.id
                 val answer = answers.first { it.id == aid }
-
-                val bgRes = when {
-                    aid == savedAnswerId && !answer.isCorrect ->
-                        R.drawable.wrong_answer
-                    answer.isCorrect ->
-                        R.drawable.correctly_answer
-                    else ->
-                        // нейтральный фон
-                        if (answer.text.length > 50)
-                            R.drawable.bg_answer_neutral_long
-                        else
-                            R.drawable.bg_answer_neutral_short
+                val bgRes  = when {
+                    aid == savedAnswerId && !answer.isCorrect -> R.drawable.wrong_answer
+                    answer.isCorrect                          -> R.drawable.correctly_answer
+                    answer.text.length > 50                   -> R.drawable.bg_answer_neutral_long
+                    else                                      -> R.drawable.bg_answer_neutral_short
                 }
                 rb.background = ContextCompat.getDrawable(this, bgRes)
             }
         }
 
-        // Кнопка Next / Wrap up
-        nextButtonTextView.text = if (currentIndex == questions.lastIndex)
-            "Wrap up"
-        else
-            "Next"
+        nextButtonTextView.text = if (currentIndex == questions.lastIndex) "Wrap up" else "Next"
     }
 
     private fun checkAnswered(idx: Int): Boolean =
@@ -208,15 +193,20 @@ class TestActivity : AppCompatActivity() {
             displayQuestion(currentIndex + 1)
         } else {
             if (!reviewMode) {
-                // Завершаем тестовую сессию и запускаем Complete
-                dbHelper.finishTestSession(resultId)
-                Intent(this, CompleteActivity::class.java).apply {
-                    putExtra("TEST_ID",     testId)
-                    putExtra("TEST_NAME",   titleView.text.toString())
-                    putExtra("RESULT_ID",   resultId)
-                }.also { startActivity(it) }
+                // Завершаем с учётом оставшегося времени
+                val secLeft = (millisUntilFinished / 1000).toInt()
+                dbHelper.finishTestSession(resultId, secLeft)
+                navigateToComplete()
             }
             finish()
         }
+    }
+
+    private fun navigateToComplete() {
+        Intent(this, CompleteActivity::class.java).apply {
+            putExtra("TEST_ID",   testId)
+            putExtra("TEST_NAME", titleView.text.toString())
+            putExtra("RESULT_ID", resultId)
+        }.also { startActivity(it) }
     }
 }
