@@ -11,51 +11,77 @@ import androidx.appcompat.app.AppCompatActivity
 class InfoTestActivity : AppCompatActivity() {
 
     private var testId: Int = 0
+    private lateinit var dbHelper: DbHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.info_test)
 
-        // 1. Получаем ID теста из Intent
+        // 0) Инициализируем helper
+        dbHelper = DbHelper(this)
+
+        // 1) Читаем ID теста
         testId = intent.getIntExtra("TEST_ID", 1)
 
-        // 2. Задаём всё остальное (название, время, количество вопросов)
-        val name     = intent.getStringExtra("TEST_NAME") ?: ""
+        // 2) Заполняем UI
+        findViewById<TextView>(R.id.title).text =
+            intent.getStringExtra("TEST_NAME") ?: ""
+        findViewById<TextView>(R.id.title1).text =
+            intent.getStringExtra("TEST_NAME") ?: ""
         val duration = intent.getIntExtra("TEST_DURATION", 0)
-        val qCount   = intent.getIntExtra("TEST_Q_COUNT", 0)
-
-        findViewById<TextView>(R.id.title).text         = name
-        findViewById<TextView>(R.id.title1).text        = name
-        findViewById<TextView>(R.id.testDuration)?.text = "${duration / 60}h ${duration % 60}min"
+        findViewById<TextView>(R.id.testDuration)?.text =
+            "${duration / 60}h ${duration % 60}min"
+        val qCount = intent.getIntExtra("TEST_Q_COUNT", 0)
         findViewById<TextView>(R.id.questionsCount)?.text = "$qCount Questions"
 
-        // 3. Логика для кнопки назад
+        // 3) Назад
         findViewById<ImageView>(R.id.backIcon).setOnClickListener {
             finish()
         }
 
-        // 4. Текст инструкций
-        val instructionText = findViewById<TextView>(R.id.instructionText)
-        val bulletPoints = listOf(
+        // 4) Инструкции
+        val bullets = listOf(
             "10 point awarded for a correct answer and no marks for an incorrect answer.",
             "Tap on options to select the correct answer.",
             "Tap on the bookmark icon to save interesting questions.",
             "Click submit if you are sure you want to complete all the questions."
         )
-        val spannableString = SpannableStringBuilder().apply {
-            bulletPoints.forEach {
+        val instr = findViewById<TextView>(R.id.instructionText)
+        SpannableStringBuilder().apply {
+            bullets.forEach {
                 append("• ").append(it).append("\n\n")
             }
+            instr.text = this
         }
-        instructionText.text = spannableString
 
-        // 5. Навешиваем запуск теста на Start test
-        findViewById<FrameLayout>(R.id.startTestContainer)
-            .setOnClickListener {
-                val intent = Intent(this, TestActivity::class.java).apply {
-                    putExtra("TEST_ID", testId)
+        // 5) Кнопка «Start Test»
+        findViewById<FrameLayout>(R.id.startTestContainer).setOnClickListener {
+            // Берём последнюю сессию по этому тесту
+            val last = dbHelper.getLastResultForTest(testId)
+
+            // Всегда передаём TEST_ID
+            val intent = Intent(this, TestActivity::class.java)
+                .putExtra("TEST_ID", testId)
+
+            if (last != null) {
+                when (last.second) {
+                    "in_progress" -> {
+                        // незавершённый тест — просто продолжаем
+                        intent.putExtra("REVIEW_MODE", false)
+                        intent.putExtra("RESULT_ID", last.first)
+                    }
+                    "completed" -> {
+                        // завершён — сразу в режим обзора
+                        intent.putExtra("REVIEW_MODE", true)
+                        intent.putExtra("RESULT_ID", last.first)
+                    }
                 }
-                startActivity(intent)
+            } else {
+                // ни одной сессии не было — новый тест
+                intent.putExtra("REVIEW_MODE", false)
             }
+
+            startActivity(intent)
+        }
     }
 }

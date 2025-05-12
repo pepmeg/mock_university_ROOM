@@ -276,7 +276,8 @@ class DbHelper(private val context: Context) :
         questionId: Int,
         answerId: Int?,
         freeTextAnswer: String? = null,
-        isCorrect: Int = 0
+        isCorrect: Int = 0,
+        remainingSeconds: Int? = null
     ) {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -293,6 +294,9 @@ class DbHelper(private val context: Context) :
         )
         if (updated == 0) {
             db.insert("user_answers", null, values)
+        }
+        if (remainingSeconds != null) {
+            updateRemainingTime(resultId, remainingSeconds)
         }
     }
 
@@ -343,6 +347,18 @@ class DbHelper(private val context: Context) :
             }
         }
         return Pair(0, 0)
+    }
+
+    fun updateRemainingTime(resultId: Long, remainingSeconds: Int) {
+        val values = ContentValues().apply {
+            put("remaining_seconds", remainingSeconds)
+        }
+        writableDatabase.update(
+            "test_results",
+            values,
+            "result_id = ?",
+            arrayOf(resultId.toString())
+        )
     }
 
     fun getUserAnswerIsCorrect(resultId: Long, questionId: Int): Boolean {
@@ -432,5 +448,111 @@ class DbHelper(private val context: Context) :
         }
         return out
     }
+
+    fun getLastInProgressTest(): TestItem? {
+        val sql = """
+      WITH latest AS (
+        SELECT test_id, MAX(result_id) AS result_id
+        FROM test_results WHERE status = 'in_progress'
+        GROUP BY test_id
+      ), ua AS (
+        SELECT result_id, COUNT(DISTINCT question_id) AS answered_cnt
+        FROM user_answers GROUP BY result_id
+      )
+      SELECT
+        t.test_id,
+        t.test_name,
+        t.duration_minutes,
+        COUNT(q.question_id)            AS total_cnt,
+        COALESCE(ua.answered_cnt, 0)    AS answered_cnt,
+        COALESCE(tr.remaining_seconds, t.duration_minutes*60) AS remaining_sec,
+        tr.status
+      FROM tests t
+      JOIN latest l ON l.test_id = t.test_id
+      JOIN test_results tr ON tr.result_id = l.result_id
+      LEFT JOIN questions q ON q.test_id = t.test_id
+      LEFT JOIN ua ON ua.result_id = l.result_id
+      GROUP BY t.test_id, t.test_name, t.duration_minutes,
+               ua.answered_cnt, tr.remaining_seconds, tr.status
+    """.trimIndent()
+
+        readableDatabase.rawQuery(sql, null).use { c ->
+            if (c.moveToFirst()) {
+                val id    = c.getInt(c.getColumnIndexOrThrow("test_id"))
+                val name  = c.getString(c.getColumnIndexOrThrow("test_name"))
+                val dur   = c.getInt(c.getColumnIndexOrThrow("duration_minutes"))
+                val total = c.getInt(c.getColumnIndexOrThrow("total_cnt"))
+                val answ  = c.getInt(c.getColumnIndexOrThrow("answered_cnt"))
+                val rem   = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
+                val icon  = when {
+                    name.contains("Java", ignoreCase = true)  -> "java_logo"
+                    name.contains("C++",  ignoreCase = true)  -> "c_logo"
+                    name.contains("React",ignoreCase = true)  -> "react_logo"
+                    else                                     -> "default_logo"
+                }
+                return TestItem(
+                    id               = id,
+                    name             = name,
+                    durationMinutes  = dur,
+                    questionsCount   = total,
+                    answeredCount    = answ,
+                    remainingSeconds = rem,
+                    status           = "in_progress",
+                    iconResName      = icon
+                )
+            }
+        }
+        return null
+    }
+    
+    fun getLastResultForTest(testId: Int): Pair<Long, String>? {
+        val sql = """
+        SELECT result_id, status
+        FROM test_results
+        WHERE test_id = ?
+        ORDER BY result_id DESC
+        LIMIT 1
+    """.trimIndent()
+
+        readableDatabase.rawQuery(sql, arrayOf(testId.toString())).use { c ->
+            if (c.moveToFirst()) {
+                val id     = c.getLong(c.getColumnIndexOrThrow("result_id"))
+                val status = c.getString(c.getColumnIndexOrThrow("status"))
+                return id to status
+            }
+        }
+        return null
+    }
+
+    // возвращает последнюю пару (result_id, status) среди всех тестов
+    fun getLastResultForTestForAnyTest(): Pair<Long, String>? {
+        val sql = """
+    SELECT result_id, status
+      FROM test_results
+     ORDER BY result_id DESC
+     LIMIT 1
+  """
+        readableDatabase.rawQuery(sql, null).use { c ->
+            if (c.moveToFirst()) {
+                return c.getLong(0) to c.getString(1)
+            }
+        }
+        return null
+    }
+
+    // по resultId получает testId
+    fun getTestIdByResult(resultId: Long): Int {
+        readableDatabase.rawQuery(
+            "SELECT test_id FROM test_results WHERE result_id = ?",
+            arrayOf(resultId.toString())
+        ).use {
+            if (it.moveToFirst()) return it.getInt(0)
+        }
+        throw IllegalStateException("No test for result_id=$resultId")
+    }
+
+    // по testId собирает TestItem
+    fun getTestItemById(testId: Int): TestItem =
+        getAllTestItems().first { it.id == testId }
 
 }

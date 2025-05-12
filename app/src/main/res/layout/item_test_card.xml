@@ -79,7 +79,6 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginTop="4dp"
                 android:src="@drawable/bookmark" />
         </LinearLayout>
     </LinearLayout>
