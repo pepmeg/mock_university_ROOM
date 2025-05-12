@@ -68,6 +68,7 @@
                         android:textStyle="bold" />
 
                     <ImageView
+                        android:id="@+id/cardDelete"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_alignParentEnd="true"

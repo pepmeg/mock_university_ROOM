@@ -31,6 +31,8 @@ class TestActivity : AppCompatActivity() {
     private lateinit var backIcon: ImageView
     private lateinit var nextButtonTextView: TextView
     private lateinit var timerContainer: LinearLayout
+    private lateinit var explanationContainer: LinearLayout
+    private lateinit var explanationText: TextView
 
     // Параметры сессии
     private var testId: Int = -1
@@ -93,6 +95,8 @@ class TestActivity : AppCompatActivity() {
         backIcon           = findViewById(R.id.backIcon)
         timerContainer     = findViewById(R.id.timerContainer)
         nextButtonTextView = findViewById(R.id.nextButtonText)
+        explanationContainer = findViewById(R.id.explanationContainer)
+        explanationText      = findViewById(R.id.explanationText)
 
         backIcon.setOnClickListener { onBackPressed() }
         timerContainer.isVisible = !reviewMode
@@ -169,6 +173,14 @@ class TestActivity : AppCompatActivity() {
                 rb.isEnabled  = false
                 rb.background = ContextCompat.getDrawable(this, bgRes)
             }
+            explanationContainer.isVisible = true
+
+            explanationText.text = """
+        There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet.
+    """.trimIndent()
+        } else {
+            // Скрыть в обычном режиме
+            explanationContainer.isVisible = false
         }
 
         nextButtonTextView.text = if (currentIndex == questions.lastIndex) "Wrap up" else "Next"

@@ -68,29 +68,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateContinueCard() {
-        // Получаем последнюю сессию (resultId, status) по любому тесту
         val lastRes = dbHelper.getLastResultForTestForAnyTest()
         if (lastRes != null && lastRes.second == "in_progress") {
             val (resultId, _) = lastRes
-            // по resultId узнаём testId и все детали
             val testId = dbHelper.getTestIdByResult(resultId)
             val item   = dbHelper.getTestItemById(testId)
+
             cardContainer.isVisible = true
 
-            // иконка
+            // иконка, текст, прогресс
             val rid = resources.getIdentifier(item.iconResName, "drawable", packageName)
             if (rid != 0) iconIv.setImageResource(rid)
-
             titleTv.text    = item.name
             progressTv.text = "${item.answeredCount}/${item.questionsCount}"
             remainingTv.text = "${item.remainingSeconds/60} min"
 
+            // клик по самой карточке
             cardContainer.setOnClickListener {
                 startActivity(Intent(this, TestActivity::class.java).apply {
-                    putExtra("TEST_ID",     item.id)
-                    putExtra("RESULT_ID",   resultId)
+                    putExtra("TEST_ID",    item.id)
+                    putExtra("RESULT_ID",  resultId)
                     putExtra("REVIEW_MODE", false)
                 })
+            }
+            val deleteIv = cardContainer.findViewById<ImageView>(R.id.cardDelete)
+            deleteIv.setOnClickListener {
+                cardContainer.isVisible = false
+                dbHelper.finishTestSession(resultId)
             }
         } else {
             cardContainer.isVisible = false

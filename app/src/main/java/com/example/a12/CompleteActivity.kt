@@ -27,13 +27,15 @@ class CompleteActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.title).text = testName
 
         // 2) Процент
-        val percent = db.getCorrectPercentage(resultId)
+        val correct = db.getCorrectAndTotalCounts(resultId).first
+        val total   = db.getTotalQuestionCount(testId)
+        val percent = if (total > 0) correct * 100.0 / total else 0.0
+
         findViewById<TextView>(R.id.percentText).apply {
             text = String.format(Locale.getDefault(), "%.0f%%", percent)
         }
 
         // 3) Количество правильных / всего вопросов
-        val correct = db.getCorrectAndTotalCounts(resultId).first
         val totalQuestions = db.getTotalQuestionCount(testId)
         findViewById<TextView>(R.id.correctCountText).apply {
             text = "$correct/$totalQuestions"
