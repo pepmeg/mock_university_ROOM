@@ -58,26 +58,22 @@ class TestActivity : AppCompatActivity() {
             resultId = dbHelper.startTestSession(testId)
         }
 
-        // 4) Инициализируем UI
         initViews()
         titleView.text = dbHelper.getTestName(testId)
 
-        // 5) Таймер только в обычном режиме
         if (!reviewMode) {
+            val initialMillis = dbHelper.getInitialMillis(resultId)
             countDownTimer = startCountdown(
-                minutes    = dbHelper.getTestDurationMinutes(testId),
-                timerText  = timerText,
-                context    = this,
-                resultId   = resultId,
-                dbHelper   = dbHelper
+                initialMillis = initialMillis,
+                timerText     = timerText,
+                resultId      = resultId,
+                dbHelper      = dbHelper
             ) {
-                // по окончании
                 dbHelper.finishTestSession(resultId)
                 navigateToComplete()
             }
         }
 
-        // 6) Точки и первый вопрос
         setupQuestionNumberDots(questions, dotsContainer, this) { displayQuestion(it) }
         displayQuestion(0)
     }

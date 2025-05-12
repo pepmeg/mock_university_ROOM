@@ -8,8 +8,6 @@ import android.util.Log
 import com.example.a12.model.Question
 import com.example.a12.model.Answer
 import com.example.a12.model.TestItem
-import java.io.File
-import java.io.FileOutputStream
 
 class DbHelper(private val context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -136,6 +134,24 @@ class DbHelper(private val context: Context) :
         }
         return 0
     }
+
+    fun getInitialMillis(resultId: Long): Long {
+        // 1) Пробуем взять сохранённые секунды
+        readableDatabase.rawQuery(
+            "SELECT remaining_seconds FROM test_results WHERE result_id = ?",
+            arrayOf(resultId.toString())
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                val sec = cursor.getInt(cursor.getColumnIndexOrThrow("remaining_seconds"))
+                // Если в БД явно лежит null или 0, будем считать, как новый тест
+                if (sec > 0) return sec * 1_000L
+            }
+        }
+        // 2) Иначе — полный таймер
+        val minutes = getTestDurationMinutes(getTestIdByResult(resultId))
+        return minutes * 60_000L
+    }
+
     fun getUserAnswer(questionId: Int): Int? {
         val db = readableDatabase
         val cursor = db.query(
@@ -523,6 +539,8 @@ class DbHelper(private val context: Context) :
         }
         return null
     }
+
+
 
     // возвращает последнюю пару (result_id, status) среди всех тестов
     fun getLastResultForTestForAnyTest(): Pair<Long, String>? {
