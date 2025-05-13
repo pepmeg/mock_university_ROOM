@@ -465,6 +465,50 @@ class DbHelper(private val context: Context) :
         return out
     }
 
+    fun getCompletedTestItems(): List<TestItem> {
+        val sql = """
+      WITH latest AS (
+        SELECT test_id, MAX(result_id) AS result_id
+          FROM test_results
+         GROUP BY test_id
+      )
+      SELECT
+        t.test_id,
+        t.test_name,
+        t.duration_minutes,
+        COUNT(q.question_id)         AS total_cnt,
+        COALESCE(ua.answered_cnt,0)   AS answered_cnt,
+        COALESCE(tr.remaining_seconds, t.duration_minutes*60) AS remaining_sec,
+        tr.status
+      FROM tests t
+      LEFT JOIN questions q     ON q.test_id = t.test_id
+      LEFT JOIN latest l        ON l.test_id = t.test_id
+      LEFT JOIN test_results tr ON tr.result_id = l.result_id
+      LEFT JOIN (
+        SELECT result_id, COUNT(DISTINCT question_id) AS answered_cnt
+          FROM user_answers
+         GROUP BY result_id
+      ) ua ON ua.result_id = l.result_id
+      WHERE tr.status = 'completed'
+      GROUP BY t.test_id, t.test_name, t.duration_minutes, ua.answered_cnt, tr.remaining_seconds, tr.status
+    """.trimIndent()
+        val out = mutableListOf<TestItem>()
+        readableDatabase.rawQuery(sql, null).use { c ->
+            while (c.moveToNext()) {
+                // Парсим точно так же, как в getAllTestItems()
+                val id    = c.getInt(c.getColumnIndexOrThrow("test_id"))
+                val name  = c.getString(c.getColumnIndexOrThrow("test_name"))
+                val dur   = c.getInt(c.getColumnIndexOrThrow("duration_minutes"))
+                val total = c.getInt(c.getColumnIndexOrThrow("total_cnt"))
+                val answ  = c.getInt(c.getColumnIndexOrThrow("answered_cnt"))
+                val rem   = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
+                out += TestItem(id, name, dur, total, answ, rem, "completed", /* iconResName */ "")
+            }
+        }
+        return out
+    }
+
+
     fun getLastInProgressTest(): TestItem? {
         val sql = """
       WITH latest AS (
@@ -572,5 +616,4 @@ class DbHelper(private val context: Context) :
     // по testId собирает TestItem
     fun getTestItemById(testId: Int): TestItem =
         getAllTestItems().first { it.id == testId }
-
 }

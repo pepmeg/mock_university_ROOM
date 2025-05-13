@@ -43,6 +43,7 @@
         android:paddingTop="16dp">
 
         <FrameLayout
+            android:id="@+id/tabAll"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginEnd="8dp"
@@ -52,81 +53,84 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="-28dp"
+                android:layout_marginStart="-198dp"
                 android:layout_marginTop="-5dp"
-                android:layout_marginEnd="-80dp"
+                android:layout_marginEnd="-200dp"
                 android:layout_marginBottom="-110dp"
-                android:adjustViewBounds="true"
-                android:clipChildren="false"
-                android:scaleType="centerCrop"
-                android:src="@drawable/bg_tab_selected" />
+                android:src="@drawable/bg_tab_selector_all" />
 
             <TextView
+                android:id="@+id/tabAllText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:paddingHorizontal="16dp"
                 android:text="All"
-                android:textColor="#FFFFFF"
+                android:textColor="@drawable/tab_text_color"
                 android:textSize="14sp" />
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/tabInProgress"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginEnd="8dp"
+            android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="-25dp"
+                android:layout_marginStart="-27dp"
                 android:layout_marginTop="-5dp"
-                android:layout_marginEnd="-50dp"
+                android:layout_marginEnd="-60dp"
                 android:layout_marginBottom="-110dp"
                 android:adjustViewBounds="true"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bg_tab_unselected" />
+                android:src="@drawable/bg_tab_selector_in_progress" />
 
             <TextView
+                android:id="@+id/tabInProgressText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:paddingHorizontal="16dp"
                 android:text="In Progress"
-                android:textColor="#797979"
+                android:textColor="@drawable/tab_text_color"
                 android:textSize="14sp" />
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/tabCompleted"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="-25dp"
+                android:layout_marginStart="-27dp"
                 android:layout_marginTop="-5dp"
-                android:layout_marginEnd="-50dp"
+                android:layout_marginEnd="-60dp"
                 android:layout_marginBottom="-110dp"
                 android:adjustViewBounds="true"
                 android:clipChildren="false"
-                android:clipToPadding="false"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bg_tab_unselected" />
+                android:src="@drawable/bg_tab_selector_in_progress" />
 
             <TextView
+                android:id="@+id/tabCompletedText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:paddingHorizontal="16dp"
                 android:text="Completed"
-                android:textColor="#797979"
+                android:textColor="@drawable/tab_text_color"
                 android:textSize="14sp" />
         </FrameLayout>
     </LinearLayout>
