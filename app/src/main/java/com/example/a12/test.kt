@@ -35,6 +35,7 @@ class TestActivity : AppCompatActivity() {
     private lateinit var explanationText: TextView
     private lateinit var timesUpOverlay: View
     private lateinit var submitButton: View
+    private lateinit var progressBar: ProgressBar
 
     // Параметры сессии
     private var testId: Int = -1
@@ -84,7 +85,9 @@ class TestActivity : AppCompatActivity() {
                 onTimeUp()
             }
         }
-
+        progressBar = findViewById(R.id.testProgressBar)
+        // Устанавливаем максимальное как количество вопросов
+        progressBar.max = questions.size
         setupQuestionNumberDots(questions, dotsContainer, this) { displayQuestion(it) }
         displayQuestion(0)
     }
@@ -117,7 +120,7 @@ class TestActivity : AppCompatActivity() {
             answered.add(currentIndex)
         }
         currentIndex = index
-
+        progressBar.progress = index + 1
         // Обновляем точки
         updateDotsUI(
             container    = dotsContainer,
