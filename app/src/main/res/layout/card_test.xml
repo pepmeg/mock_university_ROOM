@@ -124,15 +124,17 @@
             </LinearLayout>
         </LinearLayout>
 
-        <ImageView
+        <ProgressBar
             android:id="@+id/cardProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginTop="-9dp"
-            android:adjustViewBounds="true"
-            android:gravity="center"
-            android:scaleType="centerCrop"
-            android:src="@drawable/progress_bar" />
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/progress_gradient"
+            android:background="#F0F0F0" />
     </LinearLayout>
 </FrameLayout>

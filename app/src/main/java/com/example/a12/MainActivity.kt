@@ -3,15 +3,14 @@ package com.example.a12
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.a12.model.TestItem
 import com.example.a12.ui.TestsAdapter
 
 class MainActivity : AppCompatActivity() {
@@ -22,6 +21,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var remainingTv: TextView
     private lateinit var dbHelper: DbHelper
     private lateinit var recycler: RecyclerView
+    private lateinit var recycler1: RecyclerView
+    private lateinit var recycler2: RecyclerView
+
     private lateinit var navHandler: BottomNavHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,8 +41,34 @@ class MainActivity : AppCompatActivity() {
         remainingTv   = cardContainer.findViewById(R.id.cardRemaining)
 
         recycler = findViewById(R.id.testsRecyclerView)
+        recycler1 = findViewById(R.id.testsRecyclerView1)
+        recycler2 = findViewById(R.id.testsRecyclerView2)
         recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recycler.adapter = TestsAdapter(
+            items       = dbHelper.getAllTestItems(),
+            layoutResId = R.layout.item_test_card
+        ) { test ->
+            startActivity(Intent(this, InfoTestActivity::class.java).apply {
+                putExtra("TEST_ID",       test.id)
+                putExtra("TEST_NAME",     test.name)
+                putExtra("TEST_DURATION", test.durationMinutes)
+                putExtra("TEST_Q_COUNT",  test.questionsCount)
+            })
+        }
+        recycler1.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recycler1.adapter = TestsAdapter(
+            items       = dbHelper.getAllTestItems(),
+            layoutResId = R.layout.item_test_card
+        ) { test ->
+            startActivity(Intent(this, InfoTestActivity::class.java).apply {
+                putExtra("TEST_ID",       test.id)
+                putExtra("TEST_NAME",     test.name)
+                putExtra("TEST_DURATION", test.durationMinutes)
+                putExtra("TEST_Q_COUNT",  test.questionsCount)
+            })
+        }
+        recycler2.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recycler2.adapter = TestsAdapter(
             items       = dbHelper.getAllTestItems(),
             layoutResId = R.layout.item_test_card
         ) { test ->
@@ -76,14 +104,20 @@ class MainActivity : AppCompatActivity() {
 
             cardContainer.isVisible = true
 
-            // иконка, текст, прогресс
             val rid = resources.getIdentifier(item.iconResName, "drawable", packageName)
             if (rid != 0) iconIv.setImageResource(rid)
             titleTv.text    = item.name
             progressTv.text = "${item.answeredCount}/${item.questionsCount}"
             remainingTv.text = "${item.remainingSeconds/60} min"
 
-            // клик по самой карточке
+            val progressBar = cardContainer.findViewById<ProgressBar>(R.id.cardProgressBar)
+
+            val percent = if (item.questionsCount > 0) {
+                (item.answeredCount * 100 / item.questionsCount)
+            } else 0
+
+            progressBar.progress = percent
+
             cardContainer.setOnClickListener {
                 startActivity(Intent(this, TestActivity::class.java).apply {
                     putExtra("TEST_ID",    item.id)

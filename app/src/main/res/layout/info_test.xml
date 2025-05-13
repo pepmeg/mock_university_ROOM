@@ -13,7 +13,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#f2f3f7"
         android:elevation="8dp"
         android:gravity="center_vertical"
         android:paddingStart="30dp"
@@ -44,8 +43,8 @@
 
         <ImageView
             android:id="@+id/bookmark"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@drawable/bookmark" />
     </LinearLayout>
 

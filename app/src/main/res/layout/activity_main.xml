@@ -8,10 +8,10 @@
     android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/rootContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-
 
     <ScrollView
         android:layout_width="match_parent"
@@ -252,392 +252,50 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/testsRecyclerView1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="-12dp"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="17dp"
-                        android:elevation="2dp">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="-30dp"
-                            android:layout_marginTop="-55dp"
-                            android:layout_marginEnd="-200dp"
-                            android:layout_marginBottom="-500dp"
-                            android:adjustViewBounds="true"
-                            android:background="@drawable/frame"
-                            android:scaleType="centerCrop" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="2"
-                                android:background="#ffffff"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="90dp"
-                                    android:adjustViewBounds="true"
-                                    android:maxWidth="140dp"
-                                    android:maxHeight="80dp"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/java_logo" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:background="#fcfcfc"
-                                android:gravity="bottom"
-                                android:orientation="horizontal"
-                                android:padding="6dp">
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:ellipsize="end"
-                                        android:maxLines="1"
-                                        android:text="Core Java"
-                                        android:textColor="#000000"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="2dp"
-                                        android:ellipsize="end"
-                                        android:maxLines="1"
-                                        android:text="1h. 15min"
-                                        android:textColor="#888888"
-                                        android:textSize="12sp" />
-                                </LinearLayout>
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_marginTop="4dp"
-                                    android:src="@drawable/bookmark" />
-                            </LinearLayout>
-                        </LinearLayout>
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="12dp"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
-                        android:elevation="2dp">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="-20dp"
-                            android:layout_marginTop="-55dp"
-                            android:layout_marginEnd="-200dp"
-                            android:layout_marginBottom="-500dp"
-                            android:adjustViewBounds="true"
-                            android:background="@drawable/frame"
-                            android:scaleType="centerCrop" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="2"
-                                android:background="#ffffff"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="105dp"
-                                    android:layout_height="52dp"
-                                    android:adjustViewBounds="true"
-                                    android:maxWidth="105dp"
-                                    android:maxHeight="52dp"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/aws_logo" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:background="#fcfcfc"
-                                android:gravity="bottom"
-                                android:orientation="horizontal"
-                                android:padding="6dp">
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:ellipsize="end"
-                                        android:maxLines="1"
-                                        android:text="AWS Certification"
-                                        android:textColor="#000000"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="2dp"
-                                        android:ellipsize="end"
-                                        android:maxLines="1"
-                                        android:text="1h. 15min"
-                                        android:textColor="#888888"
-                                        android:textSize="12sp" />
-                                </LinearLayout>
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_marginTop="4dp"
-                                    android:src="@drawable/bookmark" />
-                            </LinearLayout>
-                        </LinearLayout>
-                    </FrameLayout>
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:paddingEnd="8dp"
+                android:clipToPadding="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_test_card" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="15dp"
-                android:text="Top Courses"
+                android:text="Popular among users"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/testsRecyclerView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="-12dp"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="17dp"
-                        android:elevation="2dp">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="-30dp"
-                            android:layout_marginTop="-55dp"
-                            android:layout_marginEnd="-200dp"
-                            android:layout_marginBottom="-500dp"
-                            android:adjustViewBounds="true"
-                            android:background="@drawable/frame"
-                            android:scaleType="centerCrop" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="2"
-                                android:background="#ffffff"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="90dp"
-                                    android:adjustViewBounds="true"
-                                    android:maxWidth="140dp"
-                                    android:maxHeight="80dp"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/java_logo" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:background="#fcfcfc"
-                                android:gravity="bottom"
-                                android:orientation="horizontal"
-                                android:padding="6dp">
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:ellipsize="end"
-                                        android:maxLines="1"
-                                        android:text="Core Java"
-                                        android:textColor="#000000"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="2dp"
-                                        android:ellipsize="end"
-                                        android:maxLines="1"
-                                        android:text="1h. 15min"
-                                        android:textColor="#888888"
-                                        android:textSize="12sp" />
-                                </LinearLayout>
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_marginTop="4dp"
-                                    android:src="@drawable/bookmark" />
-                            </LinearLayout>
-                        </LinearLayout>
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="12dp"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
-                        android:elevation="2dp">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="-20dp"
-                            android:layout_marginTop="-55dp"
-                            android:layout_marginEnd="-200dp"
-                            android:layout_marginBottom="-500dp"
-                            android:adjustViewBounds="true"
-                            android:background="@drawable/frame"
-                            android:scaleType="centerCrop" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="2"
-                                android:background="#ffffff"
-                                android:gravity="center">
-
-                                <ImageView
-                                    android:layout_width="105dp"
-                                    android:layout_height="52dp"
-                                    android:adjustViewBounds="true"
-                                    android:maxWidth="105dp"
-                                    android:maxHeight="52dp"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/aws_logo" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:background="#fcfcfc"
-                                android:gravity="bottom"
-                                android:orientation="horizontal"
-                                android:padding="6dp">
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:ellipsize="end"
-                                        android:maxLines="1"
-                                        android:text="AWS Certification"
-                                        android:textColor="#000000"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="2dp"
-                                        android:ellipsize="end"
-                                        android:maxLines="1"
-                                        android:text="1h. 15min"
-                                        android:textColor="#888888"
-                                        android:textSize="12sp" />
-                                </LinearLayout>
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_marginTop="4dp"
-                                    android:src="@drawable/bookmark" />
-                            </LinearLayout>
-                        </LinearLayout>
-                    </FrameLayout>
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:paddingEnd="8dp"
+                android:clipToPadding="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_test_card" />
         </LinearLayout>
     </ScrollView>
-    <include
-        android:id="@+id/cardContainer"
-        layout="@layout/card_test"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"/>
+<!--
+        <View
+            android:id="@+id/bottomFade"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_fade_height"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bottom_fade"
+            android:elevation="2dp"/>
+            -->
+            <include
+                android:id="@+id/cardContainer"
+                layout="@layout/card_test"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:elevation="4dp" />
     </FrameLayout>
-
     <include layout="@layout/bottom_nav" />
-
 </LinearLayout>
