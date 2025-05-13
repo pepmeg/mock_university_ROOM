@@ -25,21 +25,11 @@ class DbHelper(private val context: Context) :
         super.onOpen(db)
         db.execSQL("PRAGMA foreign_keys=ON;")
     }
-    /**
-     * Копирует предзаполненную БД из assets при первом запуске,
-     * удаляя при этом старые файлы *.db, *.db-wal и *.db-shm.
-     */
 
-    override fun onCreate(db: SQLiteDatabase) {
-        // No-op: схема создаётся в mock_university.db
-    }
+    override fun onCreate(db: SQLiteDatabase) {}
 
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Миграции, если понадобится: можно удалять старую БД и вызывать copyDatabaseIfNeeded()
-    }
-    /**
-     * Возвращает имя теста по его ID.
-     */
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
+
     fun getTestName(testId: Int): String {
         readableDatabase.rawQuery(
             "SELECT test_name FROM tests WHERE test_id = ?",
@@ -49,12 +39,9 @@ class DbHelper(private val context: Context) :
                 return cursor.getString(cursor.getColumnIndexOrThrow("test_name"))
             }
         }
-        return ""  // если тест не найден
+        return ""
     }
 
-    /**
-     * Возвращает список вопросов для заданного testId, упорядоченный по order_number.
-     */
     fun getQuestions(testId: Int): List<Question> {
         val db = readableDatabase
         val cursor = db.query(
@@ -79,9 +66,6 @@ class DbHelper(private val context: Context) :
         return questions
     }
 
-    /**
-     * Возвращает список ответов для заданного questionId.
-     */
     fun getAnswers(questionId: Int): List<Answer> {
         val db = readableDatabase
         val cursor = db.query(
@@ -105,9 +89,6 @@ class DbHelper(private val context: Context) :
         return answers
     }
 
-    /**
-     * Логирует все таблицы из sqlite_master для отладки.
-     */
     private fun logTables() {
         val db = readableDatabase
         val cursor = db.rawQuery(
@@ -120,9 +101,6 @@ class DbHelper(private val context: Context) :
         cursor.close()
     }
 
-    /**
-     * Возвращает длительность теста в минутах.
-     */
     fun getTestDurationMinutes(testId: Int): Int {
         readableDatabase.rawQuery(
             "SELECT duration_minutes FROM tests WHERE test_id = ?",
@@ -136,50 +114,17 @@ class DbHelper(private val context: Context) :
     }
 
     fun getInitialMillis(resultId: Long): Long {
-        // 1) Пробуем взять сохранённые секунды
         readableDatabase.rawQuery(
             "SELECT remaining_seconds FROM test_results WHERE result_id = ?",
             arrayOf(resultId.toString())
         ).use { cursor ->
             if (cursor.moveToFirst()) {
                 val sec = cursor.getInt(cursor.getColumnIndexOrThrow("remaining_seconds"))
-                // Если в БД явно лежит null или 0, будем считать, как новый тест
                 if (sec > 0) return sec * 1_000L
             }
         }
-        // 2) Иначе — полный таймер
         val minutes = getTestDurationMinutes(getTestIdByResult(resultId))
         return minutes * 60_000L
-    }
-
-    fun getUserAnswer(questionId: Int): Int? {
-        val db = readableDatabase
-        val cursor = db.query(
-            "user_answers",
-            arrayOf("answer_id"),
-            "question_id = ?",
-            arrayOf(questionId.toString()),
-            null, null, null
-        )
-        cursor.use {
-            return if (it.moveToFirst()) it.getInt(0) else null
-        }
-    }
-
-    fun saveUserAnswer(questionId: Int, answerId: Int, resultId: Int = 1) {
-        val db = writableDatabase
-        val values = ContentValues().apply {
-            put("question_id", questionId)
-            put("answer_id", answerId)
-            put("result_id", resultId)
-        }
-        val updated = db.update(
-            "user_answers", values,
-            "question_id = ?", arrayOf(questionId.toString())
-        )
-        if (updated == 0) {
-            db.insert("user_answers", null, values)
-        }
     }
 
     fun getAllTestItems(): List<TestItem> {
@@ -214,7 +159,6 @@ class DbHelper(private val context: Context) :
         val out = mutableListOf<TestItem>()
         readableDatabase.rawQuery(sql, null).use { c ->
             while (c.moveToNext()) {
-                // безопасно читаем
                 val id     = c.getInt(c.getColumnIndexOrThrow("test_id"))
                 val name   = c.getString(c.getColumnIndexOrThrow("test_name"))
                 val durMin = c.getInt(c.getColumnIndexOrThrow("duration_minutes"))
@@ -223,7 +167,6 @@ class DbHelper(private val context: Context) :
                 val status  = c.getString(c.getColumnIndexOrThrow("status"))
                 val remSec  = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
 
-                // определяем иконку по имени
                 val icon = when {
                     name.contains("Java",  ignoreCase = true) -> "java_logo"
                     name.contains("C++",   ignoreCase = true) -> "c_logo"
@@ -246,7 +189,6 @@ class DbHelper(private val context: Context) :
         return out
     }
 
-    /** Завершает сессию, ставит статус completed и сохраняет время */
     fun finishTestSession(resultId: Long, remainingSeconds: Int?) {
         val values = ContentValues().apply {
             put("status", "completed")
@@ -271,22 +213,6 @@ class DbHelper(private val context: Context) :
         return writableDatabase.insert("test_results", null, v)
     }
 
-    /** Завершает сессию, ставит статус completed и сохраняет время */
-    fun finishTestSession(resultId: Long) {
-        val values = ContentValues().apply {
-            put("status", "completed")
-            put("finished_at", System.currentTimeMillis())
-        }
-        writableDatabase.update(
-            "test_results", values,
-            "result_id = ?", arrayOf(resultId.toString())
-        )
-    }
-
-    /**
-     * Сохраняет или обновляет ответ пользователя:
-     * если по (resultId, questionId) запись есть — обновляем, иначе — вставляем
-     */
     fun saveUserAnswer(
         resultId: Long,
         questionId: Int,
@@ -316,7 +242,6 @@ class DbHelper(private val context: Context) :
         }
     }
 
-    /** Возвращает сохранённый ответ (answer_id) или null */
     fun getUserAnswer(resultId: Long, questionId: Int): Int? {
         val cursor = readableDatabase.query(
             "user_answers",
@@ -330,23 +255,7 @@ class DbHelper(private val context: Context) :
         }
     }
 
-    fun getCorrectPercentage(resultId: Long): Double {
-        readableDatabase.rawQuery(
-            "SELECT correct_percentage FROM test_results WHERE result_id = ?",
-            arrayOf(resultId.toString())
-        ).use { cursor ->
-            if (cursor.moveToFirst()) {
-                return cursor.getDouble(cursor.getColumnIndexOrThrow("correct_percentage"))
-            }
-        }
-        return 0.0
-    }
-
-    /**
-     * Возвращает пару (число правильных ответов, общее число вопросов) для данной сессии.
-     */
     fun getCorrectAndTotalCounts(resultId: Long): Pair<Int, Int> {
-        // общий запрос считает и правильно отвеченные, и все ответы
         val sql = """
         SELECT 
           SUM(CASE WHEN ua.is_correct=1 THEN 1 ELSE 0 END) AS correct_cnt,
@@ -375,18 +284,6 @@ class DbHelper(private val context: Context) :
             "result_id = ?",
             arrayOf(resultId.toString())
         )
-    }
-
-    fun getUserAnswerIsCorrect(resultId: Long, questionId: Int): Boolean {
-        readableDatabase.rawQuery(
-            "SELECT is_correct FROM user_answers WHERE result_id=? AND question_id=?",
-            arrayOf(resultId.toString(), questionId.toString())
-        ).use { c ->
-            if (c.moveToFirst()) {
-                return c.getInt(c.getColumnIndexOrThrow("is_correct")) == 1
-            }
-        }
-        return false
     }
 
     fun getTotalQuestionCount(testId: Int): Int {
@@ -442,7 +339,6 @@ class DbHelper(private val context: Context) :
                 val remSec  = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
                 val status  = c.getString(c.getColumnIndexOrThrow("status"))
 
-                // Определяем иконку по названию теста
                 val iconRes = when {
                     name.contains("Java",  ignoreCase = true) -> "java_logo"
                     name.contains("C++",   ignoreCase = true) -> "c_logo"
@@ -526,62 +422,6 @@ class DbHelper(private val context: Context) :
         }
         return out
     }
-
-    fun getLastInProgressTest(): TestItem? {
-        val sql = """
-      WITH latest AS (
-        SELECT test_id, MAX(result_id) AS result_id
-        FROM test_results WHERE status = 'in_progress'
-        GROUP BY test_id
-      ), ua AS (
-        SELECT result_id, COUNT(DISTINCT question_id) AS answered_cnt
-        FROM user_answers GROUP BY result_id
-      )
-      SELECT
-        t.test_id,
-        t.test_name,
-        t.duration_minutes,
-        COUNT(q.question_id)            AS total_cnt,
-        COALESCE(ua.answered_cnt, 0)    AS answered_cnt,
-        COALESCE(tr.remaining_seconds, t.duration_minutes*60) AS remaining_sec,
-        tr.status
-      FROM tests t
-      JOIN latest l ON l.test_id = t.test_id
-      JOIN test_results tr ON tr.result_id = l.result_id
-      LEFT JOIN questions q ON q.test_id = t.test_id
-      LEFT JOIN ua ON ua.result_id = l.result_id
-      GROUP BY t.test_id, t.test_name, t.duration_minutes,
-               ua.answered_cnt, tr.remaining_seconds, tr.status
-    """.trimIndent()
-
-        readableDatabase.rawQuery(sql, null).use { c ->
-            if (c.moveToFirst()) {
-                val id    = c.getInt(c.getColumnIndexOrThrow("test_id"))
-                val name  = c.getString(c.getColumnIndexOrThrow("test_name"))
-                val dur   = c.getInt(c.getColumnIndexOrThrow("duration_minutes"))
-                val total = c.getInt(c.getColumnIndexOrThrow("total_cnt"))
-                val answ  = c.getInt(c.getColumnIndexOrThrow("answered_cnt"))
-                val rem   = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
-                val icon  = when {
-                    name.contains("Java", ignoreCase = true)  -> "java_logo"
-                    name.contains("C++",  ignoreCase = true)  -> "c_logo"
-                    name.contains("React",ignoreCase = true)  -> "react_logo"
-                    else                                     -> "default_logo"
-                }
-                return TestItem(
-                    id               = id,
-                    name             = name,
-                    durationMinutes  = dur,
-                    questionsCount   = total,
-                    answeredCount    = answ,
-                    remainingSeconds = rem,
-                    status           = "in_progress",
-                    iconResName      = icon
-                )
-            }
-        }
-        return null
-    }
     
     fun getLastResultForTest(testId: Int): Pair<Long, String>? {
         val sql = """
@@ -602,9 +442,6 @@ class DbHelper(private val context: Context) :
         return null
     }
 
-
-
-    // возвращает последнюю пару (result_id, status) среди всех тестов
     fun getLastResultForTestForAnyTest(): Pair<Long, String>? {
         val sql = """
     SELECT result_id, status
@@ -620,7 +457,6 @@ class DbHelper(private val context: Context) :
         return null
     }
 
-    // по resultId получает testId
     fun getTestIdByResult(resultId: Long): Int {
         readableDatabase.rawQuery(
             "SELECT test_id FROM test_results WHERE result_id = ?",
@@ -631,7 +467,6 @@ class DbHelper(private val context: Context) :
         throw IllegalStateException("No test for result_id=$resultId")
     }
 
-    // по testId собирает TestItem
     fun getTestItemById(testId: Int): TestItem =
         getAllTestItems().first { it.id == testId }
 }
