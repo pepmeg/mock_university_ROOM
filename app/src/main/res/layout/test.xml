@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootFrame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Существующий контент TestActivity -->
+    <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F7FB"
@@ -163,3 +169,8 @@
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+    <include
+        android:id="@+id/timesUpOverlay"
+        layout="@layout/times_up"
+        android:visibility="gone"/>
+</FrameLayout>

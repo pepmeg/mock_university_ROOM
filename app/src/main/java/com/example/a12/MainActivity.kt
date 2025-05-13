@@ -94,7 +94,6 @@ class MainActivity : AppCompatActivity() {
             val deleteIv = cardContainer.findViewById<ImageView>(R.id.cardDelete)
             deleteIv.setOnClickListener {
                 cardContainer.isVisible = false
-                dbHelper.finishTestSession(resultId)
             }
         } else {
             cardContainer.isVisible = false

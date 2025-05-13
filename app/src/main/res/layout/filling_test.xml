@@ -88,7 +88,6 @@
 
         </RadioGroup>
 
-        <!-- Блок объяснения, изначально скрыт -->
         <LinearLayout
             android:id="@+id/explanationContainer"
             android:layout_width="match_parent"

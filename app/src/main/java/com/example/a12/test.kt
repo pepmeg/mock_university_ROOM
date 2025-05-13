@@ -33,6 +33,8 @@ class TestActivity : AppCompatActivity() {
     private lateinit var timerContainer: LinearLayout
     private lateinit var explanationContainer: LinearLayout
     private lateinit var explanationText: TextView
+    private lateinit var timesUpOverlay: View
+    private lateinit var submitButton: View
 
     // Параметры сессии
     private var testId: Int = -1
@@ -49,6 +51,8 @@ class TestActivity : AppCompatActivity() {
         reviewMode = intent.getBooleanExtra("REVIEW_MODE", false)
         testId     = intent.getIntExtra("TEST_ID", -1)
         resultId   = intent.getLongExtra("RESULT_ID", -1L)
+        timesUpOverlay = findViewById(R.id.timesUpOverlay)
+        submitButton   = timesUpOverlay.findViewById(R.id.submitButton)
 
         // 2) Загружаем вопросы
         questions = dbHelper.getQuestions(testId)
@@ -58,6 +62,12 @@ class TestActivity : AppCompatActivity() {
         // 3) Если это новая сессия (не review и resultId не передан) — стартуем её
         if (!reviewMode && resultId < 0) {
             resultId = dbHelper.startTestSession(testId)
+        }
+
+        submitButton.setOnClickListener {
+            dbHelper.finishTestSession(resultId, (millisUntilFinished / 1000).toInt())
+            navigateToComplete()
+            finish()
         }
 
         initViews()
@@ -71,8 +81,7 @@ class TestActivity : AppCompatActivity() {
                 resultId      = resultId,
                 dbHelper      = dbHelper
             ) {
-                dbHelper.finishTestSession(resultId)
-                navigateToComplete()
+                onTimeUp()
             }
         }
 
@@ -204,6 +213,11 @@ class TestActivity : AppCompatActivity() {
             }
             finish()
         }
+    }
+
+    private fun onTimeUp() {
+        timesUpOverlay.visibility = View.VISIBLE
+        findViewById<View>(R.id.rootFrame).isClickable = false
     }
 
     private fun navigateToComplete() {
