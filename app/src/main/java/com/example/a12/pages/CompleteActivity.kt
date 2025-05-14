@@ -1,4 +1,4 @@
-package com.example.a12
+package com.example.a12.pages
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,12 +6,14 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.a12.model.DbHelper
+import com.example.a12.R
 import java.util.Locale
 
 class CompleteActivity : AppCompatActivity() {
 
     private var resultId: Long = -1L
-    private var testId: Int     = -1
+    private var testId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,10 +25,8 @@ class CompleteActivity : AppCompatActivity() {
 
         val db = DbHelper(this)
 
-        // 1) Заголовок
         findViewById<TextView>(R.id.title).text = testName
 
-        // 2) Процент
         val correct = db.getCorrectAndTotalCounts(resultId).first
         val total   = db.getTotalQuestionCount(testId)
         val percent = if (total > 0) correct * 100.0 / total else 0.0
@@ -35,13 +35,11 @@ class CompleteActivity : AppCompatActivity() {
             text = String.format(Locale.getDefault(), "%.0f%%", percent)
         }
 
-        // 3) Количество правильных / всего вопросов
         val totalQuestions = db.getTotalQuestionCount(testId)
         findViewById<TextView>(R.id.correctCountText).apply {
             text = "$correct/$totalQuestions"
         }
 
-        // 4) Кнопка «назад»
         findViewById<ImageView>(R.id.backIcon).setOnClickListener {
             finish()
         }
@@ -54,7 +52,6 @@ class CompleteActivity : AppCompatActivity() {
             }.also { startActivity(it) }
         }
 
-        // 5) Wrap up Exam → на MainActivity
         findViewById<FrameLayout>(R.id.wrapUpTestContainer).setOnClickListener {
             Intent(this, MainActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)

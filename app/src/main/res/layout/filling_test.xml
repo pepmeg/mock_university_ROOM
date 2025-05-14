@@ -30,7 +30,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Текст вопроса -->
         <TextView
             android:id="@+id/question"
             android:layout_width="match_parent"
@@ -39,7 +38,6 @@
             android:textColor="#000000"
             android:textSize="16sp" />
 
-        <!-- Список ответов -->
         <RadioGroup
             android:id="@+id/answersContainer"
             android:layout_width="match_parent"
@@ -92,8 +90,6 @@
                 android:layout_marginBottom="12dp" />
 
         </RadioGroup>
-
-        <!-- Блок объяснения, изначально скрыт -->
         <LinearLayout
             android:id="@+id/explanationContainer"
             android:layout_width="match_parent"
@@ -120,7 +116,6 @@
                 android:text="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet."
                 android:textSize="14sp"
                 android:textColor="#000000"/>
-
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

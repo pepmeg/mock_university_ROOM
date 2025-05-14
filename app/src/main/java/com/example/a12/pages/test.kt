@@ -1,4 +1,4 @@
-package com.example.a12
+package com.example.a12.pages
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.example.a12.model.DbHelper
+import com.example.a12.R
 import com.example.a12.model.Question
 import com.example.a12.utils.countdown.startCountdown
 import com.example.a12.utils.dots.*
@@ -37,7 +39,6 @@ class TestActivity : AppCompatActivity() {
     private lateinit var submitButton: View
     private lateinit var progressBar: ProgressBar
 
-    // Параметры сессии
     private var testId: Int = -1
     private var resultId: Long = -1L
     private var reviewMode = false
@@ -48,19 +49,16 @@ class TestActivity : AppCompatActivity() {
 
         dbHelper = DbHelper(this)
 
-        // 1) Читаем входные параметры
         reviewMode = intent.getBooleanExtra("REVIEW_MODE", false)
         testId     = intent.getIntExtra("TEST_ID", -1)
         resultId   = intent.getLongExtra("RESULT_ID", -1L)
         timesUpOverlay = findViewById(R.id.timesUpOverlay)
         submitButton   = timesUpOverlay.findViewById(R.id.submitButton)
 
-        // 2) Загружаем вопросы
         questions = dbHelper.getQuestions(testId)
         if (questions.isEmpty()) {
             finish(); return
         }
-        // 3) Если это новая сессия (не review и resultId не передан) — стартуем её
         if (!reviewMode && resultId < 0) {
             resultId = dbHelper.startTestSession(testId)
         }
@@ -86,7 +84,6 @@ class TestActivity : AppCompatActivity() {
             }
         }
         progressBar = findViewById(R.id.testProgressBar)
-        // Устанавливаем максимальное как количество вопросов
         progressBar.max = questions.size
         setupQuestionNumberDots(questions, dotsContainer, this) { displayQuestion(it) }
         displayQuestion(0)
@@ -115,17 +112,14 @@ class TestActivity : AppCompatActivity() {
     }
 
     private fun displayQuestion(index: Int) {
-        // Сохраняем переход от предыдущего
         if (!reviewMode && index != currentIndex && checkAnswered(currentIndex)) {
             answered.add(currentIndex)
         }
         currentIndex = index
         progressBar.progress = index + 1
-        // Обновляем точки
         updateDotsUI(
             container    = dotsContainer,
             currentIndex = currentIndex,
-            answeredSet  = answered,
             context      = this,
             dbHelper     = dbHelper,
             questions    = questions,
@@ -136,8 +130,6 @@ class TestActivity : AppCompatActivity() {
 
         val q = questions[index]
         questionTv.text = q.text
-
-        // --- ВОССТАНОВЛЕНИЕ ОТВЕТОВ ---
         val answers       = dbHelper.getAnswers(q.id)
         val savedAnswerId = dbHelper.getUserAnswer(resultId, q.id)
 
@@ -146,9 +138,8 @@ class TestActivity : AppCompatActivity() {
             answersGroup     = answersGroup,
             answers          = answers,
             questionId       = q.id,
-            selectedAnswerId = savedAnswerId  // передаём сохранённый ID
+            selectedAnswerId = savedAnswerId
         ) { questionId, answerId ->
-            // При выборе сохраняем и обновляем
             val isCorr = if (answers.first { it.id == answerId }.isCorrect) 1 else 0
             dbHelper.saveUserAnswer(
                 resultId   = resultId,
@@ -161,7 +152,6 @@ class TestActivity : AppCompatActivity() {
             updateDotsUI(
                 container    = dotsContainer,
                 currentIndex = currentIndex,
-                answeredSet  = answered,
                 context      = this,
                 dbHelper     = dbHelper,
                 questions    = questions,
@@ -169,8 +159,6 @@ class TestActivity : AppCompatActivity() {
                 reviewMode   = reviewMode
             )
         }
-
-        // В режиме обзора подсвечиваем правильность
         if (reviewMode) {
             for (i in 0 until answersGroup.childCount) {
                 val rb     = answersGroup.getChildAt(i) as RadioButton
@@ -191,7 +179,6 @@ class TestActivity : AppCompatActivity() {
         There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet.
     """.trimIndent()
         } else {
-            // Скрыть в обычном режиме
             explanationContainer.isVisible = false
         }
 
@@ -229,9 +216,5 @@ class TestActivity : AppCompatActivity() {
             putExtra("TEST_NAME", titleView.text.toString())
             putExtra("RESULT_ID", resultId)
         }.also { startActivity(it) }
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
     }
 }

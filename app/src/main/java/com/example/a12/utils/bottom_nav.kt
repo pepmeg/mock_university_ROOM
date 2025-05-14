@@ -1,4 +1,4 @@
-package com.example.a12
+package com.example.a12.utils
 
 import android.app.Activity
 import android.content.Context
@@ -8,6 +8,9 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.example.a12.R
+import com.example.a12.pages.LearningActivity
+import com.example.a12.pages.MainActivity
 
 class BottomNavHandler(private val activity: Activity, private val rootView: View) {
 

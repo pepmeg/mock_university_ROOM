@@ -1,13 +1,11 @@
-package com.example.a12
+package com.example.a12.pages
 
 import android.app.Application
+import com.example.a12.model.copyDatabaseFromAssets
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-
-        // Проверяем, первый ли запуск
-        val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
         copyDatabaseFromAssets(this)
     }
 }

@@ -2,7 +2,7 @@ package com.example.a12.utils.countdown
 
 import android.os.CountDownTimer
 import android.widget.TextView
-import com.example.a12.DbHelper
+import com.example.a12.model.DbHelper
 
 fun startCountdown(
     initialMillis: Long,

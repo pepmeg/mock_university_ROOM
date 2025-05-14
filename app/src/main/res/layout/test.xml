@@ -86,7 +86,6 @@
             android:orientation="horizontal"
             android:gravity="center_vertical" />
     </HorizontalScrollView>
-
     <include
         layout="@layout/filling_test"
         android:id="@+id/questionContent"
@@ -136,7 +135,6 @@
                 android:textColor="#797979"
                 android:textSize="15sp" />
         </FrameLayout>
-
         <FrameLayout
             android:onClick="onNextClicked"
             android:layout_width="0dp"
@@ -165,8 +163,8 @@
                 android:textSize="15sp" />
         </FrameLayout>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+
     <include
         android:id="@+id/timesUpOverlay"
         layout="@layout/times_up"

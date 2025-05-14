@@ -18,7 +18,6 @@ fun renderAnswers(
     answersGroup.setOnCheckedChangeListener(null)
     answersGroup.removeAllViews()
 
-    // 1) создаём кнопки
     answers.forEach { answer ->
         val isLong = answer.text.length > 50
         val rb = RadioButton(context).apply {
@@ -40,7 +39,6 @@ fun renderAnswers(
         answersGroup.addView(rb)
     }
 
-    // 2) устанавливаем ранее выбранное
     if (selectedAnswerId != null) {
         answersGroup.findViewById<RadioButton>(selectedAnswerId)?.isChecked = true
         updateRadioButtonsBackgrounds(answersGroup, selectedAnswerId, context)
@@ -48,7 +46,6 @@ fun renderAnswers(
         updateRadioButtonsBackgrounds(answersGroup, -1, context)
     }
 
-    // 3) слушатель
     answersGroup.setOnCheckedChangeListener { group, id ->
         updateRadioButtonsBackgrounds(group, id, context)
         onAnswerSelected(questionId, id)

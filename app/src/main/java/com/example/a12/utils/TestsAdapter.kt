@@ -39,7 +39,6 @@ class TestsAdapter(
         }
     }
 
-    /** Для обновления списка и перерисовки */
     fun updateItems(newItems: List<TestItem>) {
         this.items = newItems
         notifyDataSetChanged()

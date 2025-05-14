@@ -1,13 +1,10 @@
-package com.example.a12
+package com.example.a12.model
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
-import com.example.a12.model.Question
-import com.example.a12.model.Answer
-import com.example.a12.model.TestItem
 
 class DbHelper(private val context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -345,7 +342,6 @@ class DbHelper(private val context: Context) :
                     name.contains("React", ignoreCase = true) -> "react_logo"
                     else                                     -> "default_logo"
                 }
-
                 out += TestItem(
                     id               = id,
                     name             = name,
@@ -400,12 +396,11 @@ class DbHelper(private val context: Context) :
                 val answ  = c.getInt(c.getColumnIndexOrThrow("answered_cnt"))
                 val rem   = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
 
-                // **Точно так же определяем иконку**
                 val iconResName = when {
                     name.contains("Java",  ignoreCase = true) -> "java_logo"
                     name.contains("C++",   ignoreCase = true) -> "c_logo"
                     name.contains("React", ignoreCase = true) -> "react_logo"
-                    else                                     -> "default_logo"
+                    else                                     -> "java_logo"
                 }
 
                 out += TestItem(

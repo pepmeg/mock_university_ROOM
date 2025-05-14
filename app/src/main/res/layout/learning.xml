@@ -31,7 +31,6 @@
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,7 +68,6 @@
                 android:textColor="@drawable/tab_text_color"
                 android:textSize="14sp" />
         </FrameLayout>
-
         <FrameLayout
             android:id="@+id/tabInProgress"
             android:layout_width="wrap_content"
@@ -102,7 +100,6 @@
                 android:textColor="@drawable/tab_text_color"
                 android:textSize="14sp" />
         </FrameLayout>
-
         <FrameLayout
             android:id="@+id/tabCompleted"
             android:layout_width="wrap_content"
@@ -134,7 +131,6 @@
                 android:textSize="14sp" />
         </FrameLayout>
     </LinearLayout>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/testsRecyclerViewLearning"
         android:layout_width="match_parent"
@@ -144,6 +140,5 @@
         android:paddingTop="10dp"
         android:clipChildren="false"
         tools:listitem="@layout/item_test"/>
-
     <include layout="@layout/bottom_nav" />
 </LinearLayout>

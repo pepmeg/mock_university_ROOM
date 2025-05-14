@@ -1,4 +1,4 @@
-package com.example.a12
+package com.example.a12.pages
 
 import android.content.Context
 import android.content.Intent
@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.a12.utils.BottomNavHandler
+import com.example.a12.model.DbHelper
+import com.example.a12.R
 import com.example.a12.ui.TestsAdapter
 
 class MainActivity : AppCompatActivity() {
@@ -85,11 +88,8 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         updateContinueCard()
 
-        // Обновляем список тестов
         val updatedTests = dbHelper.getAllTestItems()
         (recycler.adapter as? TestsAdapter)?.updateItems(updatedTests)
-
-        // Обновляем нижнюю навигацию
         val prefs = getSharedPreferences("bottom_nav", Context.MODE_PRIVATE)
         prefs.edit().putString("selected_button", "home").apply()
         navHandler.setupNavigation()
@@ -101,7 +101,6 @@ class MainActivity : AppCompatActivity() {
             val (resultId, _) = lastRes
             val testId = dbHelper.getTestIdByResult(resultId)
             val item   = dbHelper.getTestItemById(testId)
-
             cardContainer.isVisible = true
 
             val rid = resources.getIdentifier(item.iconResName, "drawable", packageName)
@@ -117,7 +116,6 @@ class MainActivity : AppCompatActivity() {
             } else 0
 
             progressBar.progress = percent
-
             cardContainer.setOnClickListener {
                 startActivity(Intent(this, TestActivity::class.java).apply {
                     putExtra("TEST_ID",    item.id)

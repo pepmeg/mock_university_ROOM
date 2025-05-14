@@ -1,4 +1,4 @@
-package com.example.a12
+package com.example.a12.pages
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,8 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.a12.model.DbHelper
+import com.example.a12.R
 
 class InfoTestActivity : AppCompatActivity() {
 
@@ -17,13 +19,9 @@ class InfoTestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.info_test)
 
-        // 0) Инициализируем helper
         dbHelper = DbHelper(this)
-
-        // 1) Читаем ID теста
         testId = intent.getIntExtra("TEST_ID", 1)
 
-        // 2) Заполняем UI
         findViewById<TextView>(R.id.title).text =
             intent.getStringExtra("TEST_NAME") ?: ""
         findViewById<TextView>(R.id.title1).text =
@@ -34,12 +32,10 @@ class InfoTestActivity : AppCompatActivity() {
         val qCount = intent.getIntExtra("TEST_Q_COUNT", 0)
         findViewById<TextView>(R.id.questionsCount)?.text = "$qCount Questions"
 
-        // 3) Назад
         findViewById<ImageView>(R.id.backIcon).setOnClickListener {
             finish()
         }
 
-        // 4) Инструкции
         val bullets = listOf(
             "10 point awarded for a correct answer and no marks for an incorrect answer.",
             "Tap on options to select the correct answer.",
@@ -54,33 +50,26 @@ class InfoTestActivity : AppCompatActivity() {
             instr.text = this
         }
 
-        // 5) Кнопка «Start Test»
         findViewById<FrameLayout>(R.id.startTestContainer).setOnClickListener {
-            // Берём последнюю сессию по этому тесту
-            val last = dbHelper.getLastResultForTest(testId)
 
-            // Всегда передаём TEST_ID
+            val last = dbHelper.getLastResultForTest(testId)
             val intent = Intent(this, TestActivity::class.java)
                 .putExtra("TEST_ID", testId)
 
             if (last != null) {
                 when (last.second) {
                     "in_progress" -> {
-                        // незавершённый тест — просто продолжаем
                         intent.putExtra("REVIEW_MODE", false)
                         intent.putExtra("RESULT_ID", last.first)
                     }
                     "completed" -> {
-                        // завершён — сразу в режим обзора
                         intent.putExtra("REVIEW_MODE", true)
                         intent.putExtra("RESULT_ID", last.first)
                     }
                 }
             } else {
-                // ни одной сессии не было — новый тест
                 intent.putExtra("REVIEW_MODE", false)
             }
-
             startActivity(intent)
         }
     }

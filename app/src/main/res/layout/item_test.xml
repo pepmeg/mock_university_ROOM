@@ -28,7 +28,6 @@
                 android:background="@drawable/bg_card"
                 android:scaleType="centerCrop" />
         </FrameLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,7 +69,6 @@
                         android:layout_alignParentEnd="true"
                         android:src="@drawable/ic_trash" />
                 </RelativeLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -93,7 +91,6 @@
                         android:textColor="#b0b0b2"
                         android:textSize="13sp" />
                 </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -115,7 +112,6 @@
                         android:textColor="#b0b0b2"
                         android:textSize="13sp" />
                 </LinearLayout>
-
                 <FrameLayout
                     android:id="@+id/btn_continue_test"
                     android:layout_width="wrap_content"

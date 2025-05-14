@@ -6,7 +6,7 @@ import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.example.a12.DbHelper
+import com.example.a12.model.DbHelper
 import com.example.a12.R
 import com.example.a12.model.Question
 
@@ -40,7 +40,6 @@ fun setupQuestionNumberDots(
 fun updateDotsUI(
     container: LinearLayout,
     currentIndex: Int,
-    answeredSet: Set<Int>,
     context: Context,
     dbHelper: DbHelper,
     questions: List<Question>,
@@ -51,7 +50,6 @@ fun updateDotsUI(
         val dot = container.getChildAt(i) as TextView
 
         if (i == currentIndex) {
-            // Текущий вопрос
             dot.background = ContextCompat.getDrawable(context, R.drawable.bg_circle_black)
             dot.setTextColor(Color.WHITE)
         } else {
@@ -72,14 +70,13 @@ fun updateDotsUI(
                 dot.background = ContextCompat.getDrawable(context, bgRes)
 
                 val textColor = when {
-                    reviewMode && isCorrect -> Color.parseColor("#1D6656") // Зелёный для правильных ответов
-                    reviewMode && !isCorrect -> Color.parseColor("#E04852") // Красный для неправильных ответов
+                    reviewMode && isCorrect -> Color.parseColor("#1D6656")
+                    reviewMode && !isCorrect -> Color.parseColor("#E04852")
                     else -> Color.WHITE
                 }
 
                 dot.setTextColor(textColor)
             } else {
-                // Неотвеченный вопрос
                 dot.background = ContextCompat.getDrawable(context, R.drawable.bg_circle_unselected)
                 dot.setTextColor(ContextCompat.getColor(context, R.color.text_unselected))
             }
