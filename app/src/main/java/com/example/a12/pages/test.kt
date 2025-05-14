@@ -48,7 +48,6 @@ class TestActivity : AppCompatActivity() {
         setContentView(R.layout.test)
 
         dbHelper = DbHelper(this)
-
         reviewMode = intent.getBooleanExtra("REVIEW_MODE", false)
         testId     = intent.getIntExtra("TEST_ID", -1)
         resultId   = intent.getLongExtra("RESULT_ID", -1L)
@@ -106,7 +105,6 @@ class TestActivity : AppCompatActivity() {
         nextButtonTextView = findViewById(R.id.nextButtonText)
         explanationContainer = findViewById(R.id.explanationContainer)
         explanationText      = findViewById(R.id.explanationText)
-
         backIcon.setOnClickListener { onBackPressed() }
         timerContainer.isVisible = !reviewMode
     }

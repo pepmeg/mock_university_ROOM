@@ -13,289 +13,289 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:clipToPadding="false">
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="30dp">
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingVertical="30dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Mock "
-                    android:textColor="#8B5CF6"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="University"
-                    android:textColor="#000000"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Recommended for You"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/testsRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingEnd="8dp"
-                android:paddingBottom="15dp"
-                android:clipToPadding="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_test_card" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Categories"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="-12dp"
-                android:scrollbars="none">
+                android:orientation="vertical"
+                android:paddingHorizontal="30dp">
 
                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingVertical="30dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mock "
+                        android:textColor="#8B5CF6"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="University"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginBottom="8dp"
+                    android:text="Recommended for You"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/testsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="15dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_test_card" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="Categories"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="-12dp"
+                    android:scrollbars="none">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
-                        <FrameLayout
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
-                            android:layout_marginBottom="4dp"
-                            android:background="@drawable/circle_white"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/it"
-                                android:tint="#000000" />
-                        </FrameLayout>
-
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
                             android:gravity="center"
-                            android:text="IT and\nSoftware"
-                            android:textColor="#000000"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                            android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                            <FrameLayout
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:layout_marginBottom="4dp"
+                                android:background="@drawable/circle_white"
+                                android:gravity="center">
 
-                        <FrameLayout
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
-                            android:layout_marginBottom="4dp"
-                            android:background="@drawable/circle_white"
-                            android:gravity="center">
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/it"
+                                    android:tint="#000000" />
+                            </FrameLayout>
 
-                            <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/health"
-                                android:tint="#FF7A33" />
-                        </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="IT and\nSoftware"
+                                android:textColor="#000000"
+                                android:textSize="12sp" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
                             android:gravity="center"
-                            android:text="Health and\nFitness"
-                            android:textColor="#FF7A33"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                            android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                            <FrameLayout
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:layout_marginBottom="4dp"
+                                android:background="@drawable/circle_white"
+                                android:gravity="center">
 
-                        <FrameLayout
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
-                            android:layout_marginBottom="4dp"
-                            android:background="@drawable/circle_white"
-                            android:gravity="center">
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/health"
+                                    android:tint="#FF7A33" />
+                            </FrameLayout>
 
-                            <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/office"
-                                android:tint="#527D43" />
-                        </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Health and\nFitness"
+                                android:textColor="#FF7A33"
+                                android:textSize="12sp" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
                             android:gravity="center"
-                            android:text="Office\nProductivity"
-                            android:textColor="#527D43"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                            android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                            <FrameLayout
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:layout_marginBottom="4dp"
+                                android:background="@drawable/circle_white"
+                                android:gravity="center">
 
-                        <FrameLayout
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
-                            android:layout_marginBottom="4dp"
-                            android:background="@drawable/circle_white"
-                            android:gravity="center">
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/office"
+                                    android:tint="#527D43" />
+                            </FrameLayout>
 
-                            <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/accounting"
-                                android:tint="#3550DC" />
-                        </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Office\nProductivity"
+                                android:textColor="#527D43"
+                                android:textSize="12sp" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
                             android:gravity="center"
-                            android:text="Finance and\nAccounting"
-                            android:textColor="#3550DC"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                            android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                            <FrameLayout
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:layout_marginBottom="4dp"
+                                android:background="@drawable/circle_white"
+                                android:gravity="center">
 
-                        <FrameLayout
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
-                            android:layout_marginBottom="4dp"
-                            android:background="@drawable/circle_white"
-                            android:gravity="center">
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/accounting"
+                                    android:tint="#3550DC" />
+                            </FrameLayout>
 
-                            <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/accounting"
-                                android:tint="#3550DC" />
-                        </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Finance and\nAccounting"
+                                android:textColor="#3550DC"
+                                android:textSize="12sp" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
                             android:gravity="center"
-                            android:text="Finance and\nAccounting"
-                            android:textColor="#3550DC"
-                            android:textSize="12sp" />
+                            android:orientation="vertical">
+
+                            <FrameLayout
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:layout_marginBottom="4dp"
+                                android:background="@drawable/circle_white"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/accounting"
+                                    android:tint="#3550DC" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Finance and\nAccounting"
+                                android:textColor="#3550DC"
+                                android:textSize="12sp" />
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-            </HorizontalScrollView>
+                </HorizontalScrollView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="15dp"
-                android:text="Top Courses"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="Top Courses"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/testsRecyclerView1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingEnd="8dp"
-                android:clipToPadding="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_test_card" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/testsRecyclerView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingEnd="8dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_test_card" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="15dp"
-                android:text="Popular among users"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="Popular among users"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/testsRecyclerView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingEnd="8dp"
-                android:clipToPadding="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_test_card" />
-        </LinearLayout>
-    </ScrollView>
-<!--
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/testsRecyclerView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingEnd="8dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_test_card" />
+            </LinearLayout>
+        </ScrollView>
+
         <View
             android:id="@+id/bottomFade"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_fade_height"
+            android:layout_height="200dp"
             android:layout_gravity="bottom"
             android:background="@drawable/bottom_fade"
-            android:elevation="2dp"/>
-            -->
-            <include
-                android:id="@+id/cardContainer"
-                layout="@layout/card_test"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:elevation="4dp" />
+            android:elevation="1dp" />
+
+        <include
+            android:id="@+id/cardContainer"
+            layout="@layout/card_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:elevation="4dp" />
     </FrameLayout>
     <include layout="@layout/bottom_nav" />
 </LinearLayout>

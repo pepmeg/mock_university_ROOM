@@ -15,11 +15,18 @@
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical">
-
+        <ImageView
+            android:id="@+id/plashka"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-4dp"
+            android:visibility="gone"
+            android:src="@drawable/plashka" />
         <ImageView
             android:id="@+id/homeIcon"
-            android:layout_width="24dp"
+            android:layout_width="wrap_content"
             android:layout_height="24dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/ic_home" />
 
         <TextView
@@ -38,10 +45,18 @@
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical">
-
+        <ImageView
+            android:id="@+id/plashka1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-4dp"
+            android:visibility="gone"
+            android:src="@drawable/plashka" />
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginTop="10dp"
+            android:tint="#666666"
             android:src="@drawable/ic_search" />
 
         <TextView
@@ -59,11 +74,18 @@
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical">
-
+        <ImageView
+            android:id="@+id/plashka2"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-4dp"
+            android:src="@drawable/plashka" />
         <ImageView
             android:id="@+id/examIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/ic_exam"
             android:tint="#666666" />
 
@@ -83,10 +105,17 @@
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical">
-
+        <ImageView
+            android:id="@+id/plashka3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-4dp"
+            android:visibility="gone"
+            android:src="@drawable/plashka" />
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/bookmark" />
 
         <TextView
@@ -106,8 +135,17 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/plashka4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-4dp"
+            android:visibility="gone"
+            android:src="@drawable/plashka" />
+
+        <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/ic_account" />
 
         <TextView

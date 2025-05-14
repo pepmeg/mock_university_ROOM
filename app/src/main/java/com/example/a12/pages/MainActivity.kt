@@ -110,7 +110,6 @@ class MainActivity : AppCompatActivity() {
             remainingTv.text = "${item.remainingSeconds/60} min"
 
             val progressBar = cardContainer.findViewById<ProgressBar>(R.id.cardProgressBar)
-
             val percent = if (item.questionsCount > 0) {
                 (item.answeredCount * 100 / item.questionsCount)
             } else 0

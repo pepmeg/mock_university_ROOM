@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.example.a12.R
 import com.example.a12.pages.LearningActivity
 import com.example.a12.pages.MainActivity
@@ -23,6 +24,7 @@ class BottomNavHandler(private val activity: Activity, private val rootView: Vie
         val homeBtn  = rootView.findViewById<LinearLayout>(R.id.homeLayout)
         val homeTxt  = rootView.findViewById<TextView>(R.id.homeText)
         val homeIcon = rootView.findViewById<ImageView>(R.id.homeIcon)
+        val plashka = rootView.findViewById<ImageView>(R.id.plashka)
 
         val defColor = Color.parseColor("#666666")
         val selColor = Color.parseColor("#7A5CFA")
@@ -64,5 +66,10 @@ class BottomNavHandler(private val activity: Activity, private val rootView: Vie
                 )
             }
         }
+       // plashka.setOnClickListener {
+       //     rootView.isVisible = false
+      //  }
+  //  } else {
+     //   rootView.isVisible = true
     }
 }
