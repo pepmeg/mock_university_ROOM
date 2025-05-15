@@ -8,5 +8,6 @@ data class TestItem(
     val answeredCount: Int,
     val remainingSeconds: Long,
     val status: String,
-    val iconResName: String
+    val iconResName: String,
+    val finishedAt: Long?
 )

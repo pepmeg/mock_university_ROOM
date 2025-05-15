@@ -23,6 +23,8 @@ class TestsAdapter(
         private val durTv    : TextView?     = v.findViewById(R.id.testDuration)
         private val remTv    : TextView?     = v.findViewById(R.id.remainingTime)
         private val continueBtn: FrameLayout?= v.findViewById(R.id.btn_continue_test)
+        private val continueBtnBg: View?      = v.findViewById(R.id.continueButtonBg)
+        private val continueBtnText: TextView?= v.findViewById(R.id.continueButtonText)
 
         fun bind(item: TestItem) {
             val ctx = iconIv.context
@@ -33,6 +35,17 @@ class TestsAdapter(
             countTv?.text = "${item.answeredCount}/${item.questionsCount}"
             durTv?.text   = "${item.durationMinutes/60}h ${item.durationMinutes%60}min"
             remTv?.text   = "${item.remainingSeconds/60}min"
+
+            continueBtnBg?.let { bg ->
+                if (item.status == "completed") {
+                    bg.setBackgroundResource(R.drawable.button_revisit)
+                    continueBtnText?.visibility = View.GONE
+                } else {
+                    bg.setBackgroundResource(R.drawable.bg_button)
+                    continueBtnText?.visibility = View.VISIBLE
+                }
+                bg.setOnClickListener { onClick(item) }
+            }
 
             itemView.setOnClickListener    { onClick(item) }
             continueBtn?.setOnClickListener{ onClick(item) }

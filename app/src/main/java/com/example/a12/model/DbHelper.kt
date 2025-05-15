@@ -126,32 +126,32 @@ class DbHelper(private val context: Context) :
 
     fun getAllTestItems(): List<TestItem> {
         val sql = """
-        WITH latest AS (
-          SELECT test_id, MAX(result_id) AS result_id
-          FROM test_results
-          GROUP BY test_id
-        ), ua AS (
-          SELECT result_id, COUNT(DISTINCT question_id) AS answered_cnt
-          FROM user_answers GROUP BY result_id
-        )
-        SELECT
-          t.test_id,
-          COALESCE(t.test_name, '')               AS test_name,
-          COALESCE(t.duration_minutes, 0)         AS duration_minutes,
-          COUNT(q.question_id)                    AS total_cnt,
-          COALESCE(ua.answered_cnt, 0)            AS answered_cnt,
-          COALESCE(tr.status, 'in_progress')      AS status,
-          COALESCE(tr.remaining_seconds, t.duration_minutes * 60) 
-                                                  AS remaining_sec
-        FROM tests t
-          LEFT JOIN questions q     ON q.test_id = t.test_id
-          LEFT JOIN latest l        ON l.test_id = t.test_id
-          LEFT JOIN test_results tr ON tr.result_id = l.result_id
-          LEFT JOIN ua              ON ua.result_id = l.result_id
-        GROUP BY
-          t.test_id, t.test_name, t.duration_minutes,
-          ua.answered_cnt, tr.status, tr.remaining_seconds
-    """.trimIndent()
+  WITH latest AS (
+    SELECT test_id, MAX(result_id) AS result_id
+    FROM test_results
+    GROUP BY test_id
+  ), ua AS (
+    SELECT result_id, COUNT(DISTINCT question_id) AS answered_cnt
+    FROM user_answers GROUP BY result_id
+  )
+  SELECT
+    t.test_id,
+    COALESCE(t.test_name, '')               AS test_name,
+    COALESCE(t.duration_minutes, 0)         AS duration_minutes,
+    COUNT(q.question_id)                    AS total_cnt,
+    COALESCE(ua.answered_cnt, 0)            AS answered_cnt,
+    COALESCE(tr.status, 'in_progress')      AS status,
+    COALESCE(tr.remaining_seconds, t.duration_minutes * 60) AS remaining_sec,
+    tr.finished_at                          AS finished_at     -- ← вот это
+  FROM tests t
+    LEFT JOIN questions q     ON q.test_id = t.test_id
+    LEFT JOIN latest l        ON l.test_id = t.test_id
+    LEFT JOIN test_results tr ON tr.result_id = l.result_id
+    LEFT JOIN ua              ON ua.result_id = l.result_id
+  GROUP BY
+    t.test_id, t.test_name, t.duration_minutes,
+    ua.answered_cnt, tr.status, tr.remaining_seconds, tr.finished_at
+""".trimIndent()
 
         val out = mutableListOf<TestItem>()
         readableDatabase.rawQuery(sql, null).use { c ->
@@ -163,6 +163,7 @@ class DbHelper(private val context: Context) :
                 val answered = c.getInt(c.getColumnIndexOrThrow("answered_cnt"))
                 val status  = c.getString(c.getColumnIndexOrThrow("status"))
                 val remSec  = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
+                val finishedAt = c.getLong(c.getColumnIndexOrThrow("finished_at"))
 
                 val icon = when {
                     name.contains("Java",  ignoreCase = true) -> "java_logo"
@@ -179,7 +180,9 @@ class DbHelper(private val context: Context) :
                     answeredCount    = answered,
                     remainingSeconds = remSec,
                     status           = status,
-                    iconResName      = icon
+                    iconResName      = icon,
+                    finishedAt       = if (c.isNull(c.getColumnIndexOrThrow("finished_at"))) null
+                    else finishedAt
                 )
             }
         }
@@ -308,40 +311,45 @@ class DbHelper(private val context: Context) :
       )
       SELECT
         t.test_id,
-        COALESCE(t.test_name, '')           AS test_name,
-        COALESCE(t.duration_minutes,   0)   AS duration_minutes,
-        COUNT(q.question_id)                AS total_cnt,
-        COALESCE(a.answered_cnt, 0)         AS answered_cnt,
-        COALESCE(tr.remaining_seconds, t.duration_minutes*60) AS remaining_sec,
-        tr.status                           AS status
+        COALESCE(t.test_name, '')                              AS test_name,
+        COALESCE(t.duration_minutes,   0)                      AS duration_minutes,
+        COUNT(q.question_id)                                   AS total_cnt,
+        COALESCE(a.answered_cnt, 0)                            AS answered_cnt,
+        COALESCE(tr.remaining_seconds, t.duration_minutes * 60) AS remaining_sec,
+        tr.status                                              AS status,
+        tr.finished_at                                         AS finished_at
       FROM tests t
         LEFT JOIN questions q     ON q.test_id     = t.test_id
         LEFT JOIN latest l        ON l.test_id     = t.test_id
         LEFT JOIN test_results tr ON tr.result_id  = l.result_id
         LEFT JOIN answered a      ON a.result_id   = l.result_id
       WHERE tr.status = 'in_progress'
-      GROUP BY
-        t.test_id, t.test_name, t.duration_minutes,
-        a.answered_cnt, tr.remaining_seconds, tr.status
+      GROUP BY t.test_id, t.test_name, t.duration_minutes,
+               a.answered_cnt, tr.remaining_seconds, tr.status, tr.finished_at
     """.trimIndent()
 
         val out = mutableListOf<TestItem>()
         readableDatabase.rawQuery(sql, null).use { c ->
             while (c.moveToNext()) {
-                val id      = c.getInt(c.getColumnIndexOrThrow("test_id"))
-                val name    = c.getString(c.getColumnIndexOrThrow("test_name"))
-                val durMin  = c.getInt(c.getColumnIndexOrThrow("duration_minutes"))
-                val total   = c.getInt(c.getColumnIndexOrThrow("total_cnt"))
-                val answered= c.getInt(c.getColumnIndexOrThrow("answered_cnt"))
-                val remSec  = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
-                val status  = c.getString(c.getColumnIndexOrThrow("status"))
+                val id         = c.getInt(c.getColumnIndexOrThrow("test_id"))
+                val name       = c.getString(c.getColumnIndexOrThrow("test_name"))
+                val durMin     = c.getInt(c.getColumnIndexOrThrow("duration_minutes"))
+                val total      = c.getInt(c.getColumnIndexOrThrow("total_cnt"))
+                val answered   = c.getInt(c.getColumnIndexOrThrow("answered_cnt"))
+                val remSec     = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
+                val status     = c.getString(c.getColumnIndexOrThrow("status"))
+                val finishedAt = if (c.isNull(c.getColumnIndexOrThrow("finished_at")))
+                    null
+                else
+                    c.getLong(c.getColumnIndexOrThrow("finished_at"))
 
                 val iconRes = when {
                     name.contains("Java",  ignoreCase = true) -> "java_logo"
                     name.contains("C++",   ignoreCase = true) -> "c_logo"
                     name.contains("React", ignoreCase = true) -> "react_logo"
-                    else                                     -> "default_logo"
+                    else                                     -> "java_logo"
                 }
+
                 out += TestItem(
                     id               = id,
                     name             = name,
@@ -350,7 +358,8 @@ class DbHelper(private val context: Context) :
                     answeredCount    = answered,
                     remainingSeconds = remSec,
                     status           = status,
-                    iconResName      = iconRes
+                    iconResName      = iconRes,
+                    finishedAt       = finishedAt
                 )
             }
         }
@@ -359,31 +368,32 @@ class DbHelper(private val context: Context) :
 
     fun getCompletedTestItems(): List<TestItem> {
         val sql = """
-      WITH latest AS (
-        SELECT test_id, MAX(result_id) AS result_id
-        FROM test_results
-        GROUP BY test_id
-      )
-      SELECT
-        t.test_id,
-        t.test_name,
-        t.duration_minutes,
-        COUNT(q.question_id)                      AS total_cnt,
-        COALESCE(ua.answered_cnt, 0)               AS answered_cnt,
-        COALESCE(tr.remaining_seconds, t.duration_minutes*60) AS remaining_sec,
-        tr.status
-      FROM tests t
-        LEFT JOIN questions q     ON q.test_id = t.test_id
-        LEFT JOIN latest l        ON l.test_id = t.test_id
-        LEFT JOIN test_results tr ON tr.result_id = l.result_id
-        LEFT JOIN (
-          SELECT result_id, COUNT(DISTINCT question_id) AS answered_cnt
-          FROM user_answers
-          GROUP BY result_id
-        ) ua ON ua.result_id = l.result_id
-      WHERE tr.status = 'completed'
-      GROUP BY t.test_id, t.test_name, t.duration_minutes,
-               ua.answered_cnt, tr.remaining_seconds, tr.status
+  WITH latest AS (
+    SELECT test_id, MAX(result_id) AS result_id
+    FROM test_results
+    GROUP BY test_id
+  )
+  SELECT
+    t.test_id,
+    t.test_name,
+    t.duration_minutes,
+    COUNT(q.question_id)                    AS total_cnt,
+    COALESCE(ua.answered_cnt, 0)            AS answered_cnt,
+    COALESCE(tr.remaining_seconds, t.duration_minutes*60) AS remaining_sec,
+    tr.status,
+    tr.finished_at                         AS finished_at
+  FROM tests t
+    LEFT JOIN questions q     ON q.test_id = t.test_id
+    LEFT JOIN latest l        ON l.test_id = t.test_id
+    LEFT JOIN test_results tr ON tr.result_id = l.result_id
+    LEFT JOIN (
+      SELECT result_id, COUNT(DISTINCT question_id) AS answered_cnt
+      FROM user_answers
+      GROUP BY result_id
+    ) ua ON ua.result_id = l.result_id
+  WHERE tr.status = 'completed'
+  GROUP BY t.test_id, t.test_name, t.duration_minutes,
+           ua.answered_cnt, tr.remaining_seconds, tr.status, tr.finished_at
     """.trimIndent()
 
         val out = mutableListOf<TestItem>()
@@ -395,6 +405,7 @@ class DbHelper(private val context: Context) :
                 val total = c.getInt(c.getColumnIndexOrThrow("total_cnt"))
                 val answ  = c.getInt(c.getColumnIndexOrThrow("answered_cnt"))
                 val rem   = c.getLong(c.getColumnIndexOrThrow("remaining_sec"))
+                val finishedAt = c.getLong(c.getColumnIndexOrThrow("finished_at"))
 
                 val iconResName = when {
                     name.contains("Java",  ignoreCase = true) -> "java_logo"
@@ -411,7 +422,9 @@ class DbHelper(private val context: Context) :
                     answeredCount    = answ,
                     remainingSeconds = rem,
                     status           = "completed",
-                    iconResName      = iconResName
+                    iconResName      = iconResName,
+                    finishedAt       = if (c.isNull(c.getColumnIndexOrThrow("finished_at"))) null
+                    else finishedAt
                 )
             }
         }
