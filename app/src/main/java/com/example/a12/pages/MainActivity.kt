@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recycler.adapter = TestsAdapter(
             items       = dbHelper.getAllTestItems(),
-            layoutResId = R.layout.item_test_card
+            detailedLayout = false,
         ) { test ->
             startActivity(Intent(this, InfoTestActivity::class.java).apply {
                 putExtra("TEST_ID",       test.id)
@@ -61,8 +61,8 @@ class MainActivity : AppCompatActivity() {
         recycler1.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recycler1.adapter = TestsAdapter(
             items       = dbHelper.getAllTestItems(),
-            layoutResId = R.layout.item_test_card
-        ) { test ->
+            detailedLayout = false,
+            ) { test ->
             startActivity(Intent(this, InfoTestActivity::class.java).apply {
                 putExtra("TEST_ID",       test.id)
                 putExtra("TEST_NAME",     test.name)
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         recycler2.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recycler2.adapter = TestsAdapter(
             items       = dbHelper.getAllTestItems(),
-            layoutResId = R.layout.item_test_card
+            detailedLayout = false,
         ) { test ->
             startActivity(Intent(this, InfoTestActivity::class.java).apply {
                 putExtra("TEST_ID",       test.id)
@@ -87,12 +87,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         updateContinueCard()
+        navHandler.setupNavigation()
 
         val updatedTests = dbHelper.getAllTestItems()
         (recycler.adapter as? TestsAdapter)?.updateItems(updatedTests)
-        val prefs = getSharedPreferences("bottom_nav", Context.MODE_PRIVATE)
-        prefs.edit().putString("selected_button", "home").apply()
-        navHandler.setupNavigation()
     }
 
     private fun updateContinueCard() {

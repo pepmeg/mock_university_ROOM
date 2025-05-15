@@ -34,14 +34,16 @@ class LearningActivity : AppCompatActivity() {
         recycler = findViewById(R.id.testsRecyclerViewLearning)
         recycler.layoutManager = LinearLayoutManager(this)
 
-        adapter = TestsAdapter(listOf(), R.layout.item_test) { test ->
-            startActivity(Intent(this, InfoTestActivity::class.java).apply {
-                putExtra("TEST_ID", test.id)
-                putExtra("TEST_NAME", test.name)
-                putExtra("TEST_DURATION", test.durationMinutes)
-                putExtra("TEST_Q_COUNT", test.questionsCount)
-            })
-        }
+        adapter = TestsAdapter(
+            items = listOf(),
+            detailedLayout = true,
+            onClick = { test ->
+                startActivity(Intent(this, InfoTestActivity::class.java).apply {
+                    putExtra("TEST_ID", test.id)
+                    putExtra("TEST_NAME", test.name)
+                })
+            }
+        )
         recycler.adapter = adapter
 
         tabAll.setOnClickListener {

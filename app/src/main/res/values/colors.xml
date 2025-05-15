@@ -8,5 +8,7 @@
     <color name="purple_200">#BB86FC</color>
     <color name="text_unselected">#000000</color>
     <color name="gray">#797979</color>
+    <color name="secondary">#000000</color>
+    <color name="purple">#7B61FF</color>
 </resources>
 

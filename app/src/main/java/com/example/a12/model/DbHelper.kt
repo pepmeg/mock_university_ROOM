@@ -477,4 +477,19 @@ class DbHelper(private val context: Context) :
 
     fun getTestItemById(testId: Int): TestItem =
         getAllTestItems().first { it.id == testId }
+
+    fun deleteAllResultsForTest(testId: Int) {
+        writableDatabase.use { db ->
+            db.delete(
+                "user_answers",
+                "result_id IN (SELECT result_id FROM test_results WHERE test_id = ?)",
+                arrayOf(testId.toString())
+            )
+            db.delete(
+                "test_results",
+                "test_id = ?",
+                arrayOf(testId.toString())
+            )
+        }
+    }
 }
