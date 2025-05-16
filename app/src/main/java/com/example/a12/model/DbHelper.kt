@@ -142,7 +142,7 @@ class DbHelper(private val context: Context) :
     COALESCE(ua.answered_cnt, 0)            AS answered_cnt,
     COALESCE(tr.status, 'in_progress')      AS status,
     COALESCE(tr.remaining_seconds, t.duration_minutes * 60) AS remaining_sec,
-    tr.finished_at                          AS finished_at     -- ← вот это
+    tr.finished_at                          AS finished_at     
   FROM tests t
     LEFT JOIN questions q     ON q.test_id = t.test_id
     LEFT JOIN latest l        ON l.test_id = t.test_id
