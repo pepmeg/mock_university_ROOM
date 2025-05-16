@@ -10,7 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a12.R
 import com.example.a12.model.TestItem
@@ -19,132 +21,138 @@ import java.util.Locale
 
 class TestsAdapter(
     private var items: List<TestItem>,
-    private val detailedLayout: Boolean,
-    private val onClick: (TestItem) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val detailed: Boolean,
+    private val onClick: (TestItem) -> Unit,
+    private val onDelete: (TestItem) -> Unit
+) : RecyclerView.Adapter<TestsAdapter.BaseVH>() {
 
     companion object {
         private const val TYPE_SIMPLE = 0
         private const val TYPE_DETAILED = 1
     }
 
-    inner class SimpleVH(v: View) : RecyclerView.ViewHolder(v) {
-        private val icon     : ImageView = v.findViewById(R.id.testIcon)
-        private val name     : TextView  = v.findViewById(R.id.testName)
-        private val duration : TextView  = v.findViewById(R.id.testDuration)
-
-        fun bind(item: TestItem) {
-            val ctx = icon.context
-            ctx.resources.getIdentifier(item.iconResName, "drawable", ctx.packageName)
+    abstract inner class BaseVH(view: View) : RecyclerView.ViewHolder(view) {
+        protected fun loadIcon(iconView: ImageView, name: String) {
+            iconView.context.resources.getIdentifier(name, "drawable", iconView.context.packageName)
                 .takeIf { it != 0 }
-                ?.let(icon::setImageResource)
+                ?.let(iconView::setImageResource)
+        }
+        abstract fun bind(item: TestItem)
+    }
 
-            name.text = item.name
-            duration.text = "${item.durationMinutes / 60}h ${item.durationMinutes % 60}min"
+    inner class SimpleVH(view: View) : BaseVH(view) {
+        private val icon     = view.findViewById<ImageView>(R.id.testIcon)
+        private val name     = view.findViewById<TextView>(R.id.testName)
+        private val duration = view.findViewById<TextView>(R.id.testDuration)
 
+        override fun bind(item: TestItem) {
+            loadIcon(icon, item.iconResName)
+            name.text     = item.name
+            duration.text = "${item.durationMinutes/60}h ${item.durationMinutes%60}m"
             itemView.setOnClickListener { onClick(item) }
         }
     }
 
-    inner class DetailedVH(v: View) : RecyclerView.ViewHolder(v) {
-        private val icon    : ImageView = v.findViewById(R.id.testIcon)
-        private val name    : TextView  = v.findViewById(R.id.testName)
-        private val count   : TextView  = v.findViewById(R.id.questionsCount)
-        private val extra   : TextView  = v.findViewById(R.id.remainingTime)
-        private val btnBg   : View      = v.findViewById(R.id.continueButtonBg)
-        private val btnText : TextView  = v.findViewById(R.id.continueButtonText)
+    inner class DetailedVH(view: View) : BaseVH(view) {
+        private val icon      = view.findViewById<ImageView>(R.id.testIcon)
+        private val name      = view.findViewById<TextView>(R.id.testName)
+        private val count     = view.findViewById<TextView>(R.id.questionsCount)
+        private val extra     = view.findViewById<TextView>(R.id.remainingTime)
+        private val btnBg     = view.findViewById<View>(R.id.continueButtonBg)
+        private val btnText   = view.findViewById<TextView>(R.id.continueButtonText)
+        private val trash     = view.findViewById<ImageView>(R.id.delete)
+        private val colorP    = ContextCompat.getColor(view.context, R.color.purple)
+        private val colorG    = ContextCompat.getColor(view.context, R.color.gray)
 
-        private val purple = ContextCompat.getColor(itemView.context, R.color.purple)
-        private val gray   = ContextCompat.getColor(itemView.context, R.color.gray)
-
-        fun bind(item: TestItem) {
-            val ctx = icon.context
-            ctx.resources.getIdentifier(item.iconResName, "drawable", ctx.packageName)
-                .takeIf { it != 0 }
-                ?.let(icon::setImageResource)
-
+        override fun bind(item: TestItem) {
+            loadIcon(icon, item.iconResName)
             name.text = item.name
 
             if (item.status == "completed" && item.finishedAt != null) {
                 val prefix = "Score: "
                 val result = "${item.answeredCount}/${item.questionsCount}"
-                val span = SpannableStringBuilder()
-                    .append(prefix, ForegroundColorSpan(gray), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    .append(result, ForegroundColorSpan(purple), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val span = SpannableStringBuilder().apply {
+                    append(prefix, ForegroundColorSpan(colorG), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    append(result, ForegroundColorSpan(colorP), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
                 count.text = span
-
-                val suf = daySuffix(item.finishedAt)
-                val df  = SimpleDateFormat("MMMM d'$suf', yyyy", Locale.getDefault())
-                extra.text = df.format(Date(item.finishedAt))
-                extra.setTextColor(gray)
-
+                extra.formatDate(item.finishedAt, colorG)
                 btnBg.setBackgroundResource(R.drawable.button_revisit)
-                btnText.visibility = View.GONE
+                btnText.isVisible = false
+                trash.setOnClickListener { onDelete(item) }
 
             } else {
-                val qty = "${item.answeredCount}/${item.questionsCount}"
-                val label = if (item.questionsCount == 1) " question" else " questions"
-                val spanCount = SpannableStringBuilder()
-                    .append(qty, ForegroundColorSpan(purple), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    .append(label, ForegroundColorSpan(gray), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                count.text = spanCount
-
-                val mins = (item.remainingSeconds / 60).toInt()
-                val timeQty = "$mins min"
-                val timeLabel = " remaining"
-                val spanTime = SpannableStringBuilder()
-                    .append(timeQty, ForegroundColorSpan(purple), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    .append(timeLabel, ForegroundColorSpan(gray), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                extra.text = spanTime
-
+                count.setColoredText(
+                    "${item.answeredCount}/${item.questionsCount}" to " questions",
+                    colorG, colorP
+                )
+                extra.setColoredText("${item.remainingSeconds/60}min" to " remaining", colorG, colorP)
                 btnBg.setBackgroundResource(R.drawable.bg_button)
-                btnText.visibility = View.VISIBLE
+                btnText.isVisible = true
+                trash.setOnClickListener(null)
             }
 
             btnBg.setOnClickListener { onClick(item) }
             itemView.setOnClickListener { onClick(item) }
         }
-
-        private fun daySuffix(timeMs: Long): String {
-            val d = Calendar.getInstance().apply { timeInMillis = timeMs }
-                .get(Calendar.DAY_OF_MONTH)
-            return when {
-                d in 11..13 -> "th"
-                d % 10 == 1 -> "st"
-                d % 10 == 2 -> "nd"
-                d % 10 == 3 -> "rd"
-                else        -> "th"
-            }
-        }
     }
 
+    override fun getItemViewType(pos: Int) =
+        if (detailed) TYPE_DETAILED else TYPE_SIMPLE
 
-    override fun getItemViewType(position: Int): Int {
-        return if (detailedLayout) TYPE_DETAILED else TYPE_SIMPLE
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-            : RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseVH {
         val inflater = LayoutInflater.from(parent.context)
-        return if (viewType == TYPE_SIMPLE) {
-            SimpleVH(inflater.inflate(R.layout.item_test_card, parent, false))
-        } else {
-            DetailedVH(inflater.inflate(R.layout.item_test, parent, false))
-        }
+        val layout = if (viewType == TYPE_SIMPLE) R.layout.item_test_card else R.layout.item_test
+        val vh = if (viewType == TYPE_SIMPLE)
+            SimpleVH(inflater.inflate(layout, parent, false))
+        else
+            DetailedVH(inflater.inflate(layout, parent, false))
+        return vh
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, pos: Int) {
-        val item = items[pos]
-        when (holder) {
-            is SimpleVH   -> holder.bind(item)
-            is DetailedVH -> holder.bind(item)
-        }
+    override fun onBindViewHolder(holder: BaseVH, pos: Int) {
+        holder.bind(items[pos])
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount() = items.size
 
     fun updateItems(newItems: List<TestItem>) {
         items = newItems
         notifyDataSetChanged()
+    }
+
+    private fun TextView.setColoredText(
+        prefix: String = "",
+        colored: Pair<Any, Any>,
+        @ColorInt c1: Int,
+        @ColorInt c2: Int
+    ) {
+        val (first, second) = colored
+        val sb = SpannableStringBuilder()
+        sb.append(prefix, ForegroundColorSpan(c1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        sb.append(first.toString(), ForegroundColorSpan(c2), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        sb.append(second.toString(), ForegroundColorSpan(c1), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        text = sb
+    }
+
+    private fun TextView.setColoredText(
+        pair: Pair<String, String>,
+        @ColorInt cPrimary: Int,
+        @ColorInt cSecondary: Int
+    ) = setColoredText(prefix = "", colored = pair, cPrimary, cSecondary)
+
+    private fun TextView.formatDate(timeMs: Long, @ColorInt color: Int) {
+        val day = Calendar.getInstance().apply { timeInMillis = timeMs }
+            .get(Calendar.DAY_OF_MONTH)
+        val suf = when {
+            day in 11..13 -> "th"
+            day%10==1 -> "st"
+            day%10==2 -> "nd"
+            day%10==3 -> "rd"
+            else -> "th"
+        }
+        val sdf = SimpleDateFormat("MMMM d'$suf', yyyy", Locale.getDefault())
+        text = sdf.format(Date(timeMs))
+        setTextColor(color)
     }
 }

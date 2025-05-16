@@ -33,6 +33,7 @@
         android:text=""
         android:textColor="#000000"
         android:textSize="18sp"
+        android:fontFamily="@font/poppins_medium"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/backIcon"
         app:layout_constraintEnd_toStartOf="@id/timerContainer"
@@ -63,7 +64,8 @@
             android:layout_marginStart="6dp"
             android:text="1:28"
             android:textColor="#FFFFFF"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:fontFamily="@font/poppins_regular"/>
 
     </LinearLayout>
 
@@ -133,6 +135,7 @@
                 android:paddingHorizontal="16dp"
                 android:text="Previous"
                 android:textColor="#797979"
+                android:fontFamily="@font/poppins_medium"
                 android:textSize="15sp" />
         </FrameLayout>
         <FrameLayout
@@ -160,6 +163,7 @@
                 android:layout_gravity="center"
                 android:text="Next"
                 android:textColor="#FFFFFF"
+                android:fontFamily="@font/poppins_medium"
                 android:textSize="15sp" />
         </FrameLayout>
     </LinearLayout>

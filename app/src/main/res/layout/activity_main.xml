@@ -55,7 +55,9 @@
                     android:layout_marginBottom="8dp"
                     android:text="Recommended for You"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/poppins_medium"
+                    android:textStyle="bold"
+                    android:textColor="@color/gray"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/testsRecyclerView"
@@ -73,7 +75,9 @@
                     android:layout_marginBottom="8dp"
                     android:text="Categories"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/poppins_medium"
+                    android:textStyle="bold"
+                    android:textColor="@color/gray"/>
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
@@ -114,7 +118,8 @@
                                 android:gravity="center"
                                 android:text="IT and\nSoftware"
                                 android:textColor="#000000"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                android:fontFamily="@font/poppins_medium"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -145,7 +150,8 @@
                                 android:gravity="center"
                                 android:text="Health and\nFitness"
                                 android:textColor="#FF7A33"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                android:fontFamily="@font/poppins_medium"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -176,7 +182,8 @@
                                 android:gravity="center"
                                 android:text="Office\nProductivity"
                                 android:textColor="#527D43"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                android:fontFamily="@font/poppins_medium"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -207,7 +214,8 @@
                                 android:gravity="center"
                                 android:text="Finance and\nAccounting"
                                 android:textColor="#3550DC"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                android:fontFamily="@font/poppins_medium"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -238,7 +246,8 @@
                                 android:gravity="center"
                                 android:text="Finance and\nAccounting"
                                 android:textColor="#3550DC"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                android:fontFamily="@font/poppins_medium"/>
                         </LinearLayout>
                     </LinearLayout>
                 </HorizontalScrollView>
@@ -250,7 +259,9 @@
                     android:layout_marginBottom="15dp"
                     android:text="Top Courses"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/poppins_medium"
+                    android:textStyle="bold"
+                    android:textColor="@color/gray"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/testsRecyclerView1"
@@ -268,7 +279,9 @@
                     android:layout_marginBottom="15dp"
                     android:text="Popular among users"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/poppins_medium"
+                    android:textStyle="bold"
+                    android:textColor="@color/gray"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/testsRecyclerView2"
@@ -280,7 +293,7 @@
                     tools:listitem="@layout/item_test_card" />
             </LinearLayout>
         </ScrollView>
-
+<!--
         <View
             android:id="@+id/bottomFade"
             android:layout_width="match_parent"
@@ -288,7 +301,7 @@
             android:layout_gravity="bottom"
             android:background="@drawable/bottom_fade"
             android:elevation="1dp" />
-
+-->
         <include
             android:id="@+id/cardContainer"
             layout="@layout/card_test"

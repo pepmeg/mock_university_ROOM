@@ -61,9 +61,11 @@
                         android:text="React JS"
                         android:textColor="#000000"
                         android:textSize="16sp"
+                        android:fontFamily="@font/poppins_medium"
                         android:textStyle="bold" />
 
                     <ImageView
+                        android:id="@+id/delete"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_alignParentEnd="true"
@@ -82,13 +84,8 @@
                         android:layout_height="wrap_content"
                         android:text="8/10"
                         android:textColor="#8B5CF6"
-                        android:textSize="13sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#b0b0b2"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        android:fontFamily="@font/poppins_regular"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -102,19 +99,13 @@
                         android:layout_height="wrap_content"
                         android:text="35min"
                         android:textColor="#8B5CF6"
-                        android:textSize="13sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#b0b0b2"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        android:fontFamily="@font/poppins_regular"/>
                 </LinearLayout>
                 <FrameLayout
                     android:id="@+id/btn_continue_test"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
+                    android:layout_height="wrap_content">
 
                     <View
                         android:id="@+id/continueButtonBg"
@@ -132,7 +123,8 @@
                         android:layout_gravity="center"
                         android:text="Continue Test"
                         android:textColor="#FFFFFF"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        android:fontFamily="@font/poppins_regular"/>
                 </FrameLayout>
             </LinearLayout>
         </LinearLayout>

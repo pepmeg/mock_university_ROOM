@@ -75,6 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="80dp"
+                android:fontFamily="@font/poppins_regular"
                 android:gravity="center_horizontal"
                 android:text="Exam results"
                 android:textColor="#000"
@@ -84,10 +85,11 @@
                 android:id="@+id/percentText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/poppins_semibold"
                 android:text="0%"
                 android:textColor="#841FFD"
-                android:textSize="36sp"
-                android:layout_marginTop="8dp" />
+                android:textSize="36sp" />
         </LinearLayout>
     </FrameLayout>
 
@@ -110,7 +112,8 @@
             android:layout_marginTop="24dp"
             android:text="Congratulations"
             android:textColor="#22AC26"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:fontFamily="@font/poppins_semibold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -118,7 +121,8 @@
             android:layout_marginTop="4dp"
             android:text="You have answered"
             android:textColor="#999999"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:fontFamily="@font/poppins_semibold"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -132,13 +136,15 @@
                 android:layout_height="wrap_content"
                 android:text="0/0 "
                 android:textColor="#841FFD"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:fontFamily="@font/poppins_semibold"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" questions correctly"
                 android:textColor="#999999"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:fontFamily="@font/poppins_semibold"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -191,6 +197,7 @@
                 android:text="Review Exam"
                 android:textColor="#FFF"
                 android:textSize="16sp"
+                android:fontFamily="@font/poppins_medium"
                 android:textStyle="bold" />
         </FrameLayout>
 
@@ -220,6 +227,7 @@
                 android:text="Wrap up Exam"
                 android:textColor="#841FFD"
                 android:textSize="16sp"
+                android:fontFamily="@font/poppins_medium"
                 android:textStyle="bold" />
         </FrameLayout>
     </LinearLayout>

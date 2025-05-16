@@ -9,66 +9,68 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.a12.utils.BottomNavHandler
 import com.example.a12.model.DbHelper
 import com.example.a12.R
+import com.example.a12.model.TestItem
 import com.example.a12.ui.TestsAdapter
 
 class LearningActivity : AppCompatActivity() {
 
-    private lateinit var dbHelper: DbHelper
+    private lateinit var db: DbHelper
     private lateinit var adapter: TestsAdapter
+    private var currentTab = Tab.ALL
 
-    private lateinit var tabAll: FrameLayout
-    private lateinit var tabInProgress: FrameLayout
-    private lateinit var tabCompleted: FrameLayout
-    private lateinit var recycler: RecyclerView
+    private val tabs by lazy {
+        listOf(
+            R.id.tabAll       to Tab.ALL,
+            R.id.tabInProgress to Tab.IN_PROGRESS,
+            R.id.tabCompleted  to Tab.COMPLETED
+        )
+    }
+    private val recycler by lazy { findViewById<RecyclerView>(R.id.testsRecyclerViewLearning) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.learning)
 
         BottomNavHandler(this, findViewById(android.R.id.content)).setupNavigation()
-        dbHelper = DbHelper(this)
+        db = DbHelper(this)
 
-        tabAll = findViewById(R.id.tabAll)
-        tabInProgress = findViewById(R.id.tabInProgress)
-        tabCompleted = findViewById(R.id.tabCompleted)
-        recycler = findViewById(R.id.testsRecyclerViewLearning)
         recycler.layoutManager = LinearLayoutManager(this)
-
         adapter = TestsAdapter(
-            items = listOf(),
-            detailedLayout = true,
-            onClick = { test ->
-                startActivity(Intent(this, InfoTestActivity::class.java).apply {
-                    putExtra("TEST_ID", test.id)
-                    putExtra("TEST_NAME", test.name)
-                })
-            }
+            items    = emptyList(),
+            detailed = true,
+            onClick  = ::openInfo,
+            onDelete = ::deleteAndRefresh
         )
         recycler.adapter = adapter
-
-        tabAll.setOnClickListener {
-            selectTab(Tab.ALL)
-        }
-        tabInProgress.setOnClickListener {
-            selectTab(Tab.IN_PROGRESS)
-        }
-        tabCompleted.setOnClickListener {
-            selectTab(Tab.COMPLETED)
+        tabs.forEach { (id, tab) ->
+            findViewById<FrameLayout>(id).setOnClickListener { selectTab(tab) }
         }
         selectTab(Tab.ALL)
     }
 
-    private enum class Tab { ALL, IN_PROGRESS, COMPLETED }
-    private fun selectTab(tab: Tab) {
-        tabAll.isSelected = (tab == Tab.ALL)
-        tabInProgress.isSelected = (tab == Tab.IN_PROGRESS)
-        tabCompleted.isSelected = (tab == Tab.COMPLETED)
-
-        val items = when (tab) {
-            Tab.ALL -> dbHelper.getAllTestItems()
-            Tab.IN_PROGRESS -> dbHelper.getInProgressTestItems()
-            Tab.COMPLETED -> dbHelper.getCompletedTestItems()
-        }
-        adapter.updateItems(items)
+    private fun openInfo(item: TestItem) {
+        startActivity(Intent(this, InfoTestActivity::class.java).apply {
+            putExtra("TEST_ID",   item.id)
+            putExtra("TEST_NAME", item.name)
+        })
     }
+
+    private fun deleteAndRefresh(item: TestItem) {
+        db.deleteAllResultsForTest(item.id)
+        selectTab(currentTab)
+    }
+
+    private fun selectTab(tab: Tab) {
+        currentTab = tab
+        tabs.forEach { (id, t) ->
+            findViewById<FrameLayout>(id).isSelected = (t == tab)
+        }
+        val list = when (tab) {
+            Tab.ALL         -> db.getAllTestItems()
+            Tab.IN_PROGRESS -> db.getInProgressTestItems()
+            Tab.COMPLETED   -> db.getCompletedTestItems()
+        }
+        adapter.updateItems(list)
+    }
+    private enum class Tab { ALL, IN_PROGRESS, COMPLETED }
 }

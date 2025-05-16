@@ -7,68 +7,61 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.a12.model.DbHelper
 import com.example.a12.R
+import com.example.a12.model.DbHelper
 
 class InfoTestActivity : AppCompatActivity() {
 
-    private var testId: Int = 0
-    private lateinit var dbHelper: DbHelper
+    private val db by lazy { DbHelper(this) }
+    private val testId by lazy { intent.getIntExtra("TEST_ID", 0) }
+    private val testName by lazy { intent.getStringExtra("TEST_NAME").orEmpty() }
+    private val durationMinutes by lazy { intent.getIntExtra("TEST_DURATION", 0) }
+    private val questionsCount by lazy { intent.getIntExtra("TEST_Q_COUNT", 0) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.info_test)
 
-        dbHelper = DbHelper(this)
-        testId = intent.getIntExtra("TEST_ID", 1)
+        findViewById<TextView>(R.id.title).text = testName
+        findViewById<TextView>(R.id.title1).text = testName
 
-        findViewById<TextView>(R.id.title).text =
-            intent.getStringExtra("TEST_NAME") ?: ""
-        findViewById<TextView>(R.id.title1).text =
-            intent.getStringExtra("TEST_NAME") ?: ""
-        val duration = intent.getIntExtra("TEST_DURATION", 0)
         findViewById<TextView>(R.id.testDuration)?.text =
-            "${duration / 60}h ${duration % 60}min"
-        val qCount = intent.getIntExtra("TEST_Q_COUNT", 0)
-        findViewById<TextView>(R.id.questionsCount)?.text = "$qCount Questions"
+            "${durationMinutes / 60}h ${durationMinutes % 60}min"
+        findViewById<TextView>(R.id.questionsCount)?.text =
+            "$questionsCount Questions"
 
-        findViewById<ImageView>(R.id.backIcon).setOnClickListener {
-            finish()
-        }
+        findViewById<ImageView>(R.id.backIcon).setOnClickListener { finish() }
 
-        val bullets = listOf(
-            "10 point awarded for a correct answer and no marks for an incorrect answer.",
-            "Tap on options to select the correct answer.",
-            "Tap on the bookmark icon to save interesting questions.",
-            "Click submit if you are sure you want to complete all the questions."
-        )
-        val instr = findViewById<TextView>(R.id.instructionText)
-        SpannableStringBuilder().apply {
-            bullets.forEach {
-                append("• ").append(it).append("\n\n")
+        findViewById<TextView>(R.id.instructionText).apply {
+            val bullets = listOf(
+                "10 point awarded for a correct answer and no marks for an incorrect answer.",
+                "Tap on options to select the correct answer.",
+                "Tap on the bookmark icon to save interesting questions.",
+                "Click submit if you are sure you want to complete all the questions."
+            )
+            text = SpannableStringBuilder().apply {
+                bullets.forEach { append("• $it\n\n") }
             }
-            instr.text = this
         }
 
-        findViewById<FrameLayout>(R.id.startTestContainer).setOnClickListener {
+        findViewById<FrameLayout>(R.id.startTestContainer)
+            .setOnClickListener { launchTest() }
+    }
 
-            val last = dbHelper.getLastResultForTest(testId)
-            val intent = Intent(this, TestActivity::class.java)
-                .putExtra("TEST_ID", testId)
-
-            if (last != null) {
-                when (last.second) {
-                    "in_progress" -> {
-                        intent.putExtra("REVIEW_MODE", false)
-                        intent.putExtra("RESULT_ID", last.first)
-                    }
-                    "completed" -> {
-                        intent.putExtra("REVIEW_MODE", true)
-                        intent.putExtra("RESULT_ID", last.first)
-                    }
+    private fun launchTest() {
+        val last = db.getLastResultForTest(testId)
+        Intent(this, TestActivity::class.java).also { intent ->
+            intent.putExtra("TEST_ID", testId)
+            when (last?.second) {
+                "in_progress" -> {
+                    intent.putExtra("RESULT_ID", last.first)
+                    intent.putExtra("REVIEW_MODE", false)
                 }
-            } else {
-                intent.putExtra("REVIEW_MODE", false)
+                "completed" -> {
+                    intent.putExtra("RESULT_ID", last.first)
+                    intent.putExtra("REVIEW_MODE", true)
+                }
+                else -> intent.putExtra("REVIEW_MODE", false)
             }
             startActivity(intent)
         }

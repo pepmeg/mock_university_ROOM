@@ -66,7 +66,8 @@
                 android:paddingHorizontal="16dp"
                 android:text="All"
                 android:textColor="@drawable/tab_text_color"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins_regular"/>
         </FrameLayout>
         <FrameLayout
             android:id="@+id/tabInProgress"
@@ -80,7 +81,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="-27dp"
+                android:layout_marginStart="-25dp"
                 android:layout_marginTop="-5dp"
                 android:layout_marginEnd="-60dp"
                 android:layout_marginBottom="-110dp"
@@ -98,7 +99,8 @@
                 android:paddingHorizontal="16dp"
                 android:text="In Progress"
                 android:textColor="@drawable/tab_text_color"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins_regular"/>
         </FrameLayout>
         <FrameLayout
             android:id="@+id/tabCompleted"
@@ -111,7 +113,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="-27dp"
+                android:layout_marginStart="-25dp"
                 android:layout_marginTop="-5dp"
                 android:layout_marginEnd="-60dp"
                 android:layout_marginBottom="-110dp"
@@ -128,7 +130,8 @@
                 android:paddingHorizontal="16dp"
                 android:text="Completed"
                 android:textColor="@drawable/tab_text_color"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins_regular"/>
         </FrameLayout>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
