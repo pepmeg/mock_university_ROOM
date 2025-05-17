@@ -26,7 +26,6 @@
     android:clipToPadding="false"
     android:fillViewport="true"
     android:scrollbars="none"
-    android:layout_marginBottom="100dp"
     app:layout_constraintTop_toBottomOf="@id/testProgressBar"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent">
@@ -127,7 +126,8 @@
                 android:lineSpacingExtra="4dp"
                 android:text="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet."
                 android:textSize="14sp"
-                android:textColor="#000000"/>
+                android:textColor="#000000"
+                android:layout_marginBottom="300dp"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

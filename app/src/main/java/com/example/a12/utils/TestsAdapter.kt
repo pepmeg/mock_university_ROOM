@@ -71,9 +71,9 @@ class TestsAdapter(
             name.text = item.name
 
             if (item.status == "completed" && item.finishedAt != null) {
-                val (correct, total) = dbHelper.getCorrectAndTotalCounts(item.resultId)
+                val (correct) = dbHelper.getCorrectAndTotalCounts(item.resultId)
                 val prefix = "Score: "
-                val result = "$correct/$total"
+                val result = "$correct/${item.questionsCount}"
                 val span = SpannableStringBuilder().apply {
                     append(prefix, ForegroundColorSpan(colorG), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     append(result, ForegroundColorSpan(colorP), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
