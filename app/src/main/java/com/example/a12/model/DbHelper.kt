@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 
 class DbHelper(private val context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -14,9 +13,6 @@ class DbHelper(private val context: Context) :
         private const val DATABASE_VERSION = 1
     }
 
-    init {
-        logTables()
-    }
 
     override fun onOpen(db: SQLiteDatabase) {
         super.onOpen(db)
@@ -84,18 +80,6 @@ class DbHelper(private val context: Context) :
         }
         cursor.close()
         return answers
-    }
-
-    private fun logTables() {
-        val db = readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT name FROM sqlite_master WHERE type='table'",
-            null
-        )
-        while (cursor.moveToNext()) {
-            Log.d("DbHelper", "Table in DB: ${cursor.getString(0)}")
-        }
-        cursor.close()
     }
 
     fun getTestDurationMinutes(testId: Int): Int {

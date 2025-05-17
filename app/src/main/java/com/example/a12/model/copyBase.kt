@@ -11,10 +11,7 @@ fun copyDatabaseFromAssets(context: Context) {
     if (dbFile.exists()) {
         dbFile.delete()
     }
-    File(dbFile.absolutePath + "-wal").delete()
-    File(dbFile.absolutePath + "-shm").delete()
 
-    dbFile.parentFile?.mkdirs()
     context.assets.open(dbName).use { input ->
         FileOutputStream(dbFile).use { output ->
             input.copyTo(output)

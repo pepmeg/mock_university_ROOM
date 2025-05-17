@@ -12,15 +12,15 @@ import java.util.Locale
 
 class CompleteActivity : AppCompatActivity() {
 
-    private var resultId: Long = -1L
-    private var testId: Int = -1
+    private var resultId: Long = 1
+    private var testId: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.complete)
 
-        resultId = intent.getLongExtra("RESULT_ID", -1L)
-        testId   = intent.getIntExtra("TEST_ID", -1)
+        resultId = intent.getLongExtra("RESULT_ID", 1)
+        testId   = intent.getIntExtra("TEST_ID", 1)
         val testName = intent.getStringExtra("TEST_NAME").orEmpty()
 
         val db = DbHelper(this)

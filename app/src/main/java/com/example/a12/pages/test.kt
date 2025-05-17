@@ -39,8 +39,8 @@ class TestActivity : AppCompatActivity() {
     private lateinit var submitButton: View
     private lateinit var progressBar: ProgressBar
 
-    private var testId: Int = -1
-    private var resultId: Long = -1L
+    private var testId: Int = 1
+    private var resultId: Long = -1
     private var reviewMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,8 +49,8 @@ class TestActivity : AppCompatActivity() {
 
         dbHelper = DbHelper(this)
         reviewMode = intent.getBooleanExtra("REVIEW_MODE", false)
-        testId     = intent.getIntExtra("TEST_ID", -1)
-        resultId   = intent.getLongExtra("RESULT_ID", -1L)
+        testId     = intent.getIntExtra("TEST_ID", 1)
+        resultId   = intent.getLongExtra("RESULT_ID", -1)
         timesUpOverlay = findViewById(R.id.timesUpOverlay)
         submitButton   = timesUpOverlay.findViewById(R.id.submitButton)
 

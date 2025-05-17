@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
         nav.setupNavigation()
         updateContinueCard()
         (findViewById<RecyclerView>(R.id.testsRecyclerView).adapter as? TestsAdapter)
-            ?.updateItems(db.getAllTestItems())
     }
 
     private fun updateContinueCard() {

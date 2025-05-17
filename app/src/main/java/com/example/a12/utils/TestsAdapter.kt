@@ -80,7 +80,6 @@ class TestsAdapter(
                 btnBg.setBackgroundResource(R.drawable.button_revisit)
                 btnText.isVisible = false
                 trash.setOnClickListener { onDelete(item) }
-
             } else {
                 count.setColoredText(
                     "${item.answeredCount}/${item.questionsCount}" to " questions",
@@ -91,7 +90,6 @@ class TestsAdapter(
                 btnText.isVisible = true
                 trash.setOnClickListener(null)
             }
-
             btnBg.setOnClickListener { onClick(item) }
             itemView.setOnClickListener { onClick(item) }
         }
