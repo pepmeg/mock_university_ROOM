@@ -48,6 +48,7 @@
             android:layout_marginTop="8dp"
             android:text="You are running out of time.  You can’t modify any questions. You must submit the exam now or system will automatically submit your answers in 10 seconds and show your score."
             android:textColor="#333333"
+            android:lineHeight="20dp"
             android:textSize="14sp"
             android:fontFamily="@font/poppins_regular"/>
 
