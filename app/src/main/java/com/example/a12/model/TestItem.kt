@@ -2,6 +2,7 @@ package com.example.a12.model
 
 data class TestItem(
     val id: Int,
+    val resultId: Long,
     val name: String,
     val durationMinutes: Int,
     val questionsCount: Int,

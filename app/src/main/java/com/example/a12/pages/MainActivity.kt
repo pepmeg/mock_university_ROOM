@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
             findViewById<RecyclerView>(id).apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = TestsAdapter(
+                    dbHelper = db,
                     items          = db.getAllTestItems(),
                     detailed = false,
                     onClick        = infoClick,

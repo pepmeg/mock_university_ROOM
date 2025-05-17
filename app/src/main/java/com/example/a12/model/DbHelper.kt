@@ -120,6 +120,7 @@ class DbHelper(private val context: Context) :
   )
   SELECT
     t.test_id,
+    l.result_id             AS result_id,
     COALESCE(t.test_name, '')               AS test_name,
     COALESCE(t.duration_minutes, 0)         AS duration_minutes,
     COUNT(q.question_id)                    AS total_cnt,
@@ -141,6 +142,7 @@ class DbHelper(private val context: Context) :
         readableDatabase.rawQuery(sql, null).use { c ->
             while (c.moveToNext()) {
                 val id     = c.getInt(c.getColumnIndexOrThrow("test_id"))
+                val resultId  = c.getLong(c.getColumnIndexOrThrow("result_id"))
                 val name   = c.getString(c.getColumnIndexOrThrow("test_name"))
                 val durMin = c.getInt(c.getColumnIndexOrThrow("duration_minutes"))
                 val total  = c.getInt(c.getColumnIndexOrThrow("total_cnt"))
@@ -158,6 +160,7 @@ class DbHelper(private val context: Context) :
 
                 out += TestItem(
                     id               = id,
+                    resultId        = resultId,
                     name             = name,
                     durationMinutes  = durMin,
                     questionsCount   = total,
@@ -295,6 +298,7 @@ class DbHelper(private val context: Context) :
       )
       SELECT
         t.test_id,
+        l.result_id             AS result_id,
         COALESCE(t.test_name, '')                              AS test_name,
         COALESCE(t.duration_minutes,   0)                      AS duration_minutes,
         COUNT(q.question_id)                                   AS total_cnt,
@@ -316,6 +320,7 @@ class DbHelper(private val context: Context) :
         readableDatabase.rawQuery(sql, null).use { c ->
             while (c.moveToNext()) {
                 val id         = c.getInt(c.getColumnIndexOrThrow("test_id"))
+                val resultId  = c.getLong(c.getColumnIndexOrThrow("result_id"))
                 val name       = c.getString(c.getColumnIndexOrThrow("test_name"))
                 val durMin     = c.getInt(c.getColumnIndexOrThrow("duration_minutes"))
                 val total      = c.getInt(c.getColumnIndexOrThrow("total_cnt"))
@@ -336,6 +341,7 @@ class DbHelper(private val context: Context) :
 
                 out += TestItem(
                     id               = id,
+                    resultId        = resultId,
                     name             = name,
                     durationMinutes  = durMin,
                     questionsCount   = total,
@@ -359,6 +365,7 @@ class DbHelper(private val context: Context) :
   )
   SELECT
     t.test_id,
+    l.result_id             AS result_id,
     t.test_name,
     t.duration_minutes,
     COUNT(q.question_id)                    AS total_cnt,
@@ -384,6 +391,7 @@ class DbHelper(private val context: Context) :
         readableDatabase.rawQuery(sql, null).use { c ->
             while (c.moveToNext()) {
                 val id    = c.getInt(c.getColumnIndexOrThrow("test_id"))
+                val resultId  = c.getLong(c.getColumnIndexOrThrow("result_id"))
                 val name  = c.getString(c.getColumnIndexOrThrow("test_name"))
                 val dur   = c.getInt(c.getColumnIndexOrThrow("duration_minutes"))
                 val total = c.getInt(c.getColumnIndexOrThrow("total_cnt"))
@@ -400,6 +408,7 @@ class DbHelper(private val context: Context) :
 
                 out += TestItem(
                     id               = id,
+                    resultId        = resultId,
                     name             = name,
                     durationMinutes  = dur,
                     questionsCount   = total,

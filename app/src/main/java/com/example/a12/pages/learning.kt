@@ -36,6 +36,7 @@ class LearningActivity : AppCompatActivity() {
 
         recycler.layoutManager = LinearLayoutManager(this)
         adapter = TestsAdapter(
+            dbHelper = db,
             items    = emptyList(),
             detailed = true,
             onClick  = ::openInfo,
@@ -52,6 +53,8 @@ class LearningActivity : AppCompatActivity() {
         startActivity(Intent(this, InfoTestActivity::class.java).apply {
             putExtra("TEST_ID",   item.id)
             putExtra("TEST_NAME", item.name)
+            putExtra("TEST_DURATION", item.durationMinutes)
+            putExtra("TEST_Q_COUNT", item.questionsCount)
         })
     }
 

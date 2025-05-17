@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a12.R
+import com.example.a12.model.DbHelper
 import com.example.a12.model.TestItem
 import java.sql.Date
 import java.util.Locale
@@ -22,6 +23,7 @@ import java.util.Locale
 class TestsAdapter(
     private var items: List<TestItem>,
     private val detailed: Boolean,
+    private val dbHelper: DbHelper,
     private val onClick: (TestItem) -> Unit,
     private val onDelete: (TestItem) -> Unit
 ) : RecyclerView.Adapter<TestsAdapter.BaseVH>() {
@@ -69,17 +71,20 @@ class TestsAdapter(
             name.text = item.name
 
             if (item.status == "completed" && item.finishedAt != null) {
+                val (correct, total) = dbHelper.getCorrectAndTotalCounts(item.resultId)
                 val prefix = "Score: "
-                val result = "${item.answeredCount}/${item.questionsCount}"
+                val result = "$correct/$total"
                 val span = SpannableStringBuilder().apply {
                     append(prefix, ForegroundColorSpan(colorG), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     append(result, ForegroundColorSpan(colorP), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
+
                 count.text = span
                 extra.formatDate(item.finishedAt, colorG)
                 btnBg.setBackgroundResource(R.drawable.button_revisit)
                 btnText.isVisible = false
                 trash.setOnClickListener { onDelete(item) }
+
             } else {
                 count.setColoredText(
                     "${item.answeredCount}/${item.questionsCount}" to " questions",
@@ -90,6 +95,7 @@ class TestsAdapter(
                 btnText.isVisible = true
                 trash.setOnClickListener(null)
             }
+
             btnBg.setOnClickListener { onClick(item) }
             itemView.setOnClickListener { onClick(item) }
         }
