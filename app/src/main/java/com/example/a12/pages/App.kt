@@ -1,11 +1,12 @@
 package com.example.a12.pages
 
 import android.app.Application
-import com.example.a12.model.copyDatabaseFromAssets
+import com.example.a12.model.AppDatabase
+import com.example.a12.model.DatabaseInitializer
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        copyDatabaseFromAssets(this)
+        DatabaseInitializer(this).initialize()
     }
 }
