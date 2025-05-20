@@ -15,10 +15,13 @@ import java.io.InputStreamReader
         TestEntity::class,
         QuestionEntity::class,
         AnswerEntity::class,
+        DemoEntity::class,
+        TestMetadataEntity::class,
         TestResultEntity::class,
         UserAnswerEntity::class
     ],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun testDao(): TestDao
@@ -32,37 +35,45 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "database_init.sql"
-                ).addCallback(object : Callback() {
-                    override fun onCreate(db: SupportSQLiteDatabase) {
-                        super.onCreate(db)
-                        loadInitialData(context, db)
-                    }
-                }).build()
+                    "mock_university.db"
+                )
+                    // при несовпадении схемы — удалять и пересоздавать БД (для dev-стадии)
+                    .fallbackToDestructiveMigration()
+                    // при первом создании выполнять скрипт из assets/database_init.sql
+                    .addCallback(object : Callback() {
+                        override fun onCreate(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            loadInitialData(context, db)
+                        }
+                    })
+                    .build()
+
                 INSTANCE = instance
                 instance
             }
         }
 
-        private fun loadInitialData(context: Context, db: SupportSQLiteDatabase) {
-            val inputStream = context.assets.open("database_init.sql")
-            val reader = BufferedReader(InputStreamReader(inputStream))
-
-            db.beginTransaction()
-            try {
-                var line: String? = reader.readLine()
-                while (line != null) {
-                    val query = line.trim()
-                    if (query.isNotEmpty()) {
-                        db.execSQL(query)
+        private fun loadInitialData(
+            context: Context,
+            db: SupportSQLiteDatabase
+        ) {
+            val assetManager = context.assets
+            assetManager.open("database_init.sql").use { inputStream ->
+                BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                    db.beginTransaction()
+                    try {
+                        var sqlLine: String?
+                        while (reader.readLine().also { sqlLine = it } != null) {
+                            val stmt = sqlLine!!.trim()
+                            if (stmt.isNotEmpty()) {
+                                db.execSQL(stmt)
+                            }
+                        }
+                        db.setTransactionSuccessful()
+                    } finally {
+                        db.endTransaction()
                     }
-                    line = reader.readLine()
                 }
-                db.setTransactionSuccessful()
-            } finally {
-                db.endTransaction()
-                reader.close() // Close the reader to release resources
-                inputStream.close() //Close the inputstream
             }
         }
     }
