@@ -13,17 +13,22 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a12.R
+import com.example.a12.model.DAO.TestDao
 import com.example.a12.model.DbHelper
 import com.example.a12.model.TestItem
+import kotlinx.coroutines.launch
 import java.sql.Date
 import java.util.Locale
 
 class TestsAdapter(
     private var items: List<TestItem>,
     private val detailed: Boolean,
-    private val dbHelper: DbHelper,
+    private val dao: TestDao,
+    private val lifecycleOwner: LifecycleOwner,                    // ← добавлено
     private val onClick: (TestItem) -> Unit,
     private val onDelete: (TestItem) -> Unit
 ) : RecyclerView.Adapter<TestsAdapter.BaseVH>() {
@@ -70,34 +75,34 @@ class TestsAdapter(
             loadIcon(icon, item.iconResName)
             name.text = item.name
 
-            if (item.status == "completed" && item.finishedAt != null) {
-                val (correct) = dbHelper.getCorrectAndTotalCounts(item.resultId)
-                val prefix = "Score: "
-                val result = "$correct/${item.questionsCount}"
-                val span = SpannableStringBuilder().apply {
-                    append(prefix, ForegroundColorSpan(colorG), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    append(result, ForegroundColorSpan(colorP), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            // Запускаем корутину для асинхронного получения статистики
+            lifecycleOwner.lifecycleScope.launch {
+                val stats = dao.getResultStats(item.resultId)
+                if (item.status == "completed") {
+                    val prefix = "Score: "
+                    val result = "${stats.correctAnswers}/${item.questionsCount}"
+                    val span = SpannableStringBuilder().apply {
+                        append(prefix, ForegroundColorSpan(colorG), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        append(result, ForegroundColorSpan(colorP), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
+                    count.text = span
+                    extra.formatDate(item.finishedAt ?: 0L, colorG)
+                    btnBg.setBackgroundResource(R.drawable.button_revisit)
+                    btnText.isVisible = false
+                    trash.setOnClickListener { onDelete(item) }
+                } else {
+                    count.setColoredText(
+                        "${item.answeredCount}/${item.questionsCount}" to " questions",
+                        colorG, colorP
+                    )
+                    extra.setColoredText("${item.remainingSeconds/60}min" to " remaining", colorG, colorP)
+                    btnBg.setBackgroundResource(R.drawable.bg_button)
+                    btnText.isVisible = true
+                    trash.setOnClickListener(null)
                 }
-
-                count.text = span
-                extra.formatDate(item.finishedAt, colorG)
-                btnBg.setBackgroundResource(R.drawable.button_revisit)
-                btnText.isVisible = false
-                trash.setOnClickListener { onDelete(item) }
-
-            } else {
-                count.setColoredText(
-                    "${item.answeredCount}/${item.questionsCount}" to " questions",
-                    colorG, colorP
-                )
-                extra.setColoredText("${item.remainingSeconds/60}min" to " remaining", colorG, colorP)
-                btnBg.setBackgroundResource(R.drawable.bg_button)
-                btnText.isVisible = true
-                trash.setOnClickListener(null)
+                btnBg.setOnClickListener { onClick(item) }
+                itemView.setOnClickListener { onClick(item) }
             }
-
-            btnBg.setOnClickListener { onClick(item) }
-            itemView.setOnClickListener { onClick(item) }
         }
     }
 
@@ -115,7 +120,8 @@ class TestsAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseVH, pos: Int) {
-        holder.bind(items[pos])
+        val item = items[pos]
+        holder.bind(item)
     }
 
     override fun getItemCount() = items.size

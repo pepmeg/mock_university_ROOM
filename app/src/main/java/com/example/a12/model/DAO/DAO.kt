@@ -1,3 +1,5 @@
+package com.example.a12.model.DAO
+
 import androidx.room.*
 import com.example.a12.model.entities.*
 
@@ -189,9 +191,22 @@ interface TestDao {
     """)
     suspend fun getLastInProgressResult(): TestResultEntity?
 
+    @Transaction
     @Query("""
-        SELECT * FROM tests 
-        WHERE test_id = :testId
-    """)
-    suspend fun getTestWithStatsById(testId: Long): TestWithStats?
-}
+    SELECT 
+      t.*,
+      COUNT(q.question_id)             AS total_questions,
+      tr.status                        AS last_status,
+      tr.result_id                     AS last_result_id
+    FROM tests t
+    LEFT JOIN questions q ON q.test_id = t.test_id
+    LEFT JOIN (
+      SELECT test_id, MAX(result_id) AS last_result_id 
+      FROM test_results 
+      GROUP BY test_id
+    ) latest ON latest.test_id = t.test_id
+    LEFT JOIN test_results tr ON tr.result_id = latest.last_result_id
+    WHERE t.test_id = :testId
+    GROUP BY t.test_id
+""")
+    suspend fun getTestWithStatsById(testId: Long): TestWithStats?}

@@ -108,7 +108,7 @@ class DbHelper(private val context: Context) :
         return minutes * 60_000L
     }
 
-    fun getAllTestItems(): List<TestItem> {
+  /*  fun getAllTestItems(): List<TestItem> {
         val sql = """
   WITH latest AS (
     SELECT test_id, MAX(result_id) AS result_id
@@ -159,22 +159,22 @@ class DbHelper(private val context: Context) :
                 }
 
                 out += TestItem(
-                    id               = id,
-                    resultId        = resultId,
-                    name             = name,
-                    durationMinutes  = durMin,
-                    questionsCount   = total,
-                    answeredCount    = answered,
+                    id = id,
+                    resultId = resultId,
+                    name = name,
+                    durationMinutes = durMin,
+                    questionsCount = total,
+                    answeredCount = answered,
                     remainingSeconds = remSec,
-                    status           = status,
-                    iconResName      = icon,
-                    finishedAt       = if (c.isNull(c.getColumnIndexOrThrow("finished_at"))) null
+                    status = status,
+                    iconResName = icon,
+                    finishedAt = if (c.isNull(c.getColumnIndexOrThrow("finished_at"))) null
                     else finishedAt
                 )
             }
         }
         return out
-    }
+    }*/
 
     fun finishTestSession(resultId: Long, remainingSeconds: Int?) {
         val values = ContentValues().apply {
@@ -284,7 +284,7 @@ class DbHelper(private val context: Context) :
         }
         return 0
     }
-
+/*
     fun getInProgressTestItems(): List<TestItem> {
         val sql = """
       WITH latest AS (
@@ -340,16 +340,16 @@ class DbHelper(private val context: Context) :
                 }
 
                 out += TestItem(
-                    id               = id,
-                    resultId        = resultId,
-                    name             = name,
-                    durationMinutes  = durMin,
-                    questionsCount   = total,
-                    answeredCount    = answered,
+                    id = id,
+                    resultId = resultId,
+                    name = name,
+                    durationMinutes = durMin,
+                    questionsCount = total,
+                    answeredCount = answered,
                     remainingSeconds = remSec,
-                    status           = status,
-                    iconResName      = iconRes,
-                    finishedAt       = finishedAt
+                    status = status,
+                    iconResName = iconRes,
+                    finishedAt = finishedAt
                 )
             }
         }
@@ -407,22 +407,22 @@ class DbHelper(private val context: Context) :
                 }
 
                 out += TestItem(
-                    id               = id,
-                    resultId        = resultId,
-                    name             = name,
-                    durationMinutes  = dur,
-                    questionsCount   = total,
-                    answeredCount    = answ,
+                    id = id,
+                    resultId = resultId,
+                    name = name,
+                    durationMinutes = dur,
+                    questionsCount = total,
+                    answeredCount = answ,
                     remainingSeconds = rem,
-                    status           = "completed",
-                    iconResName      = iconResName,
-                    finishedAt       = if (c.isNull(c.getColumnIndexOrThrow("finished_at"))) null
+                    status = "completed",
+                    iconResName = iconResName,
+                    finishedAt = if (c.isNull(c.getColumnIndexOrThrow("finished_at"))) null
                     else finishedAt
                 )
             }
         }
         return out
-    }
+    }*/
     
     fun getLastResultForTest(testId: Int): Pair<Long, String>? {
         val sql = """
@@ -467,9 +467,9 @@ class DbHelper(private val context: Context) :
         }
         throw IllegalStateException("No test for result_id=$resultId")
     }
-
+/*
     fun getTestItemById(testId: Int): TestItem =
-        getAllTestItems().first { it.id == testId }
+        getAllTestItems().first { it.id == testId }*/
 
     fun deleteAllResultsForTest(testId: Int) {
         writableDatabase.use { db ->

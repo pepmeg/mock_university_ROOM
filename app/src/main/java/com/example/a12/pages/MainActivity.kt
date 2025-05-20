@@ -8,51 +8,63 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.lifecycleScope                            // ← импорт
+import androidx.recyclerview.widget.LinearLayoutManager          // ← импорт
 import androidx.recyclerview.widget.RecyclerView
-import com.example.a12.utils.BottomNavHandler
-import com.example.a12.model.DbHelper
 import com.example.a12.R
+import com.example.a12.model.AppDatabase
+import com.example.a12.model.DAO.TestDao
 import com.example.a12.model.TestItem
+import com.example.a12.model.toTestItem
 import com.example.a12.ui.TestsAdapter
+import com.example.a12.utils.BottomNavHandler
+import kotlinx.coroutines.launch                                  // ← импорт
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var db: DbHelper
+    private lateinit var db: AppDatabase
+    private lateinit var dao: TestDao
     private lateinit var nav: BottomNavHandler
     private lateinit var card: FrameLayout
 
     private val infoClick: (TestItem) -> Unit = { test ->
-        startActivity(Intent(this, InfoTestActivity::class.java).apply {
+        Intent(this, InfoTestActivity::class.java).apply {
             putExtra("TEST_ID", test.id)
             putExtra("TEST_NAME", test.name)
             putExtra("TEST_DURATION", test.durationMinutes)
             putExtra("TEST_Q_COUNT", test.questionsCount)
-        })
+            startActivity(this)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        db  = DbHelper(this)
+        db = AppDatabase.getInstance(this)
+        dao = db.testDao()
         nav = BottomNavHandler(this, findViewById(android.R.id.content)).also { it.setupNavigation() }
-
         card = findViewById(R.id.cardContainer)
 
-        listOf(
-            R.id.testsRecyclerView,
-            R.id.testsRecyclerView1,
-            R.id.testsRecyclerView2
-        ).forEach { id ->
-            findViewById<RecyclerView>(id).apply {
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                adapter = TestsAdapter(
-                    dbHelper = db,
-                    items          = db.getAllTestItems(),
-                    detailed = false,
-                    onClick        = infoClick,
-                    onDelete       = {}
-                )
+        // Загружаем данные асинхронно
+        lifecycleScope.launch {
+            val items = dao.getAllTestItems().map { it.toTestItem() }
+
+            listOf(
+                R.id.testsRecyclerView,
+                R.id.testsRecyclerView1,
+                R.id.testsRecyclerView2
+            ).forEach { id ->
+                findViewById<RecyclerView>(id).apply {
+                    layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    adapter = TestsAdapter(
+                        items = items,
+                        detailed = false,
+                        dao = dao,
+                        lifecycleOwner = this@MainActivity,  // ← передаём владельца для корутин внутри адаптера
+                        onClick = infoClick,
+                        onDelete = {}
+                    )
+                }
             }
         }
     }
@@ -61,37 +73,62 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         nav.setupNavigation()
         updateContinueCard()
-        (findViewById<RecyclerView>(R.id.testsRecyclerView).adapter as? TestsAdapter)
     }
 
     private fun updateContinueCard() {
-        val last = db.getLastResultForTestForAnyTest()
-        if (last?.second == "in_progress") {
-            val (resId, _) = last
-            val item = db.getTestItemById(db.getTestIdByResult(resId))
+        lifecycleScope.launch {
+            val lastResult = dao.getLastInProgressResult()
+            if (lastResult != null) {
+                // Получили агрегированные данные по тесту
+                val testStats = dao.getTestWithStatsById(lastResult.testId)!!
 
-            card.isVisible = true
-            card.findViewById<ImageView>(R.id.cardIcon)
-                .setImageResource(resources.getIdentifier(item.iconResName, "drawable", packageName))
-            card.findViewById<TextView>(R.id.cardTitle).text = item.name
-            card.findViewById<TextView>(R.id.cardProgress).text = "${item.answeredCount}/${item.questionsCount}"
-            card.findViewById<TextView>(R.id.cardRemaining).text = "${item.remainingSeconds/60} min"
+                // Преобразуем в TestItem (используем ваш маппер)
+                val testItem = testStats.toTestItem().copy(
+                    // подставляем реальные данные из lastResult и testStats
+                    resultId = lastResult.resultId,
+                    remainingSeconds = lastResult.remainingSeconds?.toLong() ?: 0L,
+                    status = lastResult.status,
+                    finishedAt = lastResult.finishedAt
+                )
 
-            card.findViewById<ProgressBar>(R.id.cardProgressBar).progress =
-                if (item.questionsCount > 0) item.answeredCount * 100 / item.questionsCount else 0
+                card.isVisible = true
 
-            card.setOnClickListener {
-                startActivity(Intent(this, TestActivity::class.java).apply {
-                    putExtra("TEST_ID", item.id)
-                    putExtra("RESULT_ID", resId)
-                    putExtra("REVIEW_MODE", false)
-                })
-            }
-            card.findViewById<ImageView>(R.id.cardDelete).setOnClickListener {
+                // Теперь можно спокойно брать iconResName и другие поля
+                card.findViewById<ImageView>(R.id.cardIcon)
+                    .setImageResource(
+                        resources.getIdentifier(
+                            testItem.iconResName,
+                            "drawable",
+                            packageName
+                        )
+                    )
+                card.findViewById<TextView>(R.id.cardTitle).text = testItem.name
+
+                // Получаем статистику ответов
+                val userStats = dao.getResultStats(testItem.resultId)
+                val answered = userStats.totalAnswers
+
+                card.findViewById<TextView>(R.id.cardProgress).text =
+                    "$answered/${testItem.questionsCount}"
+                card.findViewById<TextView>(R.id.cardRemaining).text =
+                    "${testItem.remainingSeconds / 60} min"
+
+                card.findViewById<ProgressBar>(R.id.cardProgressBar).progress =
+                    if (testItem.questionsCount > 0)
+                        answered * 100 / testItem.questionsCount
+                    else 0
+
+                card.setOnClickListener {
+                    Intent(this@MainActivity, TestActivity::class.java).apply {
+                        putExtra("TEST_ID", testItem.id)
+                        putExtra("RESULT_ID", testItem.resultId)
+                        putExtra("REVIEW_MODE", false)
+                        startActivity(this)
+                    }
+                }
+            } else {
                 card.isVisible = false
             }
-        } else {
-            card.isVisible = false
         }
     }
 }

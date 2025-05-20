@@ -1,12 +1,14 @@
 package com.example.a12.model
 
-
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.a12.model.DAO.TestDao
 import com.example.a12.model.entities.*
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 @Database(
     entities = [
@@ -19,6 +21,7 @@ import com.example.a12.model.entities.*
     version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
+    abstract fun testDao(): TestDao
 
     companion object {
         @Volatile
@@ -29,7 +32,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "mock_university.db"
+                    "database_init.sql"
                 ).addCallback(object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
@@ -43,18 +46,23 @@ abstract class AppDatabase : RoomDatabase() {
 
         private fun loadInitialData(context: Context, db: SupportSQLiteDatabase) {
             val inputStream = context.assets.open("database_init.sql")
-            val sqlScript = inputStream.bufferedReader().use { it.readText() }
+            val reader = BufferedReader(InputStreamReader(inputStream))
 
             db.beginTransaction()
             try {
-                sqlScript.split(";").forEach { query ->
-                    if (query.trim().isNotEmpty()) {
-                        db.execSQL(query.trim())
+                var line: String? = reader.readLine()
+                while (line != null) {
+                    val query = line.trim()
+                    if (query.isNotEmpty()) {
+                        db.execSQL(query)
                     }
+                    line = reader.readLine()
                 }
                 db.setTransactionSuccessful()
             } finally {
                 db.endTransaction()
+                reader.close() // Close the reader to release resources
+                inputStream.close() //Close the inputstream
             }
         }
     }

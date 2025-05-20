@@ -13,7 +13,7 @@ import com.example.a12.model.TestItem
 import com.example.a12.ui.TestsAdapter
 
 class LearningActivity : AppCompatActivity() {
-
+/*
     private lateinit var db: DbHelper
     private lateinit var adapter: TestsAdapter
     private var currentTab = Tab.ALL
@@ -75,5 +75,5 @@ class LearningActivity : AppCompatActivity() {
         }
         adapter.updateItems(list)
     }
-    private enum class Tab { ALL, IN_PROGRESS, COMPLETED }
+    private enum class Tab { ALL, IN_PROGRESS, COMPLETED }*/
 }
