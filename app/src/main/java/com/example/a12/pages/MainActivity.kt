@@ -1,3 +1,4 @@
+// MainActivity.kt
 package com.example.a12.pages
 
 import android.content.Intent
@@ -8,8 +9,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope                            // ← импорт
-import androidx.recyclerview.widget.LinearLayoutManager          // ← импорт
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a12.R
 import com.example.a12.model.AppDatabase
@@ -18,7 +19,7 @@ import com.example.a12.model.TestItem
 import com.example.a12.model.toTestItem
 import com.example.a12.ui.TestsAdapter
 import com.example.a12.utils.BottomNavHandler
-import kotlinx.coroutines.launch                                  // ← импорт
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var db: AppDatabase
@@ -40,15 +41,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Вот здесь:
         db = AppDatabase.getInstance(this)
         dao = db.testDao()
+
         nav = BottomNavHandler(this, findViewById(android.R.id.content)).also { it.setupNavigation() }
         card = findViewById(R.id.cardContainer)
 
-        // Загружаем данные асинхронно
         lifecycleScope.launch {
             val items = dao.getAllTestItems().map { it.toTestItem() }
-
             listOf(
                 R.id.testsRecyclerView,
                 R.id.testsRecyclerView1,
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                         items = items,
                         detailed = false,
                         dao = dao,
-                        lifecycleOwner = this@MainActivity,  // ← передаём владельца для корутин внутри адаптера
+                        lifecycleOwner = this@MainActivity,
                         onClick = infoClick,
                         onDelete = {}
                     )
@@ -79,12 +80,8 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val lastResult = dao.getLastInProgressResult()
             if (lastResult != null) {
-                // Получили агрегированные данные по тесту
                 val testStats = dao.getTestWithStatsById(lastResult.testId)!!
-
-                // Преобразуем в TestItem (используем ваш маппер)
                 val testItem = testStats.toTestItem().copy(
-                    // подставляем реальные данные из lastResult и testStats
                     resultId = lastResult.resultId,
                     remainingSeconds = lastResult.remainingSeconds?.toLong() ?: 0L,
                     status = lastResult.status,
@@ -92,19 +89,11 @@ class MainActivity : AppCompatActivity() {
                 )
 
                 card.isVisible = true
-
-                // Теперь можно спокойно брать iconResName и другие поля
-                card.findViewById<ImageView>(R.id.cardIcon)
-                    .setImageResource(
-                        resources.getIdentifier(
-                            testItem.iconResName,
-                            "drawable",
-                            packageName
-                        )
-                    )
+                card.findViewById<ImageView>(R.id.cardIcon).setImageResource(
+                    resources.getIdentifier(testItem.iconResName, "drawable", packageName)
+                )
                 card.findViewById<TextView>(R.id.cardTitle).text = testItem.name
 
-                // Получаем статистику ответов
                 val userStats = dao.getResultStats(testItem.resultId)
                 val answered = userStats.totalAnswers
 
@@ -112,7 +101,6 @@ class MainActivity : AppCompatActivity() {
                     "$answered/${testItem.questionsCount}"
                 card.findViewById<TextView>(R.id.cardRemaining).text =
                     "${testItem.remainingSeconds / 60} min"
-
                 card.findViewById<ProgressBar>(R.id.cardProgressBar).progress =
                     if (testItem.questionsCount > 0)
                         answered * 100 / testItem.questionsCount

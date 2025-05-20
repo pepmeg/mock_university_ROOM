@@ -1,24 +1,26 @@
+// TestResultEntity.kt
 package com.example.a12.model.entities
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "test_results",
-    foreignKeys = [ForeignKey(
-        entity = TestEntity::class,
-        parentColumns = ["test_id"],
-        childColumns  = ["test_id"],
-        onDelete      = ForeignKey.CASCADE
-    )],
-    indices = [Index("test_id")]
-)
+@Entity(tableName = "test_results")
 data class TestResultEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo("result_id") val resultId: Long = 0,
-    @ColumnInfo("test_id") val testId: Long,
-    @ColumnInfo("started_at") val startedAt: Long? = null,
-    @ColumnInfo("finished_at") val finishedAt: Long? = null,
-    @ColumnInfo("current_question_order") val currentQuestionOrder: Int = 1,
-    @ColumnInfo("status") val status: String = "in_progress",
-    @ColumnInfo("correct_percentage") val correctPercentage: Double = 0.0,
-    @ColumnInfo("remaining_seconds") val remainingSeconds: Int? = null
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "result_id")
+    val result_id: Long = 0L,
+    @ColumnInfo(name = "test_id")
+    val testId: Long,
+    val status: String,
+    @ColumnInfo(name = "current_question_order")
+    val currentQuestionOrder: Int,
+    @ColumnInfo(name = "remaining_seconds")
+    val remainingSeconds: Int?,
+    @ColumnInfo(name = "finished_at")
+    val finishedAt: Long?,
+    @ColumnInfo(name = "correct_percentage")
+    val correctPercentage: Double,
+    @ColumnInfo(name = "created_at")
+    val createdAt: Long = System.currentTimeMillis() / 1000
 )

@@ -1,3 +1,4 @@
+// UserAnswerEntity.kt
 package com.example.a12.model.entities
 
 import androidx.room.*
@@ -7,7 +8,7 @@ import androidx.room.*
     foreignKeys = [
         ForeignKey(
             entity = TestResultEntity::class,
-            parentColumns = ["result_id"],
+            parentColumns = ["result_id"], // Corrected parent column
             childColumns  = ["result_id"],
             onDelete      = ForeignKey.CASCADE
         ),
@@ -26,21 +27,21 @@ import androidx.room.*
 )
 data class UserAnswerEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo("user_answer_id")
+    @ColumnInfo(name = "user_answer_id")
     val userAnswerId: Long = 0,
 
-    @ColumnInfo("result_id")
+    @ColumnInfo(name = "result_id")
     val resultId: Long,
 
-    @ColumnInfo("question_id")
+    @ColumnInfo(name = "question_id")
     val questionId: Long,
 
-    @ColumnInfo("answer_id")
+    @ColumnInfo(name = "answer_id")
     val answerId: Long?,
 
-    @ColumnInfo("free_text_answer")
+    @ColumnInfo(name = "free_text_answer")
     val freeTextAnswer: String?,
 
-    @ColumnInfo("is_correct")
+    @ColumnInfo(name = "is_correct")
     val isCorrect: Boolean
 )

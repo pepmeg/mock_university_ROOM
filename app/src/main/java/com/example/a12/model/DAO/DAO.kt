@@ -2,6 +2,8 @@ package com.example.a12.model.DAO
 
 import androidx.room.*
 import com.example.a12.model.entities.*
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 
 @Dao
 interface TestDao {
@@ -41,7 +43,7 @@ interface TestDao {
     // endregion
 
     // region Test Results
-    @Query("SELECT * FROM test_results WHERE test_id = :testId ORDER BY result_id DESC")
+    @Query("SELECT * FROM test_results WHERE test_id = :testId ORDER BY result_id DESC") // Не нужно менять,  test_id - правильно
     suspend fun getTestResults(testId: Long): List<TestResultEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -70,7 +72,8 @@ interface TestDao {
 
     // region Complex Queries
     @Transaction
-    @Query("""
+    @Query(
+        """
         SELECT t.*, 
                COUNT(q.question_id) AS total_questions,
                tr.status AS last_status,
@@ -84,7 +87,8 @@ interface TestDao {
         ) latest ON latest.test_id = t.test_id
         LEFT JOIN test_results tr ON tr.result_id = latest.last_result_id
         GROUP BY t.test_id
-    """)
+    """
+    )
     suspend fun getAllTestItems(): List<TestWithStats>
 
     data class TestWithStats(
@@ -94,13 +98,15 @@ interface TestDao {
         @ColumnInfo(name = "last_result_id") val lastResultId: Long?
     )
 
-    @Query("""
+    @Query(
+        """
         SELECT 
             SUM(CASE WHEN ua.is_correct = 1 THEN 1 ELSE 0 END) AS correct,
             COUNT(*) AS total 
         FROM user_answers ua
         WHERE ua.result_id = :resultId
-    """)
+    """
+    )
     suspend fun getResultStats(resultId: Long): ResultStats
 
     data class ResultStats(
@@ -112,13 +118,15 @@ interface TestDao {
     // region Test Session Management
     @Transaction
     suspend fun startTestSession(testId: Long): Long {
+        val now = System.currentTimeMillis() / 1000
         val result = TestResultEntity(
             testId = testId,
             status = "in_progress",
             currentQuestionOrder = 1,
             remainingSeconds = null,
             finishedAt = null,
-            correctPercentage = 0.0
+            correctPercentage = 0.0,
+            createdAt = now
         )
         return insertTestResult(result)
     }
@@ -183,16 +191,20 @@ interface TestDao {
     @Query("UPDATE test_results SET remaining_seconds = :seconds WHERE result_id = :resultId")
     suspend fun updateRemainingSeconds(resultId: Long, seconds: Int)
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM test_results 
         WHERE status = 'in_progress'
         ORDER BY result_id DESC 
         LIMIT 1
-    """)
+    """
+    )
     suspend fun getLastInProgressResult(): TestResultEntity?
 
+
     @Transaction
-    @Query("""
+    @Query(
+        """
     SELECT 
       t.*,
       COUNT(q.question_id)             AS total_questions,
@@ -208,5 +220,41 @@ interface TestDao {
     LEFT JOIN test_results tr ON tr.result_id = latest.last_result_id
     WHERE t.test_id = :testId
     GROUP BY t.test_id
-""")
-    suspend fun getTestWithStatsById(testId: Long): TestWithStats?}
+"""
+    )
+    suspend fun getTestWithStatsById(testId: Long): TestWithStats?
+
+    @Transaction
+    suspend fun seedAll() {
+        // Тесты
+        insertTest(TestEntity(testName = "Java Core", description = null, durationMinutes = 20))
+        insertTest(TestEntity(testName = "Основы C++", description = null, durationMinutes = 10))
+        insertTest(TestEntity(testName = "React JS", description = null, durationMinutes = 10))
+
+        // Вопросы теста 1
+        listOf(
+            QuestionEntity(testId = 1,questionText ="Как объявить класс в коде?",questionType = "single",minAnswers = 1,maxAnswers = 1,orderNumber = 1),
+            QuestionEntity(testId = 1,questionText ="Где правильно создан массив?",questionType = "single",minAnswers = 1,maxAnswers = 1,orderNumber = 2),
+            QuestionEntity(testId = 1,questionText ="Какой класс отвечает за получение информации от пользователя?",questionType = "single",minAnswers = 1,maxAnswers = 1,orderNumber = 3),
+            QuestionEntity(testId = 1,questionText ="Какие математические операции есть в Java?",questionType = "single",minAnswers = 1,maxAnswers = 1,orderNumber = 4)
+        ).forEach { insertQuestion(it) }
+
+        // Ответы к вопросу 1
+        listOf(
+            AnswerEntity(questionId = 1,answerText = "class MyClass {}",isCorrect = true),
+            AnswerEntity(questionId = 1,answerText = "new class MyClass {}", isCorrect = false),
+            AnswerEntity(questionId = 1,answerText = "select * from class MyClass {}", isCorrect = false),
+            AnswerEntity(questionId = 1,answerText = "MyClass extends class {}",isCorrect = false)
+        ).forEach { insertAnswer(it) }
+
+        // Ответы к вопросу 2
+        listOf(
+            AnswerEntity(questionId = 2,answerText = "int a[] = {1, 2, 3, 4, 5};", isCorrect = false),
+            AnswerEntity(questionId = 2,answerText = "int[] a = new int[] {1, 2, 3, 4, 5};", isCorrect = true),
+            AnswerEntity(questionId = 2,answerText = "int[] a = new int {1, 2, 3, 4, 5};", isCorrect = false),
+            AnswerEntity(questionId = 2,answerText = "int[] a = int[] {1, 2, 3, 4, 5};", isCorrect = false)
+        ).forEach { insertAnswer(it) }
+
+        // ... продолжить вставку всех данных аналогично
+    }
+}

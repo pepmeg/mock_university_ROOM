@@ -1,14 +1,13 @@
 package com.example.a12.model
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.a12.model.DAO.TestDao
 import com.example.a12.model.entities.*
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Database(
     entities = [
@@ -30,51 +29,31 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        fun getInstance(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "mock_university.db"
-                )
-                    // при несовпадении схемы — удалять и пересоздавать БД (для dev-стадии)
-                    .fallbackToDestructiveMigration()
-                    // при первом создании выполнять скрипт из assets/database_init.sql
-                    .addCallback(object : Callback() {
-                        override fun onCreate(db: SupportSQLiteDatabase) {
-                            super.onCreate(db)
-                            loadInitialData(context, db)
-                        }
-                    })
-                    .build()
-
-                INSTANCE = instance
-                instance
+        /** Получить экземпляр БД, инициализировав если нужно */
+        fun getInstance(context: Context): AppDatabase =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
             }
-        }
 
-        private fun loadInitialData(
-            context: Context,
-            db: SupportSQLiteDatabase
-        ) {
-            val assetManager = context.assets
-            assetManager.open("database_init.sql").use { inputStream ->
-                BufferedReader(InputStreamReader(inputStream)).use { reader ->
-                    db.beginTransaction()
-                    try {
-                        var sqlLine: String?
-                        while (reader.readLine().also { sqlLine = it } != null) {
-                            val stmt = sqlLine!!.trim()
-                            if (stmt.isNotEmpty()) {
-                                db.execSQL(stmt)
-                            }
+        /** Строит сам Room‑экземпляр */
+        private fun buildDatabase(context: Context): AppDatabase =
+            Room.databaseBuilder(
+                context.applicationContext,
+                AppDatabase::class.java,
+                "mock_university.db"
+            )
+                // при изменении схемы пересоздавать БД (dev‑режим)
+                .fallbackToDestructiveMigration()
+                // при первом создании — запуск сидинга
+                .addCallback(object : Callback() {
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        super.onCreate(db)
+                        // запускаем сидинг в bg‑корутине
+                        CoroutineScope(Dispatchers.IO).launch {
+                            getInstance(context).testDao().seedAll()
                         }
-                        db.setTransactionSuccessful()
-                    } finally {
-                        db.endTransaction()
                     }
-                }
-            }
-        }
+                })
+                .build()
     }
 }
