@@ -1,4 +1,3 @@
-// MainActivity.kt
 package com.example.a12.pages
 
 import android.content.Intent

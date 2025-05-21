@@ -75,7 +75,6 @@ class TestsAdapter(
             loadIcon(icon, item.iconResName)
             name.text = item.name
 
-            // Запускаем корутину для асинхронного получения статистики
             lifecycleOwner.lifecycleScope.launch {
                 val stats = dao.getResultStats(item.resultId)
                 if (item.status == "completed") {

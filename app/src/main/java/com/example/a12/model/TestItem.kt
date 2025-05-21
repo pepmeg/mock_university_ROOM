@@ -21,9 +21,9 @@ fun TestDao.TestWithStats.toTestItem(): TestItem = TestItem(
     name             = test.testName,
     durationMinutes  = test.durationMinutes,
     questionsCount   = totalQuestions,
-    answeredCount    = 0,          // при необходимости можно взять из других полей
-    remainingSeconds = 0L,         // аналогично
+    answeredCount    = 0,
+    remainingSeconds = 0L,
     status           = lastStatus ?: "in_progress",
-    iconResName      = "ic_test_default",  // или другое значение по умолчанию
-    finishedAt       = null        // если нет данных
+    iconResName      = "ic_test_default",
+    finishedAt       = null
 )

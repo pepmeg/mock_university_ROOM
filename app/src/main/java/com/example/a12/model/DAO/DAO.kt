@@ -2,8 +2,6 @@ package com.example.a12.model.DAO
 
 import androidx.room.*
 import com.example.a12.model.entities.*
-import java.time.Instant
-import java.time.format.DateTimeFormatter
 
 @Dao
 interface TestDao {
@@ -18,31 +16,28 @@ interface TestDao {
 
     @Query("DELETE FROM tests WHERE test_id = :testId")
     suspend fun deleteTest(testId: Long)
-    // endregion
 
-    // region Questions
     @Query("SELECT * FROM questions WHERE test_id = :testId ORDER BY order_number ASC")
-    suspend fun getQuestionsForTest(testId: Long): List<QuestionEntity>
+    suspend fun getQuestions(testId: Long): List<QuestionEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQuestion(question: QuestionEntity): Long
 
     @Query("DELETE FROM questions WHERE test_id = :testId")
     suspend fun deleteQuestionsForTest(testId: Long)
-    // endregion
 
-    // region Answers
     @Query("SELECT * FROM answers WHERE question_id = :questionId")
-    suspend fun getAnswersForQuestion(questionId: Long): List<AnswerEntity>
+    suspend fun getAnswersForQuestion(questionId: Int): List<AnswerEntity>
+
+    @Query("SELECT test_name FROM tests WHERE test_id = :testId")
+    suspend fun getTestName(testId: Long): String?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAnswer(answer: AnswerEntity): Long
 
     @Query("DELETE FROM answers WHERE question_id = :questionId")
     suspend fun deleteAnswersForQuestion(questionId: Long)
-    // endregion
 
-    // region Test Results
     @Query("SELECT * FROM test_results WHERE test_id = :testId ORDER BY result_id DESC") // Не нужно менять,  test_id - правильно
     suspend fun getTestResults(testId: Long): List<TestResultEntity>
 
@@ -54,23 +49,28 @@ interface TestDao {
 
     @Query("DELETE FROM test_results WHERE test_id = :testId")
     suspend fun deleteTestResults(testId: Long)
-    // endregion
 
-    // region User Answers
     @Query("SELECT * FROM user_answers WHERE result_id = :resultId")
     suspend fun getUserAnswers(resultId: Long): List<UserAnswerEntity>
 
+    @Query("SELECT duration_minutes FROM tests WHERE test_id = :testId")
+    suspend fun getTestDurationMinutes(testId: Long): Int
+
+    @Query("SELECT test_id FROM test_results WHERE result_id = :resultId")
+    suspend fun getTestIdByResult(resultId: Long): Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserAnswer(userAnswer: UserAnswerEntity): Long
+
+    @Query("UPDATE test_results SET remaining_seconds = :remainingSeconds WHERE result_id = :resultId")
+    suspend fun updateRemainingTime(resultId: Long, remainingSeconds: Int)
 
     @Update
     suspend fun updateUserAnswer(userAnswer: UserAnswerEntity)
 
     @Query("DELETE FROM user_answers WHERE result_id = :resultId")
     suspend fun deleteUserAnswers(resultId: Long)
-    // endregion
 
-    // region Complex Queries
     @Transaction
     @Query(
         """
@@ -113,9 +113,7 @@ interface TestDao {
         @ColumnInfo(name = "correct") val correctAnswers: Int,
         @ColumnInfo(name = "total") val totalAnswers: Int
     )
-    // endregion
 
-    // region Test Session Management
     @Transaction
     suspend fun startTestSession(testId: Long): Long {
         val now = System.currentTimeMillis() / 1000
@@ -174,11 +172,13 @@ interface TestDao {
     @Query("SELECT * FROM test_results WHERE result_id = :resultId")
     suspend fun getTestResult(resultId: Long): TestResultEntity?
 
+    @Query("SELECT * FROM answers WHERE question_id = :questionId")
+    suspend fun getAnswers(questionId: Long): List<AnswerEntity>
+
     @Query("SELECT * FROM user_answers WHERE result_id = :resultId AND question_id = :questionId")
     suspend fun getUserAnswer(resultId: Long, questionId: Long): UserAnswerEntity?
-    // endregion
 
-    // region Metadata
+
     @Query("SELECT duration_minutes FROM tests WHERE test_id = :testId")
     suspend fun getTestDuration(testId: Long): Int
 
@@ -226,12 +226,10 @@ interface TestDao {
 
     @Transaction
     suspend fun seedAll() {
-        // Тесты
         insertTest(TestEntity(testName = "Java Core", description = null, durationMinutes = 20))
         insertTest(TestEntity(testName = "Основы C++", description = null, durationMinutes = 10))
         insertTest(TestEntity(testName = "React JS", description = null, durationMinutes = 10))
 
-        // Вопросы теста 1
         listOf(
             QuestionEntity(testId = 1,questionText ="Как объявить класс в коде?",questionType = "single",minAnswers = 1,maxAnswers = 1,orderNumber = 1),
             QuestionEntity(testId = 1,questionText ="Где правильно создан массив?",questionType = "single",minAnswers = 1,maxAnswers = 1,orderNumber = 2),
@@ -239,7 +237,6 @@ interface TestDao {
             QuestionEntity(testId = 1,questionText ="Какие математические операции есть в Java?",questionType = "single",minAnswers = 1,maxAnswers = 1,orderNumber = 4)
         ).forEach { insertQuestion(it) }
 
-        // Ответы к вопросу 1
         listOf(
             AnswerEntity(questionId = 1,answerText = "class MyClass {}",isCorrect = true),
             AnswerEntity(questionId = 1,answerText = "new class MyClass {}", isCorrect = false),
@@ -247,7 +244,6 @@ interface TestDao {
             AnswerEntity(questionId = 1,answerText = "MyClass extends class {}",isCorrect = false)
         ).forEach { insertAnswer(it) }
 
-        // Ответы к вопросу 2
         listOf(
             AnswerEntity(questionId = 2,answerText = "int a[] = {1, 2, 3, 4, 5};", isCorrect = false),
             AnswerEntity(questionId = 2,answerText = "int[] a = new int[] {1, 2, 3, 4, 5};", isCorrect = true),
@@ -255,6 +251,5 @@ interface TestDao {
             AnswerEntity(questionId = 2,answerText = "int[] a = int[] {1, 2, 3, 4, 5};", isCorrect = false)
         ).forEach { insertAnswer(it) }
 
-        // ... продолжить вставку всех данных аналогично
     }
 }

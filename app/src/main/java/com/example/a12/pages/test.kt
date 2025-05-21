@@ -8,17 +8,24 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.example.a12.model.DbHelper
+import androidx.lifecycle.lifecycleScope
 import com.example.a12.R
+import com.example.a12.model.Answer
+import com.example.a12.model.AppDatabase
+import com.example.a12.model.DAO.TestDao
 import com.example.a12.model.Question
 import com.example.a12.utils.countdown.startCountdown
 import com.example.a12.utils.dots.*
 import com.example.a12.utils.answers.renderAnswers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TestActivity : AppCompatActivity() {
 
-    private lateinit var dbHelper: DbHelper
-    private lateinit var questions: List<Question>
+    private lateinit var testDao: TestDao
+
+    private var questions: List<Question> = emptyList()
     private var currentIndex = 0
     private val answered = mutableSetOf<Int>()
     private var countDownTimer: CountDownTimer? = null
@@ -39,7 +46,7 @@ class TestActivity : AppCompatActivity() {
     private lateinit var submitButton: View
     private lateinit var progressBar: ProgressBar
 
-    private var testId: Int = 1
+    private var testId: Long = 1
     private var resultId: Long = -1
     private var reviewMode = false
 
@@ -47,45 +54,66 @@ class TestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.test)
 
-        dbHelper = DbHelper(this)
-        reviewMode = intent.getBooleanExtra("REVIEW_MODE", false)
-        testId     = intent.getIntExtra("TEST_ID", 1)
-        resultId   = intent.getLongExtra("RESULT_ID", -1)
-        timesUpOverlay = findViewById(R.id.timesUpOverlay)
-        submitButton   = timesUpOverlay.findViewById(R.id.submitButton)
+        testDao = AppDatabase.getInstance(this).testDao()
 
-        questions = dbHelper.getQuestions(testId)
-        if (questions.isEmpty()) {
-            finish(); return
-        }
-        if (!reviewMode && resultId < 0) {
-            resultId = dbHelper.startTestSession(testId)
+        reviewMode = intent.getBooleanExtra("REVIEW_MODE", false)
+        testId = intent.getIntExtra("TEST_ID", 1)
+        resultId = intent.getLongExtra("RESULT_ID", -1)
+        timesUpOverlay = findViewById(R.id.timesUpOverlay)
+        submitButton = timesUpOverlay.findViewById(R.id.submitButton)
+
+        initViews()
+
+        lifecycleScope.launch {
+            questions = withContext(Dispatchers.IO) {
+                testDao.getQuestions(testId)
+            }
+            if (questions.isEmpty()) {
+                finish()
+                return@launch
+            }
+            if (!reviewMode && resultId < 0) {
+                resultId = withContext(Dispatchers.IO) {
+                    testDao.startTestSession(testId)
+                }
+            }
+
+            titleView.text = withContext(Dispatchers.IO) {
+                testDao.getTestName(testId)
+            }
+
+            if (!reviewMode) {
+                val initialMillis = withContext(Dispatchers.IO) {
+                    getInitialMillis(resultId, testDao)
+                }
+                countDownTimer = startCountdown(
+                    initialMillis = initialMillis,
+                    timerText = timerText,
+                    resultId = resultId,
+                    onFinish = { onTimeUp() },
+                    testDao = testDao,
+                    scope = TODO()
+                )
+            }
+
+            progressBar.max = questions.size
+            setupQuestionNumberDots(questions, dotsContainer, this@TestActivity) { index ->
+                lifecycleScope.launch {
+                    displayQuestion(index)
+                }
+            }
+            displayQuestion(0)
         }
 
         submitButton.setOnClickListener {
-            dbHelper.finishTestSession(resultId, (millisUntilFinished / 1000).toInt())
-            navigateToComplete()
-            finish()
-        }
-
-        initViews()
-        titleView.text = dbHelper.getTestName(testId)
-
-        if (!reviewMode) {
-            val initialMillis = dbHelper.getInitialMillis(resultId)
-            countDownTimer = startCountdown(
-                initialMillis = initialMillis,
-                timerText     = timerText,
-                resultId      = resultId,
-                dbHelper      = dbHelper
-            ) {
-                onTimeUp()
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    testDao.finishTestSession(resultId, (millisUntilFinished / 1000).toInt())
+                }
+                navigateToComplete()
+                finish()
             }
         }
-        progressBar = findViewById(R.id.testProgressBar)
-        progressBar.max = questions.size
-        setupQuestionNumberDots(questions, dotsContainer, this) { displayQuestion(it) }
-        displayQuestion(0)
     }
 
     override fun onDestroy() {
@@ -94,112 +122,131 @@ class TestActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        titleView          = findViewById(R.id.title)
-        questionTv         = findViewById(R.id.question)
-        answersGroup       = findViewById(R.id.answersContainer)
-        scrollQuestions    = findViewById(R.id.scrollQuestionNumbers)
-        dotsContainer      = findViewById(R.id.questionNumbersContainer)
-        timerText          = findViewById(R.id.timerText)
-        backIcon           = findViewById(R.id.backIcon)
-        timerContainer     = findViewById(R.id.timerContainer)
+        titleView = findViewById(R.id.title)
+        questionTv = findViewById(R.id.question)
+        answersGroup = findViewById(R.id.answersContainer)
+        scrollQuestions = findViewById(R.id.scrollQuestionNumbers)
+        dotsContainer = findViewById(R.id.questionNumbersContainer)
+        timerText = findViewById(R.id.timerText)
+        backIcon = findViewById(R.id.backIcon)
+        timerContainer = findViewById(R.id.timerContainer)
         nextButtonTextView = findViewById(R.id.nextButtonText)
         explanationContainer = findViewById(R.id.explanationContainer)
-        explanationText      = findViewById(R.id.explanationText)
+        explanationText = findViewById(R.id.explanationText)
         backIcon.setOnClickListener { onBackPressed() }
         timerContainer.isVisible = !reviewMode
+        progressBar = findViewById(R.id.testProgressBar)
     }
 
-    private fun displayQuestion(index: Int) {
+    private suspend fun displayQuestion(index: Int) {
         if (!reviewMode && index != currentIndex && checkAnswered(currentIndex)) {
             answered.add(currentIndex)
         }
         currentIndex = index
         progressBar.progress = index + 1
-        updateDotsUI(
-            container    = dotsContainer,
-            currentIndex = currentIndex,
-            context      = this,
-            dbHelper     = dbHelper,
-            questions    = questions,
-            resultId     = resultId,
-            reviewMode   = reviewMode
-        )
-        scrollToCurrentDot(dotsContainer, scrollQuestions, currentIndex)
+        withContext(Dispatchers.Main) {
+            updateDotsUI(
+                container = dotsContainer,
+                currentIndex = currentIndex,
+                context = this@TestActivity,
+                testDao = testDao,
+                questions = questions,
+                resultId = resultId,
+                reviewMode = reviewMode
+            )
+            scrollToCurrentDot(dotsContainer, scrollQuestions, currentIndex)
+        }
 
         val q = questions[index]
         questionTv.text = q.text
-        val answers       = dbHelper.getAnswers(q.id)
-        val savedAnswerId = dbHelper.getUserAnswer(resultId, q.id)
-
-        renderAnswers(
-            context          = this,
-            answersGroup     = answersGroup,
-            answers          = answers,
-            questionId       = q.id,
-            selectedAnswerId = savedAnswerId
-        ) { questionId, answerId ->
-            val isCorr = if (answers.first { it.id == answerId }.isCorrect) 1 else 0
-            dbHelper.saveUserAnswer(
-                resultId   = resultId,
-                questionId = questionId,
-                answerId   = answerId,
-                isCorrect  = isCorr
-            )
-            dbHelper.updateRemainingTime(resultId, (millisUntilFinished / 1000).toInt())
-            answered.add(currentIndex)
-            updateDotsUI(
-                container    = dotsContainer,
-                currentIndex = currentIndex,
-                context      = this,
-                dbHelper     = dbHelper,
-                questions    = questions,
-                resultId     = resultId,
-                reviewMode   = reviewMode
-            )
+        val answers = withContext(Dispatchers.IO) {
+            testDao.getAnswers(q.id)
         }
-        if (reviewMode) {
-            for (i in 0 until answersGroup.childCount) {
-                val rb     = answersGroup.getChildAt(i) as RadioButton
-                val aid    = rb.id
-                val answer = answers.first { it.id == aid }
-                val bgRes  = when {
-                    aid == savedAnswerId && !answer.isCorrect -> R.drawable.wrong_answer
-                    answer.isCorrect                          -> R.drawable.correctly_answer
-                    answer.text.length > 50                   -> R.drawable.bg_answer_neutral_long
-                    else                                      -> R.drawable.bg_answer_neutral_short
+        val savedAnswerId = withContext(Dispatchers.IO) {
+            testDao.getUserAnswer(resultId, q.id)
+        }
+
+        withContext(Dispatchers.Main) {
+            renderAnswers(
+                context = this@TestActivity,
+                answersGroup = answersGroup,
+                answers = answers,
+                questionId = q.id,
+                selectedAnswerId = savedAnswerId
+            ) { questionId, answerId ->
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val isCorrect = answers.first { it.id == answerId }.isCorrect
+                    testDao.saveUserAnswer(resultId, questionId, answerId, if (isCorrect) 1 else 0)
+                    testDao.updateRemainingTime(resultId, (millisUntilFinished / 1000).toInt())
+                    answered.add(currentIndex)
                 }
-                rb.isEnabled  = false
-                rb.background = ContextCompat.getDrawable(this, bgRes)
+                lifecycleScope.launch(Dispatchers.Main) {
+                    updateDotsUI(
+                        container = dotsContainer,
+                        currentIndex = currentIndex,
+                        context = this@TestActivity,
+                        testDao = testDao,
+                        questions = questions,
+                        resultId = resultId,
+                        reviewMode = reviewMode
+                    )
+                }
             }
-            explanationContainer.isVisible = true
 
-            explanationText.text = """
-        There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet.
-    """.trimIndent()
-        } else {
-            explanationContainer.isVisible = false
+            if (reviewMode) {
+                for (i in 0 until answersGroup.childCount) {
+                    val rb = answersGroup.getChildAt(i) as RadioButton
+                    val aid = rb.id
+                    val answer = answers.first { it.id == aid }
+                    val bgRes = when {
+                        aid == savedAnswerId && !answer.isCorrect -> R.drawable.wrong_answer
+                        answer.isCorrect -> R.drawable.correctly_answer
+                        answer.text.length > 50 -> R.drawable.bg_answer_neutral_long
+                        else -> R.drawable.bg_answer_neutral_short
+                    }
+                    rb.isEnabled = false
+                    rb.background = ContextCompat.getDrawable(this@TestActivity, bgRes)
+                }
+                explanationContainer.isVisible = true
+                explanationText.text = """
+                    There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet.
+                """.trimIndent()
+            } else {
+                explanationContainer.isVisible = false
+            }
+
+            nextButtonTextView.text = if (currentIndex == questions.lastIndex) "Wrap up" else "Next"
         }
-
-        nextButtonTextView.text = if (currentIndex == questions.lastIndex) "Wrap up" else "Next"
     }
 
-    private fun checkAnswered(idx: Int) =
-        idx in questions.indices &&
-                dbHelper.getUserAnswer(resultId, questions[idx].id) != null
+    private suspend fun checkAnswered(idx: Int): Boolean {
+        if (idx !in questions.indices) return false
+        return withContext(Dispatchers.IO) {
+            testDao.getUserAnswer(resultId, questions[idx].id) != null
+        }
+    }
 
     fun onPreviousClicked(view: View) {
-        if (currentIndex > 0) displayQuestion(currentIndex - 1)
+        if (currentIndex > 0) {
+            lifecycleScope.launch {
+                displayQuestion(currentIndex - 1)
+            }
+        }
     }
 
     fun onNextClicked(view: View) {
-        if (currentIndex < questions.lastIndex) {
-            displayQuestion(currentIndex + 1)
-        } else {
-            if (!reviewMode) {
-                dbHelper.finishTestSession(resultId, (millisUntilFinished / 1000).toInt())
-                navigateToComplete()
+        lifecycleScope.launch {
+            if (currentIndex < questions.lastIndex) {
+                displayQuestion(currentIndex + 1)
+            } else {
+                if (!reviewMode) {
+                    withContext(Dispatchers.IO) {
+                        testDao.finishTestSession(resultId, (millisUntilFinished / 1000).toInt())
+                    }
+                    navigateToComplete()
+                }
+                finish()
             }
-            finish()
         }
     }
 
@@ -210,7 +257,7 @@ class TestActivity : AppCompatActivity() {
 
     private fun navigateToComplete() {
         Intent(this, CompleteActivity::class.java).apply {
-            putExtra("TEST_ID",   testId)
+            putExtra("TEST_ID", testId)
             putExtra("TEST_NAME", titleView.text.toString())
             putExtra("RESULT_ID", resultId)
         }.also { startActivity(it) }

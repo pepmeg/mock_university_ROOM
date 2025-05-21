@@ -6,8 +6,8 @@ import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.example.a12.model.DbHelper
 import com.example.a12.R
+import com.example.a12.model.DAO.TestDao
 import com.example.a12.model.Question
 
 fun setupQuestionNumberDots(
@@ -37,11 +37,12 @@ fun setupQuestionNumberDots(
     }
 }
 
-fun updateDotsUI(
+// suspend версия, работающая с Room DAO и сущностями
+suspend fun updateDotsUI(
     container: LinearLayout,
     currentIndex: Int,
     context: Context,
-    dbHelper: DbHelper,
+    testDao: TestDao,
     questions: List<Question>,
     resultId: Long,
     reviewMode: Boolean
@@ -54,11 +55,13 @@ fun updateDotsUI(
             dot.setTextColor(Color.WHITE)
         } else {
             val question = questions[i]
-            val userAnswerId = dbHelper.getUserAnswer(resultId, question.id)
-            val answers = dbHelper.getAnswers(question.id)
+            // Получаем ответ пользователя из DAO (suspend)
+            val userAnswerEntity = testDao.getUserAnswer(resultId, question.questionId)
+            // Получаем список ответов по вопросу
+            val answers = testDao.getAnswersForQuestion(question.questionId)
 
-            if (userAnswerId != null) {
-                val selectedAnswer = answers.find { it.id == userAnswerId }
+            if (userAnswerEntity != null) {
+                val selectedAnswer = answers.find { it.answerId.toLong() == userAnswerEntity.answerId }
                 val isCorrect = selectedAnswer?.isCorrect == true
 
                 val bgRes = when {

@@ -1,4 +1,3 @@
-// TestResultEntity.kt
 package com.example.a12.model.entities
 
 import androidx.room.ColumnInfo
@@ -9,7 +8,7 @@ import androidx.room.PrimaryKey
 data class TestResultEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "result_id")
-    val result_id: Long = 0L,
+    val resultId: Long = 0L,
     @ColumnInfo(name = "test_id")
     val testId: Long,
     val status: String,
