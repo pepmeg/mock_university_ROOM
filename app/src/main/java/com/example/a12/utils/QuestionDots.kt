@@ -8,10 +8,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.a12.R
 import com.example.a12.model.DAO.TestDao
-import com.example.a12.model.Question
+import com.example.a12.model.entities.QuestionEntity
 
 fun setupQuestionNumberDots(
-    questions: List<Question>,
+    questions: List<QuestionEntity>,
     dotsContainer: LinearLayout,
     context: Context,
     onClick: (Int) -> Unit
@@ -37,13 +37,13 @@ fun setupQuestionNumberDots(
     }
 }
 
-// suspend версия, работающая с Room DAO и сущностями
+// Suspend-версия, вызывайте из coroutineScope.launch { updateDotsUI(...) }
 suspend fun updateDotsUI(
     container: LinearLayout,
     currentIndex: Int,
     context: Context,
     testDao: TestDao,
-    questions: List<Question>,
+    questions: List<QuestionEntity>,
     resultId: Long,
     reviewMode: Boolean
 ) {
@@ -55,29 +55,28 @@ suspend fun updateDotsUI(
             dot.setTextColor(Color.WHITE)
         } else {
             val question = questions[i]
-            // Получаем ответ пользователя из DAO (suspend)
-            val userAnswerEntity = testDao.getUserAnswer(resultId, question.questionId)
-            // Получаем список ответов по вопросу
-            val answers = testDao.getAnswersForQuestion(question.questionId)
+            // Получаем ответ пользователя из DAO (null, если не отвечали)
+            val userAnswer = testDao.getUserAnswer(resultId, question.questionId.toLong())
+            // Получаем список ответов из DAO
+            val answers = testDao.getAnswersForQuestion(question.questionId.toLong())
 
-            if (userAnswerEntity != null) {
-                val selectedAnswer = answers.find { it.answerId.toLong() == userAnswerEntity.answerId }
-                val isCorrect = selectedAnswer?.isCorrect == true
+            if (userAnswer != null) {
+                // ищем AnswerEntity с нужным answerId
+                val selected = answers.find { it.answerId.toLong() == userAnswer.answerId }
+                val isCorrect = selected?.isCorrect == true
 
                 val bgRes = when {
-                    reviewMode && isCorrect -> R.drawable.bg_green_circle
+                    reviewMode && isCorrect  -> R.drawable.bg_green_circle
                     reviewMode && !isCorrect -> R.drawable.bg_red_circle
-                    else -> R.drawable.bg_circle_selected
+                    else                      -> R.drawable.bg_circle_selected
                 }
-
                 dot.background = ContextCompat.getDrawable(context, bgRes)
 
                 val textColor = when {
-                    reviewMode && isCorrect -> Color.parseColor("#1D6656")
+                    reviewMode && isCorrect  -> Color.parseColor("#1D6656")
                     reviewMode && !isCorrect -> Color.parseColor("#E04852")
-                    else -> Color.WHITE
+                    else                      -> Color.WHITE
                 }
-
                 dot.setTextColor(textColor)
             } else {
                 dot.background = ContextCompat.getDrawable(context, R.drawable.bg_circle_unselected)

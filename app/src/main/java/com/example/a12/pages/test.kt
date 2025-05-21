@@ -13,7 +13,7 @@ import com.example.a12.R
 import com.example.a12.model.Answer
 import com.example.a12.model.AppDatabase
 import com.example.a12.model.DAO.TestDao
-import com.example.a12.model.Question
+import com.example.a12.model.entities.QuestionEntity
 import com.example.a12.utils.countdown.startCountdown
 import com.example.a12.utils.dots.*
 import com.example.a12.utils.answers.renderAnswers
@@ -25,7 +25,8 @@ class TestActivity : AppCompatActivity() {
 
     private lateinit var testDao: TestDao
 
-    private var questions: List<Question> = emptyList()
+    private var questions: List<QuestionEntity> = emptyList()
+
     private var currentIndex = 0
     private val answered = mutableSetOf<Int>()
     private var countDownTimer: CountDownTimer? = null
@@ -57,7 +58,7 @@ class TestActivity : AppCompatActivity() {
         testDao = AppDatabase.getInstance(this).testDao()
 
         reviewMode = intent.getBooleanExtra("REVIEW_MODE", false)
-        testId = intent.getIntExtra("TEST_ID", 1)
+        testId = intent.getLongExtra("TEST_ID", 1L)
         resultId = intent.getLongExtra("RESULT_ID", -1)
         timesUpOverlay = findViewById(R.id.timesUpOverlay)
         submitButton = timesUpOverlay.findViewById(R.id.submitButton)
@@ -84,15 +85,20 @@ class TestActivity : AppCompatActivity() {
 
             if (!reviewMode) {
                 val initialMillis = withContext(Dispatchers.IO) {
-                    getInitialMillis(resultId, testDao)
+                    testDao.getRemainingSeconds(resultId)?.takeIf { it > 0 }?.let { it * 1000L }
+                        ?: run {
+                            val testIdFromRes = testDao.getTestIdByResult(resultId)
+                            val minutes       = testDao.getTestDurationMinutes(testIdFromRes)
+                            minutes * 60_000L
+                        }
                 }
                 countDownTimer = startCountdown(
                     initialMillis = initialMillis,
-                    timerText = timerText,
-                    resultId = resultId,
-                    onFinish = { onTimeUp() },
-                    testDao = testDao,
-                    scope = TODO()
+                    timerText     = timerText,
+                    resultId      = resultId,
+                    testDao       = testDao,
+                    scope         = lifecycleScope,
+                    onFinish      = { onTimeUp() }
                 )
             }
 
@@ -158,25 +164,39 @@ class TestActivity : AppCompatActivity() {
         }
 
         val q = questions[index]
-        questionTv.text = q.text
+        questionTv.text = q.questionText
+
         val answers = withContext(Dispatchers.IO) {
-            testDao.getAnswers(q.id)
+            testDao.getAnswers(q.questionId.toLong())
+        }.map { e ->
+            Answer(
+                id = e.answerId,
+                text = e.answerText,
+                isCorrect = e.isCorrect
+            )
         }
-        val savedAnswerId = withContext(Dispatchers.IO) {
-            testDao.getUserAnswer(resultId, q.id)
-        }
+
+        val savedAnswerId: Int? = withContext(Dispatchers.IO) {
+            testDao.getUserAnswer(resultId, q.questionId.toLong())
+        }?.answerId?.toInt()
 
         withContext(Dispatchers.Main) {
             renderAnswers(
                 context = this@TestActivity,
                 answersGroup = answersGroup,
                 answers = answers,
-                questionId = q.id,
+                questionId = q.questionId,
                 selectedAnswerId = savedAnswerId
             ) { questionId, answerId ->
                 lifecycleScope.launch(Dispatchers.IO) {
                     val isCorrect = answers.first { it.id == answerId }.isCorrect
-                    testDao.saveUserAnswer(resultId, questionId, answerId, if (isCorrect) 1 else 0)
+                    testDao.saveUserAnswer(
+                        resultId = resultId,
+                        questionId = questionId.toLong(),
+                        answerId = answerId.toLong(),
+                        isCorrect = isCorrect,
+                        freeText = null
+                    )
                     testDao.updateRemainingTime(resultId, (millisUntilFinished / 1000).toInt())
                     answered.add(currentIndex)
                 }
@@ -195,14 +215,14 @@ class TestActivity : AppCompatActivity() {
 
             if (reviewMode) {
                 for (i in 0 until answersGroup.childCount) {
-                    val rb = answersGroup.getChildAt(i) as RadioButton
+                    val rb  = answersGroup.getChildAt(i) as RadioButton
                     val aid = rb.id
                     val answer = answers.first { it.id == aid }
                     val bgRes = when {
                         aid == savedAnswerId && !answer.isCorrect -> R.drawable.wrong_answer
-                        answer.isCorrect -> R.drawable.correctly_answer
-                        answer.text.length > 50 -> R.drawable.bg_answer_neutral_long
-                        else -> R.drawable.bg_answer_neutral_short
+                        answer.isCorrect                          -> R.drawable.correctly_answer
+                        answer.text.length > 50                   -> R.drawable.bg_answer_neutral_long
+                        else                                      -> R.drawable.bg_answer_neutral_short
                     }
                     rb.isEnabled = false
                     rb.background = ContextCompat.getDrawable(this@TestActivity, bgRes)
@@ -215,14 +235,15 @@ class TestActivity : AppCompatActivity() {
                 explanationContainer.isVisible = false
             }
 
-            nextButtonTextView.text = if (currentIndex == questions.lastIndex) "Wrap up" else "Next"
+            nextButtonTextView.text =
+                if (currentIndex == questions.lastIndex) "Wrap up" else "Next"
         }
     }
 
     private suspend fun checkAnswered(idx: Int): Boolean {
         if (idx !in questions.indices) return false
         return withContext(Dispatchers.IO) {
-            testDao.getUserAnswer(resultId, questions[idx].id) != null
+            testDao.getUserAnswer(resultId, questions[idx].questionId.toLong()) != null
         }
     }
 

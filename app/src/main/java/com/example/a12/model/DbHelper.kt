@@ -52,7 +52,7 @@ class DbHelper(private val context: Context) :
                 val id = cursor.getInt(cursor.getColumnIndexOrThrow("question_id"))
                 val text = cursor.getString(cursor.getColumnIndexOrThrow("question_text"))
                 val type = cursor.getString(cursor.getColumnIndexOrThrow("question_type"))
-                questions.add(Question(id, text, type))
+//                questions.add(Question(id, text, type))
             } while (cursor.moveToNext())
         }
         cursor.close()

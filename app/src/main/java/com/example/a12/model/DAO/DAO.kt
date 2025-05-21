@@ -27,7 +27,7 @@ interface TestDao {
     suspend fun deleteQuestionsForTest(testId: Long)
 
     @Query("SELECT * FROM answers WHERE question_id = :questionId")
-    suspend fun getAnswersForQuestion(questionId: Int): List<AnswerEntity>
+    suspend fun getAnswersForQuestion(questionId: Long): List<AnswerEntity>
 
     @Query("SELECT test_name FROM tests WHERE test_id = :testId")
     suspend fun getTestName(testId: Long): String?
@@ -38,7 +38,7 @@ interface TestDao {
     @Query("DELETE FROM answers WHERE question_id = :questionId")
     suspend fun deleteAnswersForQuestion(questionId: Long)
 
-    @Query("SELECT * FROM test_results WHERE test_id = :testId ORDER BY result_id DESC") // Не нужно менять,  test_id - правильно
+    @Query("SELECT * FROM test_results WHERE test_id = :testId ORDER BY result_id DESC")
     suspend fun getTestResults(testId: Long): List<TestResultEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -50,8 +50,8 @@ interface TestDao {
     @Query("DELETE FROM test_results WHERE test_id = :testId")
     suspend fun deleteTestResults(testId: Long)
 
-    @Query("SELECT * FROM user_answers WHERE result_id = :resultId")
-    suspend fun getUserAnswers(resultId: Long): List<UserAnswerEntity>
+    @Query("SELECT * FROM user_answers WHERE result_id = :resultId AND question_id = :questionId")
+    suspend fun getUserAnswer(resultId: Long, questionId: Long): UserAnswerEntity?
 
     @Query("SELECT duration_minutes FROM tests WHERE test_id = :testId")
     suspend fun getTestDurationMinutes(testId: Long): Int
@@ -175,10 +175,6 @@ interface TestDao {
     @Query("SELECT * FROM answers WHERE question_id = :questionId")
     suspend fun getAnswers(questionId: Long): List<AnswerEntity>
 
-    @Query("SELECT * FROM user_answers WHERE result_id = :resultId AND question_id = :questionId")
-    suspend fun getUserAnswer(resultId: Long, questionId: Long): UserAnswerEntity?
-
-
     @Query("SELECT duration_minutes FROM tests WHERE test_id = :testId")
     suspend fun getTestDuration(testId: Long): Int
 
@@ -241,14 +237,12 @@ interface TestDao {
             AnswerEntity(questionId = 1,answerText = "class MyClass {}",isCorrect = true),
             AnswerEntity(questionId = 1,answerText = "new class MyClass {}", isCorrect = false),
             AnswerEntity(questionId = 1,answerText = "select * from class MyClass {}", isCorrect = false),
-            AnswerEntity(questionId = 1,answerText = "MyClass extends class {}",isCorrect = false)
-        ).forEach { insertAnswer(it) }
-
-        listOf(
+            AnswerEntity(questionId = 1,answerText = "MyClass extends class {}",isCorrect = false),
             AnswerEntity(questionId = 2,answerText = "int a[] = {1, 2, 3, 4, 5};", isCorrect = false),
             AnswerEntity(questionId = 2,answerText = "int[] a = new int[] {1, 2, 3, 4, 5};", isCorrect = true),
             AnswerEntity(questionId = 2,answerText = "int[] a = new int {1, 2, 3, 4, 5};", isCorrect = false),
-            AnswerEntity(questionId = 2,answerText = "int[] a = int[] {1, 2, 3, 4, 5};", isCorrect = false)
+            AnswerEntity(questionId = 2,answerText = "int[] a = int[] {1, 2, 3, 4, 5};", isCorrect = false),
+            AnswerEntity(questionId = 3,answerText = "int[] a = int[] {1, 2, 3, 4, 5};", isCorrect = false),
         ).forEach { insertAnswer(it) }
 
     }

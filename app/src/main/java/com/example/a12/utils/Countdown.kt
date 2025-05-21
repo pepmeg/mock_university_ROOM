@@ -30,14 +30,4 @@ fun startCountdown(
             onFinish()
         }
     }.start()
-
-    suspend fun getInitialMillis(resultId: Long, testDao: TestDao): Long {
-        val remainingSeconds = testDao.getRemainingSeconds(resultId)
-        if (remainingSeconds != null && remainingSeconds > 0) {
-            return remainingSeconds * 1000L
-        }
-        val testId = testDao.getTestIdByResult(resultId)
-        val minutes = testDao.getTestDurationMinutes(testId)
-        return minutes * 60_000L
-    }
 }

@@ -28,7 +28,7 @@ class TestsAdapter(
     private var items: List<TestItem>,
     private val detailed: Boolean,
     private val dao: TestDao,
-    private val lifecycleOwner: LifecycleOwner,                    // ← добавлено
+    private val lifecycleOwner: LifecycleOwner,
     private val onClick: (TestItem) -> Unit,
     private val onDelete: (TestItem) -> Unit
 ) : RecyclerView.Adapter<TestsAdapter.BaseVH>() {
