@@ -1,4 +1,3 @@
-// UserAnswerEntity.kt
 package com.example.a12.model.entities
 
 import androidx.room.*
@@ -8,7 +7,7 @@ import androidx.room.*
     foreignKeys = [
         ForeignKey(
             entity = TestResultEntity::class,
-            parentColumns = ["result_id"], // Corrected parent column
+            parentColumns = ["result_id"],
             childColumns  = ["result_id"],
             onDelete      = ForeignKey.CASCADE
         ),

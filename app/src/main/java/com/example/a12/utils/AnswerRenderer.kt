@@ -5,12 +5,12 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.core.content.ContextCompat
 import com.example.a12.R
-import com.example.a12.model.Answer
+import com.example.a12.model.entities.AnswerEntity
 
 fun renderAnswers(
     context: Context,
     answersGroup: RadioGroup,
-    answers: List<Answer>,
+    answers: List<AnswerEntity>,
     questionId: Int,
     selectedAnswerId: Int?,
     onAnswerSelected: (questionId: Int, answerId: Int) -> Unit
@@ -19,10 +19,10 @@ fun renderAnswers(
     answersGroup.removeAllViews()
 
     answers.forEach { answer ->
-        val isLong = answer.text.length > 50
+        val isLong = answer.answerText.length > 50
         val rb = RadioButton(context).apply {
-            text = answer.text
-            id = answer.id
+            text = answer.answerText
+            id = answer.answerId
             buttonDrawable = null
             background = ContextCompat.getDrawable(
                 context,

@@ -18,7 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a12.R
 import com.example.a12.model.DAO.TestDao
-import com.example.a12.model.DbHelper
 import com.example.a12.model.TestItem
 import kotlinx.coroutines.launch
 import java.sql.Date

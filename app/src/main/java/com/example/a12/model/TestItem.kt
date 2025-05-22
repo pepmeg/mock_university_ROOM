@@ -15,15 +15,24 @@ data class TestItem(
     val finishedAt: Long?
 )
 
-fun TestDao.TestWithStats.toTestItem(): TestItem = TestItem(
-    id               = test.testId,
-    resultId         = lastResultId ?: 0L,
-    name             = test.testName,
-    durationMinutes  = test.durationMinutes,
-    questionsCount   = totalQuestions,
-    answeredCount    = 0,
-    remainingSeconds = 0L,
-    status           = lastStatus ?: "in_progress",
-    iconResName      = "ic_test_default",
-    finishedAt       = null
-)
+fun TestDao.TestWithStats.toTestItem(): TestItem {
+    val iconRes = when {
+        test.testName.contains("Java",   ignoreCase = true) -> "java_logo"
+        test.testName.contains("C++",    ignoreCase = true) -> "c_logo"
+        test.testName.contains("React",  ignoreCase = true) -> "react_logo"
+        else                                               -> "ic_test_default"
+    }
+
+    return TestItem(
+        id               = test.testId,
+        resultId         = lastResultId ?: 0L,
+        name             = test.testName,
+        durationMinutes  = test.durationMinutes,
+        questionsCount   = totalQuestions,
+        answeredCount    = answeredCount,
+        remainingSeconds = remainingSeconds.toLong(),
+        status           = lastStatus ?: "in_progress",
+        iconResName      = iconRes,
+        finishedAt       = finishedAt
+    )
+}

@@ -10,10 +10,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.a12.R
-import com.example.a12.model.Answer
 import com.example.a12.model.AppDatabase
 import com.example.a12.model.DAO.TestDao
 import com.example.a12.model.entities.QuestionEntity
+import com.example.a12.model.entities.UserAnswerEntity
 import com.example.a12.utils.countdown.startCountdown
 import com.example.a12.utils.dots.*
 import com.example.a12.utils.answers.renderAnswers
@@ -166,50 +166,36 @@ class TestActivity : AppCompatActivity() {
         val q = questions[index]
         questionTv.text = q.questionText
 
-        val answers = withContext(Dispatchers.IO) {
+        // 1) Получаем список AnswerEntity
+        val answerEntities = withContext(Dispatchers.IO) {
             testDao.getAnswers(q.questionId.toLong())
-        }.map { e ->
-            Answer(
-                id = e.answerId,
-                text = e.answerText,
-                isCorrect = e.isCorrect
-            )
         }
 
-        val savedAnswerId: Int? = withContext(Dispatchers.IO) {
+        val savedAnswerEntity: UserAnswerEntity? = withContext(Dispatchers.IO) {
             testDao.getUserAnswer(resultId, q.questionId.toLong())
-        }?.answerId?.toInt()
+        }
+
+        val savedAnswerId: Long? = savedAnswerEntity?.answerId
 
         withContext(Dispatchers.Main) {
             renderAnswers(
-                context = this@TestActivity,
-                answersGroup = answersGroup,
-                answers = answers,
-                questionId = q.questionId,
-                selectedAnswerId = savedAnswerId
+                context          = this@TestActivity,
+                answersGroup     = answersGroup,
+                answers          = answerEntities,
+                questionId       = q.questionId,
+                // Используем savedAnswerId?.toInt() безопасно
+                selectedAnswerId = savedAnswerId?.toInt()
             ) { questionId, answerId ->
+                val sel = answerEntities.first { it.answerId == answerId }
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val isCorrect = answers.first { it.id == answerId }.isCorrect
                     testDao.saveUserAnswer(
-                        resultId = resultId,
+                        resultId   = resultId,
                         questionId = questionId.toLong(),
-                        answerId = answerId.toLong(),
-                        isCorrect = isCorrect,
-                        freeText = null
+                        answerId   = answerId.toLong(),
+                        freeText   = null,
+                        isCorrect  = sel.isCorrect
                     )
                     testDao.updateRemainingTime(resultId, (millisUntilFinished / 1000).toInt())
-                    answered.add(currentIndex)
-                }
-                lifecycleScope.launch(Dispatchers.Main) {
-                    updateDotsUI(
-                        container = dotsContainer,
-                        currentIndex = currentIndex,
-                        context = this@TestActivity,
-                        testDao = testDao,
-                        questions = questions,
-                        resultId = resultId,
-                        reviewMode = reviewMode
-                    )
                 }
             }
 
@@ -217,26 +203,20 @@ class TestActivity : AppCompatActivity() {
                 for (i in 0 until answersGroup.childCount) {
                     val rb  = answersGroup.getChildAt(i) as RadioButton
                     val aid = rb.id
-                    val answer = answers.first { it.id == aid }
+
+                    val ent = answerEntities.first { it.answerId == aid }
+
                     val bgRes = when {
-                        aid == savedAnswerId && !answer.isCorrect -> R.drawable.wrong_answer
-                        answer.isCorrect                          -> R.drawable.correctly_answer
-                        answer.text.length > 50                   -> R.drawable.bg_answer_neutral_long
-                        else                                      -> R.drawable.bg_answer_neutral_short
+                        savedAnswerId?.toInt() == aid && !ent.isCorrect -> R.drawable.wrong_answer
+                        ent.isCorrect                                   -> R.drawable.correctly_answer
+                        ent.answerText.length > 50                      -> R.drawable.bg_answer_neutral_long
+                        else                                            -> R.drawable.bg_answer_neutral_short
                     }
+
                     rb.isEnabled = false
                     rb.background = ContextCompat.getDrawable(this@TestActivity, bgRes)
                 }
-                explanationContainer.isVisible = true
-                explanationText.text = """
-                    There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet.
-                """.trimIndent()
-            } else {
-                explanationContainer.isVisible = false
             }
-
-            nextButtonTextView.text =
-                if (currentIndex == questions.lastIndex) "Wrap up" else "Next"
         }
     }
 
