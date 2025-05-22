@@ -5,8 +5,6 @@ import com.example.a12.model.entities.*
 
 @Dao
 interface TestDao {
-    @Query("SELECT * FROM tests")
-    suspend fun getAllTests(): List<TestEntity>
 
     @Query("SELECT * FROM tests WHERE test_id = :testId")
     suspend fun getTestById(testId: Long): TestEntity?
@@ -26,9 +24,6 @@ interface TestDao {
     @Query("DELETE FROM questions WHERE test_id = :testId")
     suspend fun deleteQuestionsForTest(testId: Long)
 
-    @Query("SELECT * FROM answers WHERE question_id = :questionId")
-    suspend fun getAnswersForQuestion(questionId: Long): List<AnswerEntity>
-
     @Query("SELECT test_name FROM tests WHERE test_id = :testId")
     suspend fun getTestName(testId: Long): String?
 
@@ -37,9 +32,6 @@ interface TestDao {
 
     @Query("DELETE FROM answers WHERE question_id = :questionId")
     suspend fun deleteAnswersForQuestion(questionId: Long)
-
-    @Query("SELECT * FROM test_results WHERE test_id = :testId ORDER BY result_id DESC")
-    suspend fun getTestResults(testId: Long): List<TestResultEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTestResult(result: TestResultEntity): Long
@@ -52,9 +44,6 @@ interface TestDao {
 
     @Query("SELECT * FROM user_answers WHERE result_id = :resultId AND question_id = :questionId")
     suspend fun getUserAnswer(resultId: Long, questionId: Long): UserAnswerEntity?
-
-    @Query("SELECT duration_minutes FROM tests WHERE test_id = :testId")
-    suspend fun getTestDurationMinutes(testId: Long): Int
 
     @Query("SELECT test_id FROM test_results WHERE result_id = :resultId")
     suspend fun getTestIdByResult(resultId: Long): Long
@@ -197,9 +186,6 @@ interface TestDao {
 
     @Query("SELECT remaining_seconds FROM test_results WHERE result_id = :resultId")
     suspend fun getRemainingSeconds(resultId: Long): Int?
-
-    @Query("UPDATE test_results SET remaining_seconds = :seconds WHERE result_id = :resultId")
-    suspend fun updateRemainingSeconds(resultId: Long, seconds: Int)
 
     @Query(
         """

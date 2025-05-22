@@ -88,7 +88,7 @@ class TestActivity : AppCompatActivity() {
                     testDao.getRemainingSeconds(resultId)?.takeIf { it > 0 }?.let { it * 1000L }
                         ?: run {
                             val testIdFromRes = testDao.getTestIdByResult(resultId)
-                            val minutes       = testDao.getTestDurationMinutes(testIdFromRes)
+                            val minutes       = testDao.getTestDuration(testIdFromRes)
                             minutes * 60_000L
                         }
                 }

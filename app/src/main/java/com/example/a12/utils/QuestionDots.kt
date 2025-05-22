@@ -58,7 +58,7 @@ suspend fun updateDotsUI(
             // Получаем ответ пользователя из DAO (null, если не отвечали)
             val userAnswer = testDao.getUserAnswer(resultId, question.questionId.toLong())
             // Получаем список ответов из DAO
-            val answers = testDao.getAnswersForQuestion(question.questionId.toLong())
+            val answers = testDao.getAnswers(question.questionId.toLong())
 
             if (userAnswer != null) {
                 // ищем AnswerEntity с нужным answerId

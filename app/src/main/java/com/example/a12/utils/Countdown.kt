@@ -21,7 +21,7 @@ fun startCountdown(
             timerText.text = String.format("%d:%02d", m, s)
             val secondsLeft = (millisUntilFinished / 1_000).toInt()
             scope.launch {
-                testDao.updateRemainingSeconds(resultId, secondsLeft)
+                testDao.updateRemainingTime(resultId, secondsLeft)
             }
         }
 
