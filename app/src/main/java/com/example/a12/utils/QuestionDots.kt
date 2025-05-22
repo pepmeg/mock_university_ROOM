@@ -37,7 +37,6 @@ fun setupQuestionNumberDots(
     }
 }
 
-// Suspend-версия, вызывайте из coroutineScope.launch { updateDotsUI(...) }
 suspend fun updateDotsUI(
     container: LinearLayout,
     currentIndex: Int,
@@ -55,13 +54,10 @@ suspend fun updateDotsUI(
             dot.setTextColor(Color.WHITE)
         } else {
             val question = questions[i]
-            // Получаем ответ пользователя из DAO (null, если не отвечали)
             val userAnswer = testDao.getUserAnswer(resultId, question.questionId.toLong())
-            // Получаем список ответов из DAO
             val answers = testDao.getAnswers(question.questionId.toLong())
 
             if (userAnswer != null) {
-                // ищем AnswerEntity с нужным answerId
                 val selected = answers.find { it.answerId.toLong() == userAnswer.answerId }
                 val isCorrect = selected?.isCorrect == true
 
