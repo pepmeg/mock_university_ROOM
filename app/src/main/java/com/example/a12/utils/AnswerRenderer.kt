@@ -41,18 +41,18 @@ fun renderAnswers(
 
     if (selectedAnswerId != null) {
         answersGroup.findViewById<RadioButton>(selectedAnswerId)?.isChecked = true
-        updateRadioButtonsBackgrounds(answersGroup, selectedAnswerId, context)
+        updateRadioButtonsBack(answersGroup, selectedAnswerId, context)
     } else {
-        updateRadioButtonsBackgrounds(answersGroup, -1, context)
+        updateRadioButtonsBack(answersGroup, -1, context)
     }
 
     answersGroup.setOnCheckedChangeListener { group, id ->
-        updateRadioButtonsBackgrounds(group, id, context)
+        updateRadioButtonsBack(group, id, context)
         onAnswerSelected(questionId, id)
     }
 }
 
-fun updateRadioButtonsBackgrounds(group: RadioGroup, selectedId: Int, context: Context) {
+fun updateRadioButtonsBack(group: RadioGroup, selectedId: Int, context: Context) {
     for (i in 0 until group.childCount) {
         val rb = group.getChildAt(i) as RadioButton
         val isLong = rb.text.length > 50

@@ -145,7 +145,7 @@ class TestActivity : AppCompatActivity() {
     }
 
     private suspend fun displayQuestion(index: Int) {
-        if (!reviewMode && index != currentIndex && checkAnswered(currentIndex)) {
+        if (!reviewMode  && checkAnswered(currentIndex)) {
             answered.add(currentIndex)
         }
         currentIndex = index
@@ -166,7 +166,6 @@ class TestActivity : AppCompatActivity() {
         val q = questions[index]
         questionTv.text = q.questionText
 
-        // 1) Получаем список AnswerEntity
         val answerEntities = withContext(Dispatchers.IO) {
             testDao.getAnswers(q.questionId.toLong())
         }
@@ -183,7 +182,6 @@ class TestActivity : AppCompatActivity() {
                 answersGroup     = answersGroup,
                 answers          = answerEntities,
                 questionId       = q.questionId,
-                // Используем savedAnswerId?.toInt() безопасно
                 selectedAnswerId = savedAnswerId?.toInt()
             ) { questionId, answerId ->
                 val sel = answerEntities.first { it.answerId == answerId }
@@ -203,7 +201,6 @@ class TestActivity : AppCompatActivity() {
                 for (i in 0 until answersGroup.childCount) {
                     val rb  = answersGroup.getChildAt(i) as RadioButton
                     val aid = rb.id
-
                     val ent = answerEntities.first { it.answerId == aid }
 
                     val bgRes = when {

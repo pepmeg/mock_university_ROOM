@@ -6,14 +6,8 @@ import com.example.a12.model.entities.*
 @Dao
 interface TestDao {
 
-    @Query("SELECT * FROM tests WHERE test_id = :testId")
-    suspend fun getTestById(testId: Long): TestEntity?
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTest(test: TestEntity): Long
-
-    @Query("DELETE FROM tests WHERE test_id = :testId")
-    suspend fun deleteTest(testId: Long)
 
     @Query("SELECT * FROM questions WHERE test_id = :testId ORDER BY order_number ASC")
     suspend fun getQuestions(testId: Long): List<QuestionEntity>
@@ -21,17 +15,11 @@ interface TestDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQuestion(question: QuestionEntity): Long
 
-    @Query("DELETE FROM questions WHERE test_id = :testId")
-    suspend fun deleteQuestionsForTest(testId: Long)
-
     @Query("SELECT test_name FROM tests WHERE test_id = :testId")
     suspend fun getTestName(testId: Long): String?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAnswer(answer: AnswerEntity): Long
-
-    @Query("DELETE FROM answers WHERE question_id = :questionId")
-    suspend fun deleteAnswersForQuestion(questionId: Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTestResult(result: TestResultEntity): Long
@@ -56,9 +44,6 @@ interface TestDao {
 
     @Update
     suspend fun updateUserAnswer(userAnswer: UserAnswerEntity)
-
-    @Query("DELETE FROM user_answers WHERE result_id = :resultId")
-    suspend fun deleteUserAnswers(resultId: Long)
 
     @Transaction
     @Query("""
