@@ -10,14 +10,9 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-//        deleteDatabase("mock_university.db")
+        deleteDatabase("mock_university.db")
         CoroutineScope(Dispatchers.IO).launch {
-            val db = AppDatabase.getInstance(applicationContext)
-            val testDao = db.testDao()
-            val testCount = testDao.getTestCount()
-            if (testCount == 0) {
-                testDao.seedAll()
-            }
+            AppDatabase.getInstance(applicationContext).testDao().seedAll()
         }
     }
 }

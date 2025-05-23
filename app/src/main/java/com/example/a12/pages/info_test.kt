@@ -47,9 +47,6 @@ class InfoTestActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.title).text = testWithStats.test.testName
             findViewById<TextView>(R.id.title1).text = testWithStats.test.testName
 
-            findViewById<TextView>(R.id.description).text =
-                testWithStats.test.description
-
             val duration = testWithStats.test.durationMinutes
             findViewById<TextView>(R.id.testDuration)?.text =
                 "${duration / 60}h ${duration % 60}min"

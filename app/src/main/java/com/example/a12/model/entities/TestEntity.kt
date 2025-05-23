@@ -8,7 +8,6 @@ import androidx.room.*
 data class TestEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo("test_id") val testId: Long = 0L,
     @ColumnInfo("test_name") val testName: String,
-    @ColumnInfo(defaultValue = "") val description: String = "",
     @ColumnInfo("duration_minutes") val durationMinutes: Int,
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis()

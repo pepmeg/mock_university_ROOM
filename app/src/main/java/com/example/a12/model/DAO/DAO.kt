@@ -6,9 +6,6 @@ import com.example.a12.model.entities.*
 @Dao
 interface TestDao {
 
-    @Query("SELECT COUNT(*) FROM tests")
-    suspend fun getTestCount(): Int
-
     @Query("SELECT * FROM tests WHERE test_id = :testId")
     suspend fun getTestById(testId: Long): TestEntity?
 
