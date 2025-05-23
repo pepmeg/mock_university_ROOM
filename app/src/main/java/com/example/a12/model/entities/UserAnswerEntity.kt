@@ -3,26 +3,7 @@ package com.example.a12.model.entities
 import androidx.room.*
 
 @Entity(
-    tableName = "user_answers",
-    foreignKeys = [
-        ForeignKey(
-            entity = TestResultEntity::class,
-            parentColumns = ["result_id"],
-            childColumns  = ["result_id"],
-            onDelete      = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = QuestionEntity::class,
-            parentColumns = ["question_id"],
-            childColumns  = ["question_id"]
-        ),
-        ForeignKey(
-            entity = AnswerEntity::class,
-            parentColumns = ["answer_id"],
-            childColumns  = ["answer_id"]
-        )
-    ],
-    indices = [Index("result_id"), Index("question_id"), Index("answer_id")]
+    tableName = "user_answers"
 )
 data class UserAnswerEntity(
     @PrimaryKey(autoGenerate = true)
@@ -37,9 +18,6 @@ data class UserAnswerEntity(
 
     @ColumnInfo(name = "answer_id")
     val answerId: Long?,
-
-    @ColumnInfo(name = "free_text_answer")
-    val freeTextAnswer: String?,
 
     @ColumnInfo(name = "is_correct")
     val isCorrect: Boolean

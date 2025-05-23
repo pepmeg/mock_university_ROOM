@@ -3,17 +3,7 @@ package com.example.a12.model.entities
 import androidx.room.*
 
 @Entity(
-    tableName = "questions",
-    foreignKeys = [ForeignKey(
-        entity = TestEntity::class,
-        parentColumns = ["test_id"],
-        childColumns = ["test_id"],
-        onDelete = ForeignKey.CASCADE
-    )],
-    indices = [
-        Index("test_id"),
-        Index(value = ["test_id","order_number"], unique = true)
-    ]
+    tableName = "questions"
 )
 data class QuestionEntity(
     @PrimaryKey(autoGenerate = true)

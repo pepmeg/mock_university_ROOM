@@ -6,6 +6,9 @@ import com.example.a12.model.entities.*
 @Dao
 interface TestDao {
 
+    @Query("SELECT COUNT(*) FROM tests")
+    suspend fun getTestCount(): Int
+
     @Query("SELECT * FROM tests WHERE test_id = :testId")
     suspend fun getTestById(testId: Long): TestEntity?
 
@@ -119,15 +122,12 @@ interface TestDao {
 
     @Transaction
     suspend fun startTestSession(testId: Long): Long {
-        val now = System.currentTimeMillis() / 1000
         val result = TestResultEntity(
             testId = testId,
             status = "in_progress",
             currentQuestionOrder = 1,
             remainingSeconds = null,
-            finishedAt = null,
-            correctPercentage = 0.0,
-            createdAt = now
+            finishedAt = null
         )
         return insertTestResult(result)
     }
@@ -154,14 +154,12 @@ interface TestDao {
         val existing = getUserAnswer(resultId, questionId)
         val userAnswer = existing?.copy(
             answerId = answerId,
-            freeTextAnswer = freeText,
             isCorrect = isCorrect
         ) ?: UserAnswerEntity(
             userAnswerId = 0,
             resultId = resultId,
             questionId = questionId,
             answerId = answerId,
-            freeTextAnswer = freeText,
             isCorrect = isCorrect
         )
 
@@ -231,9 +229,9 @@ interface TestDao {
 
     @Transaction
     suspend fun seedAll() {
-        insertTest(TestEntity(testName = "Java Core", description = null, durationMinutes = 20))
-        insertTest(TestEntity(testName = "Основы C++", description = null, durationMinutes = 10))
-        insertTest(TestEntity(testName = "React JS", description = null, durationMinutes = 10))
+        insertTest(TestEntity(testName = "Java Core", durationMinutes = 20))
+        insertTest(TestEntity(testName = "Основы C++", durationMinutes = 10))
+        insertTest(TestEntity(testName = "React JS", durationMinutes = 10))
 
         listOf(
             QuestionEntity(

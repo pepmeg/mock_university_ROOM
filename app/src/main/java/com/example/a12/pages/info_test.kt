@@ -21,7 +21,6 @@ class InfoTestActivity : AppCompatActivity() {
         setContentView(R.layout.info_test)
 
         findViewById<ImageView>(R.id.backIcon).setOnClickListener { finish() }
-
         findViewById<TextView>(R.id.instructionText).apply {
             val bullets = listOf(
                 "10 point awarded for a correct answer and no marks for an incorrect answer.",
@@ -47,6 +46,9 @@ class InfoTestActivity : AppCompatActivity() {
 
             findViewById<TextView>(R.id.title).text = testWithStats.test.testName
             findViewById<TextView>(R.id.title1).text = testWithStats.test.testName
+
+            findViewById<TextView>(R.id.description).text =
+                testWithStats.test.description
 
             val duration = testWithStats.test.durationMinutes
             findViewById<TextView>(R.id.testDuration)?.text =

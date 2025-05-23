@@ -111,6 +111,9 @@ class MainActivity : AppCompatActivity() {
                         putExtra("REVIEW_MODE", false)
                         startActivity(this)
                     }
+                    card.findViewById<ImageView>(R.id.cardDelete).setOnClickListener {
+                        card.isVisible = false
+                    }
                 }
             } else {
                 card.isVisible = false

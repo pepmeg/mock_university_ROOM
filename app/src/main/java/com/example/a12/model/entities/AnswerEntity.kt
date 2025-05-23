@@ -3,14 +3,7 @@ package com.example.a12.model.entities
 import androidx.room.*
 
 @Entity(
-    tableName = "answers",
-    foreignKeys = [ForeignKey(
-        entity = QuestionEntity::class,
-        parentColumns = ["question_id"],
-        childColumns  = ["question_id"],
-        onDelete      = ForeignKey.CASCADE
-    )],
-    indices = [Index("question_id")]
+    tableName = "answers"
 )
 data class AnswerEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo("answer_id")  val answerId: Int = 0,

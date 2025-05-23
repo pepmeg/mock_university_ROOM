@@ -17,9 +17,5 @@ data class TestResultEntity(
     @ColumnInfo(name = "remaining_seconds")
     val remainingSeconds: Int?,
     @ColumnInfo(name = "finished_at")
-    val finishedAt: Long?,
-    @ColumnInfo(name = "correct_percentage")
-    val correctPercentage: Double,
-    @ColumnInfo(name = "created_at")
-    val createdAt: Long = System.currentTimeMillis() / 1000
+    val finishedAt: Long?
 )
