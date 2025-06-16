@@ -6,6 +6,12 @@ import com.example.a12.model.entities.*
 @Dao
 interface TestDao {
 
+    @Query("SELECT * FROM tests WHERE test_id = :testId")
+    suspend fun getTestById(testId: Long): TestEntity?
+
+    @Query("SELECT COUNT(*) FROM tests")
+    suspend fun getTestCount(): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTest(test: TestEntity): Long
 
@@ -186,7 +192,8 @@ interface TestDao {
       tr.status                          AS last_status,
       tr.result_id                       AS last_result_id,
       COALESCE(tr.remaining_seconds, t.duration_minutes * 60) AS remaining_seconds,
-      COALESCE(a.answered_cnt, 0)        AS answered_count
+      COALESCE(a.answered_cnt, 0)        AS answered_count,
+      tr.finished_at AS finished_at
     FROM tests t
     LEFT JOIN questions q
       ON q.test_id = t.test_id
