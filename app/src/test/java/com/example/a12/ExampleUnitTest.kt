@@ -1,44 +1,25 @@
 package com.example.a12
 
-import android.content.Context
 import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.a12.model.AppDatabase
 import com.example.a12.model.DAO.TestDao
-import com.example.a12.model.entities.AnswerEntity
-import com.example.a12.model.entities.QuestionEntity
-import com.example.a12.model.entities.TestEntity
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.example.a12.model.entities.*
 import kotlinx.coroutines.runBlocking
-import org.junit.After
-import org.junit.Test
+import org.junit.*
 import org.junit.Assert.*
-import org.junit.Before
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-class ExampleUnitTest {
-    @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
-    }
-}
-/*
-@ExperimentalCoroutinesApi
-@RunWith(AndroidJUnit4::class)
-class TestDaoTest {
+@RunWith(RobolectricTestRunner::class)
+class TestDaoUnitTest {
 
     private lateinit var db: AppDatabase
     private lateinit var dao: TestDao
 
     @Before
-    fun setup() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
+    fun setUp() {
+        val context = RuntimeEnvironment.getApplication()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
@@ -51,21 +32,28 @@ class TestDaoTest {
     }
 
     @Test
-    fun insertAndGetTest() = runBlocking {
-        val test = TestEntity(testName = "Java Test", durationMinutes = 10)
-        val testId = dao.insertTest(test)
-        val loaded = dao.getTestById(testId)
+    fun insertAndRetrieveTest() = runBlocking {
+        val test = TestEntity(testName = "Math Test", durationMinutes = 20)
+        val id = dao.insertTest(test)
+        val loaded = dao.getTestById(id)
         assertNotNull(loaded)
-        assertEquals("Java Test", loaded?.testName)
+        assertEquals("Math Test", loaded?.testName)
     }
 
     @Test
-    fun insertAndGetQuestions() = runBlocking {
-        val testId = dao.insertTest(TestEntity(testName = "Test", durationMinutes = 15)).toInt()
+    fun testCountIncreases() = runBlocking {
+        assertEquals(0, dao.getTestCount())
+        dao.insertTest(TestEntity(testName = "History", durationMinutes = 30))
+        assertEquals(1, dao.getTestCount())
+    }
+
+    @Test
+    fun insertAndRetrieveQuestions() = runBlocking {
+        val testId = dao.insertTest(TestEntity(testName = "Physics", durationMinutes = 15)).toInt()
         dao.insertQuestion(
             QuestionEntity(
                 testId = testId,
-                questionText = "What is Java?",
+                questionText = "What is Newton's law?",
                 questionType = "single",
                 minAnswers = 1,
                 maxAnswers = 1,
@@ -74,38 +62,24 @@ class TestDaoTest {
         )
         val questions = dao.getQuestions(testId.toLong())
         assertEquals(1, questions.size)
-        assertEquals("What is Java?", questions.first().questionText)
+        assertEquals("What is Newton's law?", questions.first().questionText)
     }
 
     @Test
-    fun testCountShouldIncrease() = runBlocking {
-        assertEquals(0, dao.getTestCount())
-        dao.insertTest(TestEntity(testName = "One", durationMinutes = 5))
-        assertEquals(1, dao.getTestCount())
-    }
+    fun orderOfQuestionsIsCorrect() = runBlocking {
+        val testId = dao.insertTest(TestEntity(testName = "Ordering", durationMinutes = 5)).toInt()
 
-    @Test
-    fun getTestNameById() = runBlocking {
-        val testId = dao.insertTest(TestEntity(testName = "React", durationMinutes = 10))
-        val name = dao.getTestName(testId)
-        assertEquals("React", name)
-    }
-
-    @Test
-    fun insertAndOrderQuestions() = runBlocking {
-        val testId = dao.insertTest(TestEntity(testName = "C++", durationMinutes = 20))
         val q1 = QuestionEntity(
-            testId = testId.toInt(),
-            questionText = "Q1",
+            testId = testId,
+            questionText = "Second",
             questionType = "single",
             minAnswers = 1,
             maxAnswers = 1,
             orderNumber = 2
         )
-
         val q2 = QuestionEntity(
-            testId = testId.toInt(),
-            questionText = "Q2",
+            testId = testId,
+            questionText = "First",
             questionType = "single",
             minAnswers = 1,
             maxAnswers = 1,
@@ -115,64 +89,47 @@ class TestDaoTest {
         dao.insertQuestion(q1)
         dao.insertQuestion(q2)
 
-        val questions = dao.getQuestions(testId)
-        assertEquals("Q2", questions[0].questionText)
-        assertEquals("Q1", questions[1].questionText)
+        val ordered = dao.getQuestions(testId.toLong())
+        assertEquals("First", ordered[0].questionText)
+        assertEquals("Second", ordered[1].questionText)
     }
 
     @Test
-    fun startAndFinishTestSession() = runBlocking {
-        val testId = dao.insertTest(TestEntity(testName = "React", durationMinutes = 15))
-        val resultId = dao.startTestSession(testId)
-
-        dao.finishTestSession(resultId, 60)
-
-        val result = dao.getTestResult(resultId)
-        assertEquals("completed", result?.status)
-        assertEquals(60, result?.remainingSeconds)
+    fun getTestNameByIdReturnsCorrectName() = runBlocking {
+        val id = dao.insertTest(TestEntity(testName = "Biology", durationMinutes = 12))
+        val name = dao.getTestName(id)
+        assertEquals("Biology", name)
     }
+
     @Test
     fun saveUserAnswerCreatesOrUpdates() = runBlocking {
-        val testId = dao.insertTest(TestEntity(testName = "Kotlin", durationMinutes = 10))
-
-        val resultId = dao.startTestSession(testId)
+        val testId = dao.insertTest(TestEntity(testName = "Kotlin", durationMinutes = 10)).toInt()
+        val resultId = dao.startTestSession(testId.toLong())
 
         val question = QuestionEntity(
-            testId = testId.toInt(),
+            testId = testId,
             questionText = "Q?",
             questionType = "single",
             minAnswers = 1,
             maxAnswers = 1,
             orderNumber = 1
         )
-        val questionId = dao.insertQuestion(question)
+        val questionId = dao.insertQuestion(question).toInt()
 
         val answer = AnswerEntity(
-            questionId = questionId.toInt(),
+            questionId = questionId,
             answerText = "42",
             isCorrect = true
         )
-        val answerId = dao.insertAnswer(answer)
+        val answerId = dao.insertAnswer(answer).toInt()
 
-        dao.saveUserAnswer(resultId, questionId, answerId, null, true)
-        val userAnswer = dao.getUserAnswer(resultId, questionId)
+        dao.saveUserAnswer(resultId, questionId.toLong(), answerId.toLong(), null, true)
+        val userAnswer = dao.getUserAnswer(resultId, questionId.toLong())
         assertNotNull(userAnswer)
-        assertEquals(answerId, userAnswer?.answerId)
+        assertEquals(answerId.toLong(), userAnswer?.answerId)
 
-        dao.saveUserAnswer(resultId, questionId, answerId, null, false)
-        val updated = dao.getUserAnswer(resultId, questionId)
+        dao.saveUserAnswer(resultId, questionId.toLong(), answerId.toLong(), null, false)
+        val updated = dao.getUserAnswer(resultId, questionId.toLong())
         assertEquals(false, updated?.isCorrect)
     }
-
-    @Test
-    fun deleteTestResults_removesResults() = runBlocking {
-        val testId = dao.insertTest(TestEntity(testName = "With Results", durationMinutes = 5))
-        val resultId = dao.startTestSession(testId)
-
-        assertNotNull(dao.getTestResult(resultId))
-
-        dao.deleteTestResults(testId)
-
-        assertNull(dao.getTestResult(resultId))
-    }
-}*/
+}

@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.a12"
-        minSdk = 24
+        minSdk = 21
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -30,6 +30,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -40,12 +41,11 @@ android {
 }
 val room_version = "2.6.1"
 dependencies {
+    androidTestImplementation("androidx.test:runner:1.5.2")
     implementation("androidx.room:room-runtime:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     testImplementation("androidx.room:room-testing:$room_version")
-}
-dependencies {
     implementation(libs.androidx.junit.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -64,4 +64,5 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test:rules:1.5.0")
+    testImplementation("org.robolectric:robolectric:4.12.1")
 }
