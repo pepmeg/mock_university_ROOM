@@ -18,21 +18,6 @@ import org.junit.runner.RunWith
 import org.junit.Assert.*
 import org.junit.Before
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
-    @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.a12", appContext.packageName)
-    }
-}
-
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class TestDaoTest {
@@ -135,6 +120,7 @@ class TestDaoTest {
         assertEquals("completed", result?.status)
         assertEquals(60, result?.remainingSeconds)
     }
+
     @Test
     fun saveUserAnswerCreatesOrUpdates() = runBlocking {
         val testId = dao.insertTest(TestEntity(testName = "Kotlin", durationMinutes = 10))
@@ -172,13 +158,8 @@ class TestDaoTest {
     fun deleteTestResults_removesResults() = runBlocking {
         val testId = dao.insertTest(TestEntity(testName = "With Results", durationMinutes = 5))
         val resultId = dao.startTestSession(testId)
-
         assertNotNull(dao.getTestResult(resultId))
-
         dao.deleteTestResults(testId)
-
         assertNull(dao.getTestResult(resultId))
     }
-
-
 }

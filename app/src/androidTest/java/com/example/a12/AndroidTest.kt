@@ -17,23 +17,23 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
-class ActivityTest {
+    @RunWith(AndroidJUnit4::class)
+    class ActivityTest {
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+        private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    @Before
-    fun setup() {
-        init()
-    }
+        @Before
+        fun setup() {
+            init()
+        }
 
-    @After
-    fun tearDown() {
-        release()
-    }
+        @After
+        fun tearDown() {
+            release()
+        }
 
     @Test
-    fun launchTestButton_startsTestActivityWithExtras() {
+    fun launchTestButton_startsTestActivity() {
         val intent = Intent(context, InfoTestActivity::class.java).apply {
             putExtra("TEST_ID", 1L)
         }
@@ -53,7 +53,7 @@ class ActivityTest {
     }
 
     @Test
-    fun testSwitchTabs_All_InProgress_Completed() {
+    fun testSwitch_All_InProgress_Completed() {
         ActivityScenario.launch(LearningActivity::class.java)
 
         onView(withId(R.id.tabAll)).perform(click())

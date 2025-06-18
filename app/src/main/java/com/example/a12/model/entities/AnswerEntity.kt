@@ -7,7 +7,7 @@ import androidx.room.*
 )
 data class AnswerEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo("answer_id")  val answerId: Int = 0,
-    @ColumnInfo("question_id")                                 val questionId: Int,
-    @ColumnInfo("answer_text")                                 val answerText: String,
-    @ColumnInfo("is_correct")                                  val isCorrect: Boolean = false
+    @ColumnInfo("question_id") val questionId: Int,
+    @ColumnInfo("answer_text") val answerText: String,
+    @ColumnInfo("is_correct") val isCorrect: Boolean = false
 )

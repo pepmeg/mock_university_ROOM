@@ -2,8 +2,6 @@ package com.example.a12.model
 
 import android.content.Context
 import androidx.room.*
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.a12.model.DAO.TestDao
 import com.example.a12.model.entities.*
 
