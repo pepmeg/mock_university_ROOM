@@ -58,17 +58,17 @@ import org.junit.runner.RunWith
 
         onView(withId(R.id.tabAll)).perform(click())
         onView(withId(R.id.tabAll)).check { view, _ ->
-            assert(view.isSelected) { "Tab ALL should be selected" }
+            assert(view.isSelected)
         }
 
         onView(withId(R.id.tabInProgress)).perform(click())
         onView(withId(R.id.tabInProgress)).check { view, _ ->
-            assert(view.isSelected) { "Tab IN_PROGRESS should be selected" }
+            assert(view.isSelected)
         }
 
         onView(withId(R.id.tabCompleted)).perform(click())
         onView(withId(R.id.tabCompleted)).check { view, _ ->
-            assert(view.isSelected) { "Tab COMPLETED should be selected" }
+            assert(view.isSelected)
         }
     }
 }
